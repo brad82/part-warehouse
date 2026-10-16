@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Grouping, Part } from "@snowcat/shared";
-import { buildRows } from "./buildRows";
+import { buildRows, rowsInGrouping } from "./buildRows";
 
 const groupings: Grouping[] = [
   { id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null },
@@ -31,6 +31,7 @@ describe("buildRows", () => {
       partType: "Printed",
       subassembly: "A01 Tracks",
       group: "A01-001 Grousers",
+      groupPath: ["A01-001", "A01", "A"],
       remaining: 7,
       totalPrintTimeMin: 360,
       totalFilamentG: null,
@@ -41,5 +42,14 @@ describe("buildRows", () => {
     const [row] = buildRows([], [part]);
     expect(row.subassembly).toBe("");
     expect(row.group).toBe("");
+  });
+
+  it("filters rows to any level of the grouping tree", () => {
+    const other = { ...part, code: "B01-001-001", groupId: "B01-001" };
+    const rows = buildRows(groupings, [part, other]);
+    for (const id of ["A", "A01", "A01-001"]) {
+      expect(rowsInGrouping(rows, id).map((r) => r.code)).toEqual(["A01-001-001"]);
+    }
+    expect(rowsInGrouping(rows, "A02")).toEqual([]);
   });
 });

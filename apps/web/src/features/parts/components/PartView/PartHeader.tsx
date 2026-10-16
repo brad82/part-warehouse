@@ -1,4 +1,6 @@
-import { Box, Breadcrumbs, Chip, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Chip, Link, Tooltip, Typography } from "@mui/material";
+import { Table2 } from "lucide-react";
+import { Link as RouterLink } from "react-router-dom";
 import { ATTR, attrText } from "@snowcat/shared";
 import { PrintLabelButton } from "@features/labels";
 import { ancestorIds } from "../../model/buildTree";
@@ -9,6 +11,12 @@ const headerStyles = {
   root: { display: "flex", alignItems: "flex-start", gap: 2, mb: 3 },
   titles: { flex: 1, minWidth: 0 },
   actions: { display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 1 },
+  crumb: {
+    display: "flex",
+    alignItems: "center",
+    color: "text.secondary",
+    "&:hover": { color: "primary.main" },
+  },
   code: { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" },
 };
 
@@ -25,10 +33,22 @@ export function PartHeader() {
     <Box sx={headerStyles.root}>
       <Box sx={headerStyles.titles}>
         <Breadcrumbs sx={{ fontSize: "0.85rem" }}>
+          <Tooltip title="Parts Catalog">
+            <Link component={RouterLink} to="/catalog" aria-label="Parts Catalog" sx={headerStyles.crumb}>
+              <Table2 size={16} />
+            </Link>
+          </Tooltip>
           {path.map((g) => (
-            <Typography key={g.id} variant="body2" color="text.secondary">
+            <Link
+              key={g.id}
+              component={RouterLink}
+              to={`/catalog?group=${encodeURIComponent(g.id)}`}
+              variant="body2"
+              underline="hover"
+              sx={headerStyles.crumb}
+            >
               {g.id} {g.name}
-            </Typography>
+            </Link>
           ))}
         </Breadcrumbs>
         <Typography variant="h1" component="h2">

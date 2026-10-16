@@ -1,10 +1,12 @@
 import type { Grouping, Part, PartType } from "@snowcat/shared";
-import { partTotals } from "@features/parts";
+import { ancestorIds, partTotals } from "@features/parts";
 
 export type CatalogRow = Part & {
   partType: string;
   subassembly: string;
   group: string;
+  /** The part's group and every grouping above it. */
+  groupPath: string[];
   remaining: number;
   totalPrintTimeMin: number | null;
   totalFilamentG: number | null;
@@ -29,9 +31,15 @@ export function buildRows(
       partType: typeNames.get(part.partTypeId) ?? part.partTypeId,
       subassembly: label(subassembly),
       group: label(group),
+      groupPath: ancestorIds(groupings, part),
       remaining: totals.remaining,
       totalPrintTimeMin: totals.printTimeMin,
       totalFilamentG: totals.filamentG,
     };
   });
+}
+
+/** Rows whose part sits anywhere under the given grouping. */
+export function rowsInGrouping(rows: CatalogRow[], groupingId: string): CatalogRow[] {
+  return rows.filter((row) => row.groupPath.includes(groupingId));
 }

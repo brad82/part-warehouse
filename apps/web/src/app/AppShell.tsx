@@ -1,14 +1,5 @@
-import {
-  AppBar,
-  Box,
-  IconButton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { ListTree, Moon, Settings, Snowflake, Sun, Table2 } from "lucide-react";
+import { AppBar, Box, Button, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Boxes, Moon, Settings, Snowflake, Sun } from "lucide-react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { ScanButton } from "@features/scan";
 import type { ThemeMode } from "@shared/hooks/useThemeMode";
@@ -39,41 +30,25 @@ const shellStyles = {
   title: { fontWeight: 700 },
   spacer: { flexGrow: 1 },
   main: { flex: 1, minHeight: 0, display: "flex" },
-  views: {
-    "& .MuiToggleButton-root": { color: "inherit", borderColor: "currentColor", py: 0.5 },
-    "& .Mui-selected": { bgcolor: "rgba(255,255,255,0.2) !important" },
-  },
+  nav: { textTransform: "none", fontWeight: 600 },
+  navActive: { bgcolor: "rgba(255,255,255,0.2)", "&:hover": { bgcolor: "rgba(255,255,255,0.28)" } },
 };
 
-function ViewToggle() {
-  const navigate = useNavigate();
+function PartsViewerNavButton() {
   const { pathname } = useLocation();
-  // Neither toggle is selected on Settings.
-  const view = pathname.startsWith("/catalog")
-    ? "catalog"
-    : pathname.startsWith("/settings")
-      ? null
-      : "tree";
+  const active = pathname === "/" || pathname.startsWith("/parts");
 
   return (
-    <ToggleButtonGroup
-      size="small"
-      exclusive
-      value={view}
-      onChange={(_e, next) => next && navigate(next === "catalog" ? "/catalog" : "/")}
-      sx={shellStyles.views}
+    <Button
+      component={RouterLink}
+      to="/"
+      color="inherit"
+      startIcon={<Boxes size={18} />}
+      aria-current={active ? "page" : undefined}
+      sx={[shellStyles.nav, active && shellStyles.navActive]}
     >
-      <Tooltip title="Tree view">
-        <ToggleButton value="tree" aria-label="Tree view">
-          <ListTree size={18} />
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title="Table view">
-        <ToggleButton value="catalog" aria-label="Table view">
-          <Table2 size={18} />
-        </ToggleButton>
-      </Tooltip>
-    </ToggleButtonGroup>
+      Parts Viewer
+    </Button>
   );
 }
 
@@ -89,8 +64,8 @@ export function AppShell({ mode, onToggleMode }: Props) {
               Snowcat Parts
             </Typography>
           </Box>
+          <PartsViewerNavButton />
           <Box sx={shellStyles.spacer} />
-          <ViewToggle />
           <ScanButton />
           <Tooltip title="Settings">
             <IconButton color="inherit" aria-label="Settings" onClick={() => navigate("/settings")}>

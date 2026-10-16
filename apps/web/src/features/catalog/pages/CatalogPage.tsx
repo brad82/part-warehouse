@@ -8,6 +8,9 @@ import { rowUpdate } from "../model/rowUpdate";
 
 type Props = {
   rows: CatalogRow[];
+  /** Label of the grouping the rows are limited to, if any. */
+  groupingFilter: string | null;
+  onClearGroupingFilter: () => void;
   attributeDefs: AttributeDef[];
   loading: boolean;
   error: string | null;
@@ -137,6 +140,8 @@ const pageStyles = {
  */
 export function CatalogPage({
   rows,
+  groupingFilter,
+  onClearGroupingFilter,
   attributeDefs,
   loading,
   error,
@@ -152,6 +157,16 @@ export function CatalogPage({
   return (
     <Box sx={pageStyles.root}>
       {error && <Alert severity="error">{error}</Alert>}
+      {groupingFilter && (
+        <Box>
+          <Chip
+            label={`Showing ${groupingFilter}`}
+            onDelete={onClearGroupingFilter}
+            color="primary"
+            variant="outlined"
+          />
+        </Box>
+      )}
       <Box sx={pageStyles.grid}>
         <DataGrid
           // initialState is read once; remount when the definitions arrive.

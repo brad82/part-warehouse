@@ -10,3 +10,4 @@ export {
 } from "./api/partsApi";
 export { formatMinutes, partTotals } from "./model/totals";
 export { attributeLabel } from "./model/attributeFields";
+export { ancestorIds } from "./model/buildTree";

@@ -1,5 +1,6 @@
-import { Alert, Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Grid, Link, Typography } from "@mui/material";
 import { Boxes } from "lucide-react";
+import { Link as RouterLink } from "react-router-dom";
 import { ATTR, attrText } from "@snowcat/shared";
 import { useSelectedPart } from "../../PartsProvider";
 import { PartFields } from "./PartFields";
@@ -29,6 +30,9 @@ export function PartView() {
       <Box sx={viewStyles.empty}>
         <Boxes size={40} />
         <Typography>Pick a part from the tree, search, or scan a label.</Typography>
+        <Link component={RouterLink} to="/catalog" variant="body2">
+          Or browse the full parts catalog
+        </Link>
       </Box>
     );
   }
