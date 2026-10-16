@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+.vite/
+
+# Tests and lint caches
+coverage/
+.eslintcache
+
+# Local SQLite database (rebuilt with `npm run import`)
+data/*.db
+data/*.db-*
+
+# Local HTTPS certs for the Vite dev server
+certs/
+
+# Environment overrides (PORT, HOST, DB_PATH, MODEL_FILES_DIR, PARTS_INDEX_CSV)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+
+# Per-installation compose overrides (host paths)
+docker-compose.override.yml

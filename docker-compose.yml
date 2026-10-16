@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/.docker/Dockerfile
+    init: true
+    restart: unless-stopped
+    volumes:
+      - parts-data:/data
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/.docker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-3000}:80"
+
+  # One-off commands: `docker compose run --rm cli import`.
+  cli:
+    profiles: [tools]
+    build:
+      context: .
+      dockerfile: apps/cli/.docker/Dockerfile
+    init: true
+    volumes:
+      - parts-data:/data
+
+volumes:
+  parts-data:

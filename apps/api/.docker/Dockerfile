@@ -1,0 +1,35 @@
+# Build context: the repo root (the API imports packages/shared and packages/db).
+#   docker build -f apps/api/.docker/Dockerfile .
+
+FROM node:24-bookworm-slim AS deps
+WORKDIR /app
+# Toolchain in case better-sqlite3 has no prebuilt binary for this platform.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/
+COPY apps/cli/package.json apps/cli/
+COPY apps/web/package.json apps/web/
+COPY packages/db/package.json packages/db/
+COPY packages/shared/package.json packages/shared/
+RUN npm ci --workspace @snowcat/api
+
+FROM node:24-bookworm-slim
+WORKDIR /app
+ENV NODE_ENV=production \
+  HOST=0.0.0.0 \
+  PORT=4000 \
+  DB_PATH=/data/parts.db \
+  MODEL_FILES_DIR=/models
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ./
+COPY packages/shared ./packages/shared
+COPY packages/db ./packages/db
+COPY apps/api ./apps/api
+RUN mkdir -p /data && chown node:node /data
+USER node
+VOLUME /data
+EXPOSE 4000
+# The shared packages ship TypeScript source, so run through tsx (as `npm start` does).
+CMD ["node", "--import", "tsx", "apps/api/src/server.ts"]

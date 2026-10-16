@@ -1,0 +1,21 @@
+/* Labels render into #print-root (see features/labels/components/PrintPortal).
+   On print, only that element shows; @page size is injected per template.
+   MUI dialogs portal to <body>, so hide every sibling, not just #root. */
+#print-root {
+  display: none;
+}
+
+@media print {
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+  }
+}

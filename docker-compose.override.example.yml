@@ -1,0 +1,6 @@
+# Copy to docker-compose.override.yml (gitignored) and point at your files.
+# `docker compose` merges it into docker-compose.yml automatically.
+services:
+  api:
+    volumes:
+      - "../Model Files:/models:ro"
