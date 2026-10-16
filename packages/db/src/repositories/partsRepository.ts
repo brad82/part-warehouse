@@ -276,29 +276,31 @@ export function partsRepository(db: Database.Database) {
     },
 
     /**
-     * Import upsert: catalog columns and the attributes passed only, so stock,
-     * print data and the part's type survive.
+     * Import upsert: catalog columns and the attributes passed only, so stock
+     * and print data survive. The part's type is only set when passed.
      */
     upsertCatalogPart(
       p: Pick<
         Part,
         "code" | "groupId" | "part" | "revision" | "name" | "qtyPerBuild" | "notes" | "source"
-      > & { attributes: Record<string, AttributeValue | null> },
+      > & { partTypeId?: string; attributes: Record<string, AttributeValue | null> },
     ): void {
-      const { attributes, ...core } = p;
+      const { attributes, partTypeId, ...core } = p;
       db.transaction(() => {
+        if (partTypeId) assertPartType(partTypeId);
         db.prepare(
           `INSERT INTO parts (code, group_id, part, revision, name, qty_per_build,
-                              notes, source)
+                              notes, source, part_type_id)
            VALUES (@code, @groupId, @part, @revision, @name, @qtyPerBuild,
-                   @notes, @source)
+                   @notes, @source, COALESCE(@partTypeId, 'printed'))
            ON CONFLICT (code) DO UPDATE SET
              group_id = excluded.group_id, part = excluded.part,
              revision = excluded.revision, name = excluded.name,
              qty_per_build = excluded.qty_per_build,
              notes = excluded.notes, source = excluded.source,
+             part_type_id = COALESCE(@partTypeId, part_type_id),
              updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`,
-        ).run(core);
+        ).run({ ...core, partTypeId: partTypeId ?? null });
         setAttributes(p.code, attributes);
       })();
     },

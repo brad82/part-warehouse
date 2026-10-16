@@ -85,7 +85,9 @@ SELECT * FROM (VALUES
   (7,  'sku',            'SKU',           'text',     NULL,  NULL, 0, 70),
   (8,  'supplier',       'Supplier',      'text',     NULL,  NULL, 0, 80),
   (9,  'price',          'Price',         'currency', 'CAD', NULL, 0, 90),
-  (10, 'supplier_url',   'Supplier link', 'url',      NULL,  NULL, 0, 100))
+  (10, 'supplier_url',   'Supplier link', 'url',      NULL,  NULL, 0, 100),
+  (12, 'variant',        'Variant / option', 'text',  NULL,  NULL, 0, 110),
+  (13, 'packs',          'Packs to buy',  'integer',  NULL,  NULL, 0, 120))
 WHERE NOT EXISTS (SELECT 1 FROM seeded);
 
 INSERT OR IGNORE INTO part_type_attributes (part_type_id, attribute_id)
@@ -93,7 +95,7 @@ SELECT * FROM (VALUES
   ('printed', 1), ('printed', 2), ('printed', 3), ('printed', 4),
   ('printed', 5), ('printed', 6),
   ('purchased', 1), ('purchased', 2), ('purchased', 7), ('purchased', 8),
-  ('purchased', 9), ('purchased', 10))
+  ('purchased', 9), ('purchased', 10), ('purchased', 12), ('purchased', 13))
 WHERE NOT EXISTS (SELECT 1 FROM seeded);
 
 INSERT OR IGNORE INTO seeded (id) VALUES (1);

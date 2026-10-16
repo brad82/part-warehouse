@@ -15,6 +15,14 @@ npm test && npm run typecheck && npm run lint
   `packages/shared` (zod schemas, used everywhere).
 - CLI: `npm run cli -- --help`. Other CSV or db:
   `npm run cli -- import --csv <path> --db <path>`.
+- One `import` command takes any parts CSV (e.g. `Parts Index.csv`,
+  `Purchased Parts (proposed).csv`). Required columns: Code, Module, Module
+  name, Sub-assembly, Sub-assembly name, Group, Group name, Part, Revision,
+  Part name, Qty per build, Notes. Optional `Part type` (id or name; without
+  it, existing parts keep their type and new ones are Printed) and
+  `Colour / material` (split into colour + material). Every other column is
+  matched to an attribute by key or label, ignoring case; unmatched columns
+  are skipped with a warning. An empty cell clears that attribute.
 
 - SQLite (`data/parts.db`) is the source of truth after import. Schema:
   `packages/db/migrations/001_initial.sql` (edit it, delete the db, re-import).
@@ -22,8 +30,8 @@ npm test && npm run typecheck && npm run lint
   material, print time, SKU, supplier, price in CAD, …). Edit both on the
   Settings page (gear icon). Built-in attributes (colour, material, print time,
   filament, file path/version) are read by the app, so their key and type are
-  fixed. Values live in `part_attributes`; the import only writes colour,
-  material and file path/version.
+  fixed. Values live in `part_attributes`; the import only writes the
+  attributes that have a column in the CSV.
 - STL viewer colours: Settings → STL Preview (`preview_colours` table). A part
   previews in the colour whose name matches its Colour attribute (ignoring
   case); no match shows Black with a dismissible notice.
@@ -51,6 +59,8 @@ npm test && npm run typecheck && npm run lint
 ```sh
 cp docker-compose.override.example.yml docker-compose.override.yml   # then edit paths
 docker compose run --rm cli import   # first run: CSV → volume
+docker compose run --rm -v "$PWD/../Purchased Parts (proposed).csv:/import/purchased.csv:ro" \
+  cli import --csv /import/purchased.csv   # any other CSV
 docker compose up -d --build   # http://localhost:3000 (WEB_PORT=8080 to change)
 ```
 

@@ -5,7 +5,8 @@ import { config } from "./config.js";
 const usage = `Usage: snowcat <command> [options]
 
 Commands:
-  import    Import Parts Index.csv into the database (re-runnable)
+  import    Import a parts CSV into the database (re-runnable). Extra columns
+            are matched to attributes by key or label; "Part type" sets the type.
             --csv <path>  CSV file (default: ${config.partsIndexCsv})
             --db <path>   SQLite file (default: ${config.dbPath})`;
 
