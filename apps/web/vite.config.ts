@@ -20,6 +20,11 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) return;
+          // React gets its own chunk: every other chunk imports it, so it
+          // must not depend on them (a cycle leaves React undefined at load).
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) {
+            return "react";
+          }
           if (id.includes("three") || id.includes("@react-three")) {
             return "three";
           }
@@ -32,6 +37,10 @@ export default defineConfig({
           ) {
             return "mui";
           }
+          // Shared helpers (use-sync-external-store, @babel/runtime, …) used by
+          // several chunks above. Left unassigned, Rollup drops each into one of
+          // them and creates a cycle between three and mui.
+          return "vendor";
         },
       },
     },
