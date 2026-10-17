@@ -3,7 +3,6 @@ import type {
   AttributeDef,
   Grouping,
   Part,
-  PartCreate,
   PartType,
   PartUpdate,
   PreviewColour,
@@ -32,11 +31,6 @@ type Props = {
   saving: boolean;
   saveError: string | null;
   onSave: (update: PartUpdate) => Promise<void>;
-  /** Resolves to the new part's code. */
-  onCreate: (input: PartCreate) => Promise<string>;
-  creating: boolean;
-  createError: string | null;
-  nextPartNumber: (groupId: string) => Promise<string | null>;
 };
 
 type PartsContextValue = Omit<Props, "children"> & {
@@ -115,17 +109,4 @@ export function usePartForm() {
     [attributeDefs, partTypeId],
   );
   return { ...draft, part: selected, saving, saveError, partTypes, defs };
-}
-
-export function useNewPartContext() {
-  const ctx = usePartsContext();
-  return {
-    groupings: ctx.groupings,
-    partTypes: ctx.partTypes,
-    onCreate: ctx.onCreate,
-    creating: ctx.creating,
-    createError: ctx.createError,
-    nextPartNumber: ctx.nextPartNumber,
-    onSelect: ctx.onSelect,
-  };
 }

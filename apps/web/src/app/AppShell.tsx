@@ -5,10 +5,11 @@ import {
   IconButton,
   Toolbar,
   Tooltip,
-  Typography,
 } from "@mui/material";
-import { Boxes, Moon, Settings, Snowflake, Sun } from "lucide-react";
+import type { ReactNode } from "react";
+import { Boxes, LayoutDashboard, Moon, Settings, Sun, Table2 } from "lucide-react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { NewPartButton } from "@features/parts";
 import { ScanButton } from "@features/scan";
 import type { ThemeMode } from "@shared/hooks/useThemeMode";
 import { AppRoutes } from "./router";
@@ -29,18 +30,7 @@ const shellStyles = {
     gap: { xs: 0.5, sm: 1 },
     px: { xs: 1, sm: 2 },
   },
-  brand: {
-    display: "flex",
-    alignItems: "center",
-    gap: 1,
-    color: "inherit",
-    textDecoration: "none",
-    borderRadius: 1,
-    px: 0.5,
-    "&:hover": { opacity: 0.85 },
-    "&:focus-visible": { outline: "2px solid currentColor", outlineOffset: 2 },
-  },
-  title: { fontWeight: 700, display: { xs: "none", sm: "block" } },
+  navList: { display: "flex", gap: { xs: 0.5, sm: 1 } },
   spacer: { flexGrow: 1 },
   main: { flex: 1, minHeight: 0, display: "flex" },
   nav: {
@@ -58,22 +48,50 @@ const shellStyles = {
   },
 };
 
-function PartsViewerNavButton() {
+type NavItem = {
+  to: string;
+  label: string;
+  icon: ReactNode;
+  isActive: (pathname: string) => boolean;
+};
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    to: "/",
+    label: "Dashboard",
+    icon: <LayoutDashboard size={18} />,
+    isActive: (p) => p === "/",
+  },
+  {
+    to: "/viewer",
+    label: "Part Lookup",
+    icon: <Boxes size={18} />,
+    isActive: (p) => p.startsWith("/viewer"),
+  },
+  {
+    to: "/bom",
+    label: "BOM",
+    icon: <Table2 size={18} />,
+    isActive: (p) => p.startsWith("/bom"),
+  },
+];
+
+function NavButton({ to, label, icon, isActive }: NavItem) {
   const { pathname } = useLocation();
-  const active = pathname === "/" || pathname.startsWith("/parts");
+  const active = isActive(pathname);
 
   return (
     <Button
       component={RouterLink}
-      to="/"
+      to={to}
       color="inherit"
-      aria-label="Parts Viewer"
-      startIcon={<Boxes size={18} />}
+      aria-label={label}
+      startIcon={icon}
       aria-current={active ? "page" : undefined}
       sx={[shellStyles.nav, active && shellStyles.navActive]}
     >
       <Box component="span" sx={shellStyles.navLabel}>
-        Parts Viewer
+        {label}
       </Box>
     </Button>
   );
@@ -85,18 +103,12 @@ export function AppShell({ mode, onToggleMode }: Props) {
     <Box sx={shellStyles.root}>
       <AppBar position="static" elevation={0} sx={shellStyles.bar}>
         <Toolbar variant="dense" sx={shellStyles.toolbar}>
-          <Box
-            component={RouterLink}
-            to="/catalog"
-            aria-label="Go to catalog"
-            sx={shellStyles.brand}
-          >
-            <Snowflake size={20} />
-            <Typography variant="h3" component="h1" sx={shellStyles.title}>
-              Snowcat Parts
-            </Typography>
+          <NewPartButton />
+          <Box component="nav" sx={shellStyles.navList}>
+            {NAV_ITEMS.map((item) => (
+              <NavButton key={item.to} {...item} />
+            ))}
           </Box>
-          <PartsViewerNavButton />
           <Box sx={shellStyles.spacer} />
           <ScanButton />
           <Tooltip title="Settings">

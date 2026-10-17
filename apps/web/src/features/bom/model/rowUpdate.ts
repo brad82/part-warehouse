@@ -1,5 +1,5 @@
 import { partUpdateSchema, type PartUpdate } from "@snowcat/shared";
-import type { CatalogRow } from "./buildRows";
+import type { BomRow } from "./buildRows";
 
 /** Fields the grid lets you edit inline. */
 export const EDITABLE_FIELDS = ["onHand", "status"] as const;
@@ -8,7 +8,7 @@ export const EDITABLE_FIELDS = ["onHand", "status"] as const;
  * The validated PATCH body for an inline edit, or null when nothing editable
  * changed. Throws a readable error if the new value is invalid.
  */
-export function rowUpdate(next: CatalogRow, prev: CatalogRow): PartUpdate | null {
+export function rowUpdate(next: BomRow, prev: BomRow): PartUpdate | null {
   const changed = EDITABLE_FIELDS.filter((f) => next[f] !== prev[f]);
   if (changed.length === 0) return null;
 

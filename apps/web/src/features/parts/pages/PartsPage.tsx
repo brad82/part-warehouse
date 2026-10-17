@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { ChevronLeft, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
-import { NewPartButton } from "../components/NewPart/NewPartButton";
 import { PartView } from "../components/PartView/PartView";
 import { PartsTree } from "../components/Sidebar/PartsTree";
 import { SearchField } from "../components/Sidebar/SearchField";
@@ -77,7 +76,6 @@ function SidebarContents({ onHide }: { onHide?: () => void }) {
         <Box sx={pageStyles.searchField}>
           <SearchField />
         </Box>
-        <NewPartButton />
         {onHide ? (
           <Tooltip title="Hide sidebar">
             <IconButton aria-label="Hide sidebar" onClick={onHide}>
@@ -110,7 +108,7 @@ function PhonePartsPage() {
         <Button
           variant="text"
           component={RouterLink}
-          to="/"
+          to="/viewer"
           startIcon={<ChevronLeft size={18} />}
         >
           Parts

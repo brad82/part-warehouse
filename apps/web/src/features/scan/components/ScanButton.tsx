@@ -24,7 +24,7 @@ export function ScanButton() {
         lookup={async (code) => (await getPart(code)).isSuccess}
         onFound={(code) => {
           setOpen(false);
-          navigate(`/parts/${code}`);
+          navigate(`/viewer/${code}`);
         }}
       />
     </>

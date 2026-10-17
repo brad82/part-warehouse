@@ -13,10 +13,22 @@ import {
   Typography,
   type TextFieldProps,
 } from "@mui/material";
-import { useNewPartContext, useSelectedPart } from "../../PartsProvider";
+import type { Grouping, PartCreate, PartType } from "@snowcat/shared";
 import { useNewPart, type NewPartValues } from "../../model/useNewPart";
 
-type Props = { open: boolean; onClose: () => void };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  groupings: Grouping[];
+  partTypes: PartType[];
+  defaultGroupId: string | undefined;
+  nextPartNumber: (groupId: string) => Promise<string | null>;
+  /** Resolves to the new part's code. */
+  onCreate: (input: PartCreate) => Promise<string>;
+  creating: boolean;
+  createError: string | null;
+  onCreated: (code: string) => void;
+};
 
 const dialogStyles = {
   code: {
@@ -30,19 +42,25 @@ const dialogStyles = {
 };
 
 /** Adds a part (printed or purchased) to an existing parts group. */
-export function NewPartDialog({ open, onClose }: Props) {
-  const ctx = useNewPartContext();
-  const { part: selected } = useSelectedPart();
+export function NewPartDialog({
+  open,
+  onClose,
+  groupings,
+  partTypes,
+  defaultGroupId,
+  nextPartNumber,
+  onCreate,
+  creating,
+  createError,
+  onCreated,
+}: Props) {
   const form = useNewPart({
-    groupings: ctx.groupings,
-    partTypes: ctx.partTypes,
-    defaultGroupId: selected?.groupId,
-    nextPartNumber: ctx.nextPartNumber,
-    onCreate: ctx.onCreate,
-    onCreated: (code) => {
-      onClose();
-      ctx.onSelect(code);
-    },
+    groupings,
+    partTypes,
+    defaultGroupId,
+    nextPartNumber,
+    onCreate,
+    onCreated,
   });
 
   const field = (
@@ -91,9 +109,9 @@ export function NewPartDialog({ open, onClose }: Props) {
         }}
       >
         <DialogContent>
-          {ctx.createError ? (
+          {createError ? (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {ctx.createError}
+              {createError}
             </Alert>
           ) : null}
           <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
@@ -119,7 +137,7 @@ export function NewPartDialog({ open, onClose }: Props) {
             <Grid size={{ xs: 6, sm: 3 }}>
               {field("partTypeId", "Type", {
                 select: true,
-                children: ctx.partTypes.map((t) => (
+                children: partTypes.map((t) => (
                   <MenuItem key={t.id} value={t.id}>
                     {t.name}
                   </MenuItem>
@@ -143,7 +161,7 @@ export function NewPartDialog({ open, onClose }: Props) {
           <Button variant="text" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" loading={ctx.creating}>
+          <Button type="submit" loading={creating}>
             Create
           </Button>
         </DialogActions>

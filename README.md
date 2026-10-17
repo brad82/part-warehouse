@@ -15,6 +15,10 @@ npm test && npm run typecheck && npm run lint
   `packages/shared` (zod schemas, used everywhere).
 - CLI: `npm run cli -- --help`. Other CSV or db:
   `npm run cli -- import --csv <path> --db <path>`.
+- Label sheets: `npm run cli -- labels [codes…] --query <text> --start <1-30>`
+  writes `labels.pdf` (Avery 5160). Label layouts are data in
+  `packages/shared/src/labels` (rendered to SVG), shared with the web app's
+  print dialog, so edit them there once.
 - One `import` command takes any parts CSV (e.g. `Parts Index.csv`,
   `Purchased Parts (proposed).csv`). Required columns: Code, Module, Module
   name, Sub-assembly, Sub-assembly name, Group, Group name, Part, Revision,

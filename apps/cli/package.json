@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@snowcat/db": "file:../../packages/db",
-    "@snowcat/shared": "file:../../packages/shared"
+    "@snowcat/shared": "file:../../packages/shared",
+    "pdfkit": "^0.17.2",
+    "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.15.17",
+    "@types/pdfkit": "^0.17.6",
     "tsx": "^4.19.4",
     "vitest": "^3.1.3"
   }

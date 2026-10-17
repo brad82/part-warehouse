@@ -1,3 +1,5 @@
+import { SMALL_LABEL } from "@snowcat/shared";
+
 /**
  * Label stock. Sizes are millimetres of the printed page. Adding a roll or
  * the small printer's real size is one entry here.
@@ -23,9 +25,9 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
   {
     id: "small",
     label: "Small label",
-    description: "QR + name + code · 25×25mm placeholder (printer TBD)",
-    widthMm: 25,
-    heightMm: 25,
+    description: "QR + code + name · 1×2⅝in mailer label (Avery 5160) · 66.7×25.4mm",
+    widthMm: SMALL_LABEL.widthMm,
+    heightMm: SMALL_LABEL.heightMm,
     supportsRender: false,
   },
 ];

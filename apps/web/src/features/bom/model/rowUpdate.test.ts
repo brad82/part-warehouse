@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { CatalogRow } from "./buildRows";
+import type { BomRow } from "./buildRows";
 import { rowUpdate } from "./rowUpdate";
 
 const row = {
@@ -7,7 +7,7 @@ const row = {
   onHand: 2,
   status: "planned",
   name: "Grouser",
-} as CatalogRow;
+} as BomRow;
 
 describe("rowUpdate", () => {
   it("returns only the changed editable fields", () => {

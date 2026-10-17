@@ -51,11 +51,11 @@ export function PartHeader() {
     <Box sx={headerStyles.root}>
       <Box sx={headerStyles.titles}>
         <Breadcrumbs sx={{ fontSize: "0.85rem" }}>
-          <Tooltip title="Parts Catalog">
+          <Tooltip title="Bill of Materials">
             <Link
               component={RouterLink}
-              to="/catalog"
-              aria-label="Parts Catalog"
+              to="/bom"
+              aria-label="Bill of Materials"
               sx={headerStyles.crumb}
             >
               <Table2 size={16} />
@@ -65,7 +65,7 @@ export function PartHeader() {
             <Link
               key={g.id}
               component={RouterLink}
-              to={`/catalog?group=${encodeURIComponent(g.id)}`}
+              to={`/bom?group=${encodeURIComponent(g.id)}`}
               variant="body2"
               underline="hover"
               sx={headerStyles.crumb}

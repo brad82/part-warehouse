@@ -79,10 +79,6 @@ function renderPage(overrides: Partial<Parameters<typeof PartsProvider>[0]> = {}
     saving: false,
     saveError: null,
     onSave: vi.fn(async () => {}),
-    onCreate: vi.fn(async () => "A01-001-003"),
-    creating: false,
-    createError: null,
-    nextPartNumber: vi.fn(async () => "03"),
     ...overrides,
   };
   render(
@@ -167,26 +163,4 @@ describe("PartsPage", () => {
     expect(props.onSelect).toHaveBeenCalledWith("A01-001-002");
   });
 
-  it("creates a part in the selected part's group with the next number", async () => {
-    const user = userEvent.setup();
-    const props = renderPage();
-
-    await user.click(screen.getByRole("button", { name: "New part" }));
-    const dialog = await screen.findByRole("dialog");
-    expect(await within(dialog).findByText("A01-001-003")).toBeInTheDocument();
-    expect(props.nextPartNumber).toHaveBeenCalledWith("A01-001");
-
-    await user.type(within(dialog).getByLabelText("Part name"), "M3x8 bolt");
-    await user.click(within(dialog).getByRole("button", { name: "Create" }));
-
-    expect(props.onCreate).toHaveBeenCalledWith({
-      groupId: "A01-001",
-      part: "03",
-      revision: 0,
-      name: "M3x8 bolt",
-      partTypeId: "printed",
-      qtyPerBuild: 1,
-    });
-    expect(props.onSelect).toHaveBeenCalledWith("A01-001-003");
-  });
 });

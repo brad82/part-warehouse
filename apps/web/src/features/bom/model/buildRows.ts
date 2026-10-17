@@ -1,7 +1,7 @@
 import type { Grouping, Part, PartType } from "@snowcat/shared";
 import { ancestorIds, partTotals } from "@features/parts";
 
-export type CatalogRow = Part & {
+export type BomRow = Part & {
   partType: string;
   subassembly: string;
   group: string;
@@ -17,7 +17,7 @@ export function buildRows(
   groupings: Grouping[],
   parts: Part[],
   partTypes: PartType[] = [],
-): CatalogRow[] {
+): BomRow[] {
   const byId = new Map(groupings.map((g) => [g.id, g]));
   const typeNames = new Map(partTypes.map((t) => [t.id, t.name]));
   const label = (g: Grouping | undefined) => (g ? `${g.id} ${g.name}` : "");
@@ -40,6 +40,6 @@ export function buildRows(
 }
 
 /** Rows whose part sits anywhere under the given grouping. */
-export function rowsInGrouping(rows: CatalogRow[], groupingId: string): CatalogRow[] {
+export function rowsInGrouping(rows: BomRow[], groupingId: string): BomRow[] {
   return rows.filter((row) => row.groupPath.includes(groupingId));
 }

@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage } from "@shared/api/errors";
 import {
-  useCreatePartMutation,
   useGetPartQuery,
-  useLazyNextPartNumberQuery,
   useListAttributeDefsQuery,
   useListGroupingsQuery,
   useListPartTypesQuery,
@@ -32,8 +30,6 @@ export function PartsContainer() {
   const attributeDefs = useListAttributeDefsQuery();
   const previewColours = useListPreviewColoursQuery();
   const [updatePart, updateState] = useUpdatePartMutation();
-  const [createPart, createState] = useCreatePartMutation();
-  const [fetchNextPart] = useLazyNextPartNumberQuery();
 
   const selectedError =
     selected.error && "status" in selected.error && selected.error.status === 404
@@ -54,16 +50,12 @@ export function PartsContainer() {
       selectedCode={code}
       selectedLoading={selected.isFetching && !selected.currentData}
       selectedError={selectedError}
-      onSelect={(next) => navigate(`/parts/${next}`)}
+      onSelect={(next) => navigate(`/viewer/${next}`)}
       saving={updateState.isLoading}
       saveError={errorMessage(updateState.error, "Couldn't save. Try again.")}
       onSave={async (update) => {
         if (code) await updatePart({ code, update }).unwrap();
       }}
-      onCreate={async (input) => (await createPart(input).unwrap()).code}
-      creating={createState.isLoading}
-      createError={errorMessage(createState.error, "Couldn't create the part.")}
-      nextPartNumber={async (groupId) => (await fetchNextPart(groupId).unwrap()).part}
     >
       <PartsPage />
     </PartsProvider>

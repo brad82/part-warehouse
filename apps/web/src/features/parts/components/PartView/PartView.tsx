@@ -30,8 +30,8 @@ export function PartView() {
       <Box sx={viewStyles.empty}>
         <Boxes size={40} />
         <Typography>Pick a part from the tree, search, or scan a label.</Typography>
-        <Link component={RouterLink} to="/catalog" variant="body2">
-          Or browse the full parts catalog
+        <Link component={RouterLink} to="/bom" variant="body2">
+          Or browse the full bill of materials
         </Link>
       </Box>
     );

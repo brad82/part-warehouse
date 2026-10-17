@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Alert, Box, Chip, Snackbar } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import {
   ATTR,
@@ -8,11 +9,12 @@ import {
   type PartUpdate,
 } from "@snowcat/shared";
 import { attributeLabel, formatMinutes } from "@features/parts";
-import type { CatalogRow } from "../model/buildRows";
+import type { BomRow } from "../model/buildRows";
 import { rowUpdate } from "../model/rowUpdate";
+import { stockCoverage } from "../model/stockCoverage";
 
 type Props = {
-  rows: CatalogRow[];
+  rows: BomRow[];
   /** Label of the grouping the rows are limited to, if any. */
   groupingFilter: string | null;
   onClearGroupingFilter: () => void;
@@ -52,7 +54,7 @@ function attributeFormatter(def: AttributeDef) {
 }
 
 /** One column per attribute definition, read from `row.attributes`. */
-function attributeColumns(defs: AttributeDef[]): GridColDef<CatalogRow>[] {
+function attributeColumns(defs: AttributeDef[]): GridColDef<BomRow>[] {
   return defs.map((def) => ({
     field: attributeField(def.key),
     headerName: def.dataType === "currency" ? def.label : attributeLabel(def),
@@ -63,7 +65,29 @@ function attributeColumns(defs: AttributeDef[]): GridColDef<CatalogRow>[] {
   }));
 }
 
-const leadingColumns: GridColDef<CatalogRow>[] = [
+/** On hand figure over a green bar filled to the share of one build in stock. */
+function StockBar({ onHand, row }: { onHand: number; row: BomRow }) {
+  const pct = Math.round(stockCoverage(onHand, row.qtyPerBuild) * 100);
+  return (
+    <Box
+      title={`${onHand} of ${row.qtyPerBuild} per build (${pct}%)`}
+      sx={(theme) => ({
+        // Cover the cell padding so the bar spans the full cell.
+        mx: "-10px",
+        px: "10px",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        background: `linear-gradient(90deg, ${alpha(theme.palette.success.light, 0.25)}, ${alpha(theme.palette.success.main, 0.6)}) 0 0 / ${pct}% 100% no-repeat`,
+      })}
+    >
+      {onHand}
+    </Box>
+  );
+}
+
+const leadingColumns: GridColDef<BomRow>[] = [
   {
     field: "code",
     headerName: "Code",
@@ -76,7 +100,7 @@ const leadingColumns: GridColDef<CatalogRow>[] = [
   { field: "partType", headerName: "Type", width: 100 },
 ];
 
-const trailingColumns: GridColDef<CatalogRow>[] = [
+const trailingColumns: GridColDef<BomRow>[] = [
   { field: "qtyPerBuild", headerName: "Qty/build", type: "number", width: 95 },
   {
     field: "onHand",
@@ -85,6 +109,7 @@ const trailingColumns: GridColDef<CatalogRow>[] = [
     width: 90,
     editable: true,
     cellClassName: "editable",
+    renderCell: ({ value, row }) => <StockBar onHand={value} row={row} />,
   },
   {
     field: "remaining",
@@ -161,10 +186,10 @@ const pageStyles = {
 };
 
 /**
- * Whole catalog as a sortable, filterable grid. Clicking a cell opens the
+ * Whole BOM as a sortable, filterable grid. Clicking a cell opens the
  * part; double-clicking On hand or Status edits it in place.
  */
-export function CatalogPage({
+export function BomPage({
   rows,
   groupingFilter,
   onClearGroupingFilter,
@@ -211,7 +236,7 @@ export function CatalogPage({
           onCellClick={({ row, colDef }) => {
             if (!colDef.editable) onSelect(row.code);
           }}
-          processRowUpdate={async (next: CatalogRow, prev: CatalogRow) => {
+          processRowUpdate={async (next: BomRow, prev: BomRow) => {
             const update = rowUpdate(next, prev);
             if (update) await onUpdate(next.code, update);
             return next;
