@@ -5,6 +5,7 @@ import {
   type AttributeDef,
   type AttributeValue,
   type Grouping,
+  type GroupingCreate,
   type GroupingUpdate,
   type Part,
   type PartCreate,
@@ -263,6 +264,40 @@ export function partsRepository(db: Database.Database) {
         .prepare<[string], GroupingRow>("SELECT * FROM groupings WHERE id = ?")
         .get(id);
       return row ? toGrouping(row) : null;
+    },
+
+    /** Adds a module, sub-assembly or group under the level above it. */
+    createGrouping(input: GroupingCreate): Grouping {
+      const getRow = db.prepare<[string], GroupingRow>("SELECT * FROM groupings WHERE id = ?");
+      if (getRow.get(input.id)) {
+        throw new DomainError(409, `${input.id} already exists`);
+      }
+      if (input.parentId !== null) {
+        const parent = getRow.get(input.parentId);
+        const expected = input.taxonomy === "group" ? "subassembly" : "module";
+        if (parent?.taxonomy !== expected) {
+          throw new DomainError(400, `Unknown ${expected} "${input.parentId}"`);
+        }
+      }
+      db.prepare(
+        `INSERT INTO groupings (id, taxonomy, name, revision, parent_id)
+         VALUES (@id, @taxonomy, @name, 0, @parentId)`,
+      ).run(input);
+      return toGrouping(getRow.get(input.id)!);
+    },
+
+    /** Deletes an empty grouping. False when it doesn't exist. */
+    deleteGrouping(id: string): boolean {
+      const { children, parts } = db
+        .prepare<[string, string], { children: number; parts: number }>(
+          `SELECT (SELECT COUNT(*) FROM groupings WHERE parent_id = ?) AS children,
+                  (SELECT COUNT(*) FROM parts WHERE group_id = ?) AS parts`,
+        )
+        .get(id, id)!;
+      if (children > 0 || parts > 0) {
+        throw new DomainError(409, `${id} isn't empty. Delete what's under it first.`);
+      }
+      return db.prepare("DELETE FROM groupings WHERE id = ?").run(id).changes > 0;
     },
 
     upsertGrouping(g: Grouping): void {

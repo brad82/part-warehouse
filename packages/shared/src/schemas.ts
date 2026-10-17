@@ -90,6 +90,31 @@ export const groupingUpdateSchema = groupingSchema
   .pick({ name: true, revision: true })
   .partial();
 
+/** Code shape per level: module A, sub-assembly A01, group A01-001. */
+export const GROUPING_ID_PATTERNS: Record<z.infer<typeof taxonomySchema>, RegExp> = {
+  module: /^[A-Z]$/,
+  subassembly: /^[A-Z]\d{2}$/,
+  group: /^[A-Z]\d{2}-\d{3}$/,
+};
+
+/** A new grouping. Its code must sit under its parent's code. */
+export const groupingCreateSchema = groupingSchema
+  .pick({ id: true, taxonomy: true, name: true, parentId: true })
+  .extend({ name: z.string().trim().min(1) })
+  .superRefine((g, ctx) => {
+    if (!GROUPING_ID_PATTERNS[g.taxonomy].test(g.id)) {
+      ctx.addIssue({ code: "custom", path: ["id"], message: `Invalid ${g.taxonomy} code` });
+    }
+    const underParent =
+      g.taxonomy === "module"
+        ? g.parentId === null
+        : !!g.parentId &&
+          g.id.startsWith(g.taxonomy === "group" ? `${g.parentId}-` : g.parentId);
+    if (!underParent) {
+      ctx.addIssue({ code: "custom", path: ["parentId"], message: "Code doesn't match its parent" });
+    }
+  });
+
 export const partSchema = z.object({
   code: partCodeSchema,
   groupId: z.string(),
@@ -152,6 +177,7 @@ export type PartStatus = z.infer<typeof partStatusSchema>;
 export type Taxonomy = z.infer<typeof taxonomySchema>;
 export type Grouping = z.infer<typeof groupingSchema>;
 export type GroupingUpdate = z.infer<typeof groupingUpdateSchema>;
+export type GroupingCreate = z.infer<typeof groupingCreateSchema>;
 export type Part = z.infer<typeof partSchema>;
 export type PartUpdate = z.infer<typeof partUpdateSchema>;
 export type PartCreate = z.infer<typeof partCreateSchema>;

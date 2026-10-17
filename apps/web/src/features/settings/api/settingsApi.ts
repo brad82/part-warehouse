@@ -2,6 +2,9 @@ import type {
   AttributeDef,
   AttributeDefCreate,
   AttributeDefUpdate,
+  Grouping,
+  GroupingCreate,
+  GroupingUpdate,
   PartType,
   PartTypeCreate,
   PartTypeUpdate,
@@ -51,6 +54,18 @@ export const settingsApi = baseApi.injectEndpoints({
       query: (id) => ({ url: `/preview-colours/${id}`, method: "DELETE" }),
       invalidatesTags: ["PreviewColour"],
     }),
+    createGrouping: build.mutation<Grouping, GroupingCreate>({
+      query: (body) => ({ url: "/groupings", method: "POST", body }),
+      invalidatesTags: ["Grouping"],
+    }),
+    updateGrouping: build.mutation<Grouping, { id: string; update: GroupingUpdate }>({
+      query: ({ id, update }) => ({ url: `/groupings/${id}`, method: "PATCH", body: update }),
+      invalidatesTags: ["Grouping"],
+    }),
+    deleteGrouping: build.mutation<void, string>({
+      query: (id) => ({ url: `/groupings/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Grouping"],
+    }),
   }),
 });
 
@@ -64,4 +79,7 @@ export const {
   useCreatePreviewColourMutation,
   useUpdatePreviewColourMutation,
   useDeletePreviewColourMutation,
+  useCreateGroupingMutation,
+  useUpdateGroupingMutation,
+  useDeleteGroupingMutation,
 } = settingsApi;
