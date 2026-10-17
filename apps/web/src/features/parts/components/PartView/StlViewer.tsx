@@ -30,7 +30,7 @@ type LoadState =
 
 const viewerStyles = {
   paper: {
-    height: { xs: 360, lg: "calc(100vh - 200px)" },
+    height: { xs: 300, sm: 360, lg: "calc(100dvh - 200px)" },
     minHeight: 360,
     position: "relative",
     overflow: "hidden",

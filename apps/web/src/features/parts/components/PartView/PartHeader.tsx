@@ -1,4 +1,11 @@
-import { Box, Breadcrumbs, Chip, Link, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  Chip,
+  Link,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Table2 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { ATTR, attrText } from "@snowcat/shared";
@@ -8,9 +15,20 @@ import { useSelectedPart } from "../../PartsProvider";
 import { OpenInSlicerButton } from "./OpenInSlicerButton";
 
 const headerStyles = {
-  root: { display: "flex", alignItems: "flex-start", gap: 2, mb: 3 },
+  root: {
+    display: "flex",
+    flexDirection: { xs: "column", sm: "row" },
+    alignItems: { xs: "stretch", sm: "flex-start" },
+    gap: 2,
+    mb: 3,
+  },
   titles: { flex: 1, minWidth: 0 },
-  actions: { display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: 1 },
+  actions: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: { xs: "flex-start", sm: "flex-end" },
+    gap: 1,
+  },
   crumb: {
     display: "flex",
     alignItems: "center",
@@ -34,7 +52,12 @@ export function PartHeader() {
       <Box sx={headerStyles.titles}>
         <Breadcrumbs sx={{ fontSize: "0.85rem" }}>
           <Tooltip title="Parts Catalog">
-            <Link component={RouterLink} to="/catalog" aria-label="Parts Catalog" sx={headerStyles.crumb}>
+            <Link
+              component={RouterLink}
+              to="/catalog"
+              aria-label="Parts Catalog"
+              sx={headerStyles.crumb}
+            >
               <Table2 size={16} />
             </Link>
           </Tooltip>
@@ -51,7 +74,11 @@ export function PartHeader() {
             </Link>
           ))}
         </Breadcrumbs>
-        <Typography variant="h1" component="h2">
+        <Typography
+          variant="h1"
+          component="h2"
+          sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+        >
           {part.name}
         </Typography>
         <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
@@ -64,7 +91,9 @@ export function PartHeader() {
         </Box>
       </Box>
       <Box sx={headerStyles.actions}>
-        {attrText(part, ATTR.filePath) != null ? <OpenInSlicerButton code={part.code} /> : null}
+        {attrText(part, ATTR.filePath) != null ? (
+          <OpenInSlicerButton code={part.code} />
+        ) : null}
         <PrintLabelButton part={part} />
       </Box>
     </Box>

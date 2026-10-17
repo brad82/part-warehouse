@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import { Alert, Box, Chip, Snackbar } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { ATTR, isNumericAttribute, type AttributeDef, type PartUpdate } from "@snowcat/shared";
+import {
+  ATTR,
+  isNumericAttribute,
+  type AttributeDef,
+  type PartUpdate,
+} from "@snowcat/shared";
 import { attributeLabel, formatMinutes } from "@features/parts";
 import type { CatalogRow } from "../model/buildRows";
 import { rowUpdate } from "../model/rowUpdate";
@@ -20,16 +25,25 @@ type Props = {
 
 const mono = { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" };
 
-const formatGrams = (g: number | null) => (g == null ? "–" : `${Math.round(g)} g`);
-const cad = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" });
+const formatGrams = (g: number | null) =>
+  g == null ? "–" : `${Math.round(g)} g`;
+const cad = new Intl.NumberFormat("en-CA", {
+  style: "currency",
+  currency: "CAD",
+});
 
 /** Attribute columns shown until the user changes the column picker. */
-const VISIBLE_ATTRIBUTES: string[] = [ATTR.colour, ATTR.material, ATTR.printTimeMin];
+const VISIBLE_ATTRIBUTES: string[] = [
+  ATTR.colour,
+  ATTR.material,
+  ATTR.printTimeMin,
+];
 
 const attributeField = (key: string) => `attr:${key}`;
 
 function attributeFormatter(def: AttributeDef) {
-  if (def.key === ATTR.printTimeMin) return (v: number | null) => formatMinutes(v);
+  if (def.key === ATTR.printTimeMin)
+    return (v: number | null) => formatMinutes(v);
   if (def.key === ATTR.filamentG) return formatGrams;
   if (def.dataType === "currency") {
     return (v: number | null) => (v == null ? "" : cad.format(v));
@@ -72,7 +86,12 @@ const trailingColumns: GridColDef<CatalogRow>[] = [
     editable: true,
     cellClassName: "editable",
   },
-  { field: "remaining", headerName: "Still needed", type: "number", width: 105 },
+  {
+    field: "remaining",
+    headerName: "Still needed",
+    type: "number",
+    width: 105,
+  },
   {
     field: "totalPrintTimeMin",
     headerName: "Build time",
@@ -126,7 +145,14 @@ function hiddenByDefault(defs: AttributeDef[]) {
 }
 
 const pageStyles = {
-  root: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", p: 2, gap: 2 },
+  root: {
+    flex: 1,
+    minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
+    p: { xs: 1, sm: 2 },
+    gap: 2,
+  },
   grid: { flex: 1, minHeight: 0 },
   dataGrid: {
     "& .MuiDataGrid-row": { cursor: "pointer" },
@@ -150,7 +176,11 @@ export function CatalogPage({
 }: Props) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const columns = useMemo(
-    () => [...leadingColumns, ...attributeColumns(attributeDefs), ...trailingColumns],
+    () => [
+      ...leadingColumns,
+      ...attributeColumns(attributeDefs),
+      ...trailingColumns,
+    ],
     [attributeDefs],
   );
 

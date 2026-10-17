@@ -1,10 +1,21 @@
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { Box as BoxIcon, Palette } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const SECTIONS = [
   { to: "/settings", label: "Parts & attributes", icon: <BoxIcon size={18} /> },
-  { to: "/settings/stl-preview", label: "STL Preview", icon: <Palette size={18} /> },
+  {
+    to: "/settings/stl-preview",
+    label: "STL Preview",
+    icon: <Palette size={18} />,
+  },
 ];
 
 const layoutStyles = {
@@ -18,7 +29,12 @@ const layoutStyles = {
   nav: {
     display: { xs: "flex", md: "block" },
     gap: 1,
-    "& .MuiListItemButton-root": { borderRadius: 1, mb: { md: 0.5 } },
+    overflowX: { xs: "auto", md: "visible" },
+    "& .MuiListItemButton-root": {
+      borderRadius: 1,
+      mb: { md: 0.5 },
+      flexShrink: 0,
+    },
     "& .MuiListItemIcon-root": { minWidth: 32 },
   },
 };
@@ -27,11 +43,17 @@ const layoutStyles = {
 export function SettingsLayout() {
   return (
     <Box sx={layoutStyles.root}>
-      <Typography variant="h1" component="h2" sx={{ mb: 3 }}>
+      <Typography variant="h1" component="h2" sx={{ mb: { xs: 2, md: 3 } }}>
         Settings
       </Typography>
       <Box sx={layoutStyles.body}>
-        <List component="nav" dense disablePadding aria-label="Settings sections" sx={layoutStyles.nav}>
+        <List
+          component="nav"
+          dense
+          disablePadding
+          aria-label="Settings sections"
+          sx={layoutStyles.nav}
+        >
           {SECTIONS.map((s) => (
             <ListItemButton key={s.to} component={NavLink} to={s.to} end>
               <ListItemIcon>{s.icon}</ListItemIcon>
