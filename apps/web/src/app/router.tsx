@@ -3,6 +3,7 @@ import { BomContainer } from "@features/bom";
 import { DashboardContainer } from "@features/dashboard";
 import { PartsContainer } from "@features/parts";
 import {
+  BomStructureContainer,
   PreviewColoursContainer,
   SettingsContainer,
   SettingsLayout,
@@ -32,6 +33,7 @@ export function AppRoutes() {
       <Route path="/bom" element={<BomContainer />} />
       <Route path="/settings" element={<SettingsLayout />}>
         <Route index element={<SettingsContainer />} />
+        <Route path="bom" element={<BomStructureContainer />} />
         <Route path="stl-preview" element={<PreviewColoursContainer />} />
       </Route>
     </Routes>

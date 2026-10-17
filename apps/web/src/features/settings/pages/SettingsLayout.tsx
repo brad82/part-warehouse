@@ -6,11 +6,12 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Box as BoxIcon, Palette } from "lucide-react";
+import { Box as BoxIcon, Network, Palette } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const SECTIONS = [
   { to: "/settings", label: "Parts & attributes", icon: <BoxIcon size={18} /> },
+  { to: "/settings/bom", label: "BOM structure", icon: <Network size={18} /> },
   {
     to: "/settings/stl-preview",
     label: "STL Preview",
