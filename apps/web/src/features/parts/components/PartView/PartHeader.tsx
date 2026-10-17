@@ -1,18 +1,21 @@
+import { useState } from "react";
 import {
   Box,
   Breadcrumbs,
   Chip,
+  IconButton,
   Link,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Table2 } from "lucide-react";
+import { Pencil, Table2 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { ATTR, attrText } from "@snowcat/shared";
 import { PrintLabelButton } from "@features/labels";
 import { ancestorIds } from "../../model/buildTree";
-import { useSelectedPart } from "../../PartsProvider";
+import { useRenamePart, useSelectedPart } from "../../PartsProvider";
 import { OpenInSlicerButton } from "./OpenInSlicerButton";
+import { RenamePartDialog } from "./RenamePartDialog";
 
 const headerStyles = {
   root: {
@@ -36,10 +39,15 @@ const headerStyles = {
     "&:hover": { color: "primary.main" },
   },
   code: { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" },
+  title: { display: "flex", alignItems: "center", gap: 0.5 },
+  name: { fontSize: { xs: "1.5rem", sm: "2rem" }, minWidth: 0 },
+  rename: { color: "text.secondary", flexShrink: 0 },
 };
 
 export function PartHeader() {
   const { part, groupings } = useSelectedPart();
+  const { rename } = useRenamePart();
+  const [renaming, setRenaming] = useState(false);
   if (!part) return null;
 
   const byId = new Map(groupings.map((g) => [g.id, g]));
@@ -74,13 +82,21 @@ export function PartHeader() {
             </Link>
           ))}
         </Breadcrumbs>
-        <Typography
-          variant="h1"
-          component="h2"
-          sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
-        >
-          {part.name}
-        </Typography>
+        <Box sx={headerStyles.title}>
+          <Typography variant="h1" component="h2" sx={headerStyles.name}>
+            {part.name}
+          </Typography>
+          <Tooltip title="Rename">
+            <IconButton
+              size="small"
+              aria-label="Rename part"
+              sx={headerStyles.rename}
+              onClick={() => setRenaming(true)}
+            >
+              <Pencil size={18} />
+            </IconButton>
+          </Tooltip>
+        </Box>
         <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
           <Typography sx={headerStyles.code}>{part.code}</Typography>
           <Chip
@@ -96,6 +112,13 @@ export function PartHeader() {
         ) : null}
         <PrintLabelButton part={part} />
       </Box>
+      {renaming ? (
+        <RenamePartDialog
+          name={part.name}
+          onSave={rename}
+          onClose={() => setRenaming(false)}
+        />
+      ) : null}
     </Box>
   );
 }

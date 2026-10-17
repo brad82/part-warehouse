@@ -10,6 +10,7 @@ import type {
 import { defsForType } from "./model/attributeFields";
 import { buildTree } from "./model/buildTree";
 import { usePartDraft, type PartDraft } from "./model/usePartDraft";
+import { usePartStock, type PartStock } from "./model/usePartStock";
 import { useTreeExpansion } from "./model/useTreeExpansion";
 
 type Props = {
@@ -31,19 +32,25 @@ type Props = {
   saving: boolean;
   saveError: string | null;
   onSave: (update: PartUpdate) => Promise<void>;
+  /**
+   * Saves one change at once, outside the form (stock strip, rename).
+   * Throws a readable Error on failure.
+   */
+  onSaveNow: (update: PartUpdate) => Promise<void>;
 };
 
 type PartsContextValue = Omit<Props, "children"> & {
   tree: ReturnType<typeof buildTree>;
   expansion: ReturnType<typeof useTreeExpansion>;
   draft: PartDraft;
+  stock: PartStock;
 };
 
 const PartsContext = createContext<PartsContextValue | null>(null);
 
 /**
- * Composition root for the parts screen: builds the tree, owns expansion and
- * the edit draft, and exposes them via selector hooks. No Redux dependency;
+ * Composition root for the parts screen: builds the tree, owns expansion,
+ * the edit draft and the stock strip, and exposes them via selector hooks. No Redux dependency;
  * data and callbacks arrive as props from PartsContainer.
  */
 export function PartsProvider({ children, ...props }: Props) {
@@ -58,9 +65,10 @@ export function PartsProvider({ children, ...props }: Props) {
     props.selected,
   );
   const draft = usePartDraft(props.selected, props.attributeDefs, props.onSave);
+  const stock = usePartStock(props.selected, props.onSaveNow);
 
   return (
-    <PartsContext.Provider value={{ ...props, tree, expansion, draft }}>
+    <PartsContext.Provider value={{ ...props, tree, expansion, draft, stock }}>
       {children}
     </PartsContext.Provider>
   );
@@ -109,4 +117,13 @@ export function usePartForm() {
     [attributeDefs, partTypeId],
   );
   return { ...draft, part: selected, saving, saveError, partTypes, defs };
+}
+
+export function usePartStockStrip() {
+  return usePartsContext().stock;
+}
+
+export function useRenamePart() {
+  const { onSaveNow } = usePartsContext();
+  return { rename: (name: string) => onSaveNow({ name }) };
 }

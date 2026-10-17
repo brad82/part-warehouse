@@ -10,5 +10,6 @@ export {
   useUpdatePartMutation,
 } from "./api/partsApi";
 export { formatMinutes, partTotals } from "./model/totals";
+export { stockCoverage } from "./model/stockCoverage";
 export { attributeLabel } from "./model/attributeFields";
 export { ancestorIds } from "./model/buildTree";

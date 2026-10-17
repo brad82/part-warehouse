@@ -1,23 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   parseAttributeValue,
   partUpdateSchema,
   type AttributeDef,
   type AttributeValue,
   type Part,
-  type PartStatus,
   type PartUpdate,
 } from "@snowcat/shared";
 
-/** Form values as typed: numbers stay strings until submit. */
+/**
+ * Form values as typed: numbers stay strings until submit. Name and stock
+ * (on hand, status) aren't here: the header's rename and the stock strip
+ * save them straight away, so a form Save never sends a stale copy.
+ */
 export type PartDraftValues = {
-  name: string;
   revision: string;
   partTypeId: string;
   qtyPerBuild: string;
   notes: string;
-  onHand: string;
-  status: PartStatus;
   /** By attribute key; "" is unset. */
   attributes: Record<string, string>;
 };
@@ -30,13 +30,10 @@ export const attrErrorKey = (key: string) => `attributes.${key}`;
 function toValues(part: Part): PartDraftValues {
   const str = (v: number | string | null) => (v == null ? "" : String(v));
   return {
-    name: part.name,
     revision: str(part.revision),
     partTypeId: part.partTypeId,
     qtyPerBuild: str(part.qtyPerBuild),
     notes: str(part.notes),
-    onHand: str(part.onHand),
-    status: part.status,
     attributes: Object.fromEntries(
       Object.entries(part.attributes).map(([k, v]) => [k, String(v)]),
     ),
@@ -86,20 +83,45 @@ function parseAttributes(
 
 function toCoreUpdate(v: PartDraftValues) {
   return {
-    name: v.name.trim(),
     revision: num(v.revision),
     partTypeId: v.partTypeId,
     qtyPerBuild: num(v.qtyPerBuild),
     notes: optStr(v.notes),
-    onHand: num(v.onHand),
-    status: v.status,
+  };
+}
+
+const CORE_FIELDS: CoreField[] = ["revision", "partTypeId", "qtyPerBuild", "notes"];
+
+/**
+ * A newer saved part with the user's unsaved edits kept on top: each field
+ * still showing the old saved value takes the new one.
+ */
+function rebase(
+  values: PartDraftValues,
+  prev: PartDraftValues,
+  next: PartDraftValues,
+): PartDraftValues {
+  const pick = (mine: string, old: string, theirs: string) =>
+    mine === old ? theirs : mine;
+  const keys = new Set([...Object.keys(values.attributes), ...Object.keys(next.attributes)]);
+  return {
+    ...(Object.fromEntries(
+      CORE_FIELDS.map((k) => [k, pick(values[k], prev[k], next[k])]),
+    ) as Omit<PartDraftValues, "attributes">),
+    attributes: Object.fromEntries(
+      [...keys].map((k) => [
+        k,
+        pick(values.attributes[k] ?? "", prev.attributes[k] ?? "", next.attributes[k] ?? ""),
+      ]),
+    ),
   };
 }
 
 /**
  * Owns the edit form for one part: field values, dirty flag, per-field
- * errors and a validated submit. Resets whenever a different part (or a
- * newer save of the same part) arrives. Knows nothing about RTK Query or
+ * errors and a validated submit. Resets when a different part arrives or
+ * after its own save; a newer save from elsewhere (rename, stock strip) is
+ * merged under any unsaved edits instead. Knows nothing about RTK Query or
  * layout; `onSave` is injected.
  */
 export function usePartDraft(
@@ -111,13 +133,22 @@ export function usePartDraft(
     part ? toValues(part) : null,
   );
   const [showErrors, setShowErrors] = useState(false);
+  const original = useMemo(() => (part ? toValues(part) : null), [part]);
+  const previous = useRef({ code: part?.code, original });
+  const justSaved = useRef(false);
 
   useEffect(() => {
-    setValues(part ? toValues(part) : null);
-    setShowErrors(false);
+    const prev = previous.current;
+    previous.current = { code: part?.code, original };
+    const prevOriginal = prev.original;
+    if (!original || !prevOriginal || prev.code !== part?.code || justSaved.current) {
+      justSaved.current = false;
+      setValues(original);
+      setShowErrors(false);
+      return;
+    }
+    setValues((current) => (current ? rebase(current, prevOriginal, original) : original));
   }, [part?.code, part?.updatedAt]);
-
-  const original = useMemo(() => (part ? toValues(part) : null), [part]);
 
   const parsed = useMemo(() => {
     if (!values || !original) return null;
@@ -139,9 +170,8 @@ export function usePartDraft(
   const dirty = useMemo(() => {
     if (!original || !values) return false;
     return (
-      (Object.keys(values) as (keyof PartDraftValues)[]).some(
-        (k) => k !== "attributes" && values[k] !== original[k],
-      ) || changedAttributes(values, original).length > 0
+      CORE_FIELDS.some((k) => values[k] !== original[k]) ||
+      changedAttributes(values, original).length > 0
     );
   }, [original, values]);
 
@@ -163,9 +193,12 @@ export function usePartDraft(
       setShowErrors(true);
       return;
     }
+    // The refetched part then replaces the draft outright.
+    justSaved.current = true;
     try {
       await onSave(parsed.update);
     } catch {
+      justSaved.current = false;
       // The container surfaces the mutation error as `saveError`.
     }
   }
