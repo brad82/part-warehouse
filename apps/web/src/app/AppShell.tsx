@@ -6,9 +6,10 @@ import {
   Toolbar,
   Tooltip,
 } from "@mui/material";
+import { alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 import { Boxes, LayoutDashboard, Moon, Settings, Sun, Table2 } from "lucide-react";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { NewPartButton } from "@features/parts";
 import { ScanButton } from "@features/scan";
 import type { ThemeMode } from "@shared/hooks/useThemeMode";
@@ -32,6 +33,14 @@ const shellStyles = {
   },
   navList: { display: "flex", gap: { xs: 0.5, sm: 1 } },
   spacer: { flexGrow: 1 },
+  divider: {
+    width: "1px",
+    height: 24,
+    mx: { xs: 0.25, sm: 0.5 },
+    flexShrink: 0,
+    // White on the light-mode bar, dark on the dark-mode one.
+    bgcolor: (t: Theme) => alpha(t.palette.primary.contrastText, 0.35),
+  },
   main: { flex: 1, minHeight: 0, display: "flex" },
   nav: {
     textTransform: "none",
@@ -84,6 +93,7 @@ function NavButton({ to, label, icon, isActive }: NavItem) {
     <Button
       component={RouterLink}
       to={to}
+      variant="text"
       color="inherit"
       aria-label={label}
       startIcon={icon}
@@ -98,24 +108,28 @@ function NavButton({ to, label, icon, isActive }: NavItem) {
 }
 
 export function AppShell({ mode, onToggleMode }: Props) {
-  const navigate = useNavigate();
+  const inSettings = useLocation().pathname.startsWith("/settings");
   return (
     <Box sx={shellStyles.root}>
       <AppBar position="static" elevation={0} sx={shellStyles.bar}>
         <Toolbar variant="dense" sx={shellStyles.toolbar}>
-          <NewPartButton />
           <Box component="nav" sx={shellStyles.navList}>
             {NAV_ITEMS.map((item) => (
               <NavButton key={item.to} {...item} />
             ))}
           </Box>
           <Box sx={shellStyles.spacer} />
+          <NewPartButton />
           <ScanButton />
+          <Box aria-hidden sx={shellStyles.divider} />
           <Tooltip title="Settings">
             <IconButton
+              component={RouterLink}
+              to="/settings"
               color="inherit"
               aria-label="Settings"
-              onClick={() => navigate("/settings")}
+              aria-current={inSettings ? "page" : undefined}
+              sx={[inSettings && shellStyles.navActive]}
             >
               <Settings size={20} />
             </IconButton>

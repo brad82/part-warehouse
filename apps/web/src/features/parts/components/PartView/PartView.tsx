@@ -6,6 +6,7 @@ import { useSelectedPart } from "../../PartsProvider";
 import { PartFields } from "./PartFields";
 import { PartHeader } from "./PartHeader";
 import { StlViewer } from "./StlViewer";
+import { StockStrip } from "./StockStrip";
 
 const viewStyles = {
   root: { p: { xs: 2, md: 3 } },
@@ -52,6 +53,7 @@ export function PartView() {
   return (
     <Box sx={viewStyles.root}>
       <PartHeader />
+      <StockStrip />
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, lg: 6 }}>
           <PartFields />

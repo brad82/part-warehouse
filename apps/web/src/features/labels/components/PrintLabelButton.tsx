@@ -9,7 +9,7 @@ export function PrintLabelButton({ part }: { part: Part }) {
   return (
     <>
       <Button variant="outlined" startIcon={<Printer size={16} />} onClick={() => setOpen(true)}>
-        Label
+        Print label
       </Button>
       {open ? <LabelDialog part={part} open={open} onClose={() => setOpen(false)} /> : null}
     </>

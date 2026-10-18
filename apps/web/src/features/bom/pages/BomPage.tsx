@@ -8,10 +8,9 @@ import {
   type AttributeDef,
   type PartUpdate,
 } from "@snowcat/shared";
-import { attributeLabel, formatMinutes } from "@features/parts";
+import { attributeLabel, formatMinutes, stockCoverage } from "@features/parts";
 import type { BomRow } from "../model/buildRows";
 import { rowUpdate } from "../model/rowUpdate";
-import { stockCoverage } from "../model/stockCoverage";
 
 type Props = {
   rows: BomRow[];

@@ -27,6 +27,10 @@ export function makeTheme(mode: PaletteMode) {
     components: {
       MuiButton: {
         defaultProps: { variant: "contained" },
+        // Sentence case everywhere, one weight.
+        styleOverrides: {
+          root: { textTransform: "none", fontWeight: 600 },
+        },
       },
       MuiCard: {
         styleOverrides: {

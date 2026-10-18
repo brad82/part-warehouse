@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Plus } from "lucide-react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { errorMessage } from "@shared/api/errors";
@@ -13,6 +13,25 @@ import {
 import { NewPartDialog } from "./NewPartDialog";
 
 const EMPTY: never[] = [];
+
+const newPartStyles = {
+  button: {
+    height: 36,
+    borderRadius: "8px",
+    fontWeight: 600,
+    textTransform: "none",
+    whiteSpace: "nowrap",
+    bgcolor: "background.paper",
+    color: "primary.main",
+    boxShadow: "none",
+    "&:hover": { bgcolor: "background.paper", opacity: 0.9, boxShadow: "none" },
+    // Icon only on phones.
+    minWidth: { xs: 40, sm: 64 },
+    px: { xs: 1, sm: 2 },
+    "& .MuiButton-startIcon": { mr: { xs: 0, sm: 1 }, ml: { xs: 0, sm: -0.5 } },
+  },
+  label: { display: { xs: "none", sm: "inline" } },
+};
 
 /**
  * App-bar entry point. Owns the dialog's open state and its RTK Query calls.
@@ -30,11 +49,18 @@ export function NewPartButton() {
 
   return (
     <>
-      <Tooltip title="New part">
-        <IconButton color="inherit" aria-label="New part" onClick={() => setOpen(true)}>
-          <Plus size={20} />
-        </IconButton>
-      </Tooltip>
+      <Button
+        variant="contained"
+        disableElevation
+        aria-label="New part"
+        startIcon={<Plus size={18} />}
+        onClick={() => setOpen(true)}
+        sx={newPartStyles.button}
+      >
+        <Box component="span" sx={newPartStyles.label}>
+          New part
+        </Box>
+      </Button>
       {open ? (
         <NewPartDialog
           open={open}

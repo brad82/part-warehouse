@@ -30,6 +30,8 @@ export function PartsContainer() {
   const attributeDefs = useListAttributeDefsQuery();
   const previewColours = useListPreviewColoursQuery();
   const [updatePart, updateState] = useUpdatePartMutation();
+  // Its own instance, so a stock or rename error isn't shown as a form error.
+  const [updateNow] = useUpdatePartMutation();
 
   const selectedError =
     selected.error && "status" in selected.error && selected.error.status === 404
@@ -55,6 +57,17 @@ export function PartsContainer() {
       saveError={errorMessage(updateState.error, "Couldn't save. Try again.")}
       onSave={async (update) => {
         if (code) await updatePart({ code, update }).unwrap();
+      }}
+      onSaveNow={async (update) => {
+        if (!code) return;
+        try {
+          await updateNow({ code, update }).unwrap();
+        } catch (e) {
+          throw new Error(
+            errorMessage(e as Parameters<typeof errorMessage>[0], "Couldn't save. Try again.") ??
+              "Couldn't save. Try again.",
+          );
+        }
       }}
     >
       <PartsPage />
