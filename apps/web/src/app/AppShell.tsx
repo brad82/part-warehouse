@@ -9,7 +9,7 @@ import {
 import { alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 import { Boxes, LayoutDashboard, Moon, Settings, Sun, Table2 } from "lucide-react";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { NewPartButton } from "@features/parts";
 import { ScanButton } from "@features/scan";
 import type { ThemeMode } from "@shared/hooks/useThemeMode";
@@ -93,6 +93,7 @@ function NavButton({ to, label, icon, isActive }: NavItem) {
     <Button
       component={RouterLink}
       to={to}
+      variant="text"
       color="inherit"
       aria-label={label}
       startIcon={icon}
@@ -107,7 +108,7 @@ function NavButton({ to, label, icon, isActive }: NavItem) {
 }
 
 export function AppShell({ mode, onToggleMode }: Props) {
-  const navigate = useNavigate();
+  const inSettings = useLocation().pathname.startsWith("/settings");
   return (
     <Box sx={shellStyles.root}>
       <AppBar position="static" elevation={0} sx={shellStyles.bar}>
@@ -123,9 +124,12 @@ export function AppShell({ mode, onToggleMode }: Props) {
           <Box aria-hidden sx={shellStyles.divider} />
           <Tooltip title="Settings">
             <IconButton
+              component={RouterLink}
+              to="/settings"
               color="inherit"
               aria-label="Settings"
-              onClick={() => navigate("/settings")}
+              aria-current={inSettings ? "page" : undefined}
+              sx={[inSettings && shellStyles.navActive]}
             >
               <Settings size={20} />
             </IconButton>
