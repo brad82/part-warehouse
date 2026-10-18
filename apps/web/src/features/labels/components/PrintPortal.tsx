@@ -1,8 +1,7 @@
 import { createPortal } from "react-dom";
 import { Box } from "@mui/material";
-import type { Part } from "@snowcat/shared";
-import type { LabelTemplate } from "../model/templates";
-import { LabelFor } from "./LabelFor";
+import type { LabelTemplate, Part } from "@snowcat/shared";
+import { TemplateLabel } from "./Templates/TemplateLabel";
 
 type Props = {
   part: Part;
@@ -25,8 +24,11 @@ export function PrintPortal({ part, template, render, copies }: Props) {
     <>
       <style>{pageCss}</style>
       {Array.from({ length: copies }, (_, i) => (
-        <Box key={i} sx={{ breakAfter: "page", "&:last-of-type": { breakAfter: "auto" } }}>
-          <LabelFor part={part} template={template} render={render} />
+        <Box
+          key={i}
+          sx={{ breakAfter: "page", "&:last-of-type": { breakAfter: "auto" } }}
+        >
+          <TemplateLabel part={part} template={template} render={render} />
         </Box>
       ))}
     </>,

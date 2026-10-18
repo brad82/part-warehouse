@@ -1,20 +1,50 @@
 import { InspectorControls } from "@wordpress/block-editor";
+import { PanelBody, ToggleControl } from "@wordpress/components";
 import type { LabelImageElement } from "@snowcat/shared";
 import { Box } from "lucide-react";
 import { LABEL_BLOCK } from "../model/convert";
+import { MmControl } from "./controls/MmControl";
 import { PositionPanel } from "./controls/PositionPanel";
 import { ElementFrame } from "./ElementFrame";
 import { num, str } from "./utils/blockAttributes";
 import type { EditProps } from "./utils/editProps";
 import { registerLabelBlock } from "./utils/registerLabelBlock";
 
+/** Line width (mm) an outline starts at when switched on. */
+const DEFAULT_OUTLINE = 0.3;
+
 function PartRenderingEdit({
   attributes,
   setAttributes,
 }: EditProps<LabelImageElement>) {
+  const outline = attributes.outlineWidth ?? 0;
   return (
     <>
       <InspectorControls>
+        <PanelBody title="Outline">
+          <ToggleControl
+            __nextHasNoMarginBottom
+            label="Outline"
+            help="Draws a black frame just inside the box."
+            checked={outline > 0}
+            onChange={(on) =>
+              setAttributes({ outlineWidth: on ? DEFAULT_OUTLINE : 0 })
+            }
+          />
+          {outline > 0 ? (
+            <div className="label-inspector__gap">
+              <MmControl
+                label="Line width (mm)"
+                step={0.1}
+                min={0.1}
+                value={outline}
+                onChange={(n) =>
+                  setAttributes({ outlineWidth: Math.max(0.1, n) })
+                }
+              />
+            </div>
+          ) : null}
+        </PanelBody>
         <PositionPanel
           attributes={attributes}
           setAttributes={setAttributes}
@@ -46,6 +76,7 @@ export function registerPartRenderingBlock() {
       y: num(3),
       width: num(30),
       height: num(30),
+      outlineWidth: num(0),
     },
     edit: PartRenderingEdit as never,
   });

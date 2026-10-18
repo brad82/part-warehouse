@@ -120,3 +120,17 @@ SELECT * FROM (VALUES
 WHERE NOT EXISTS (SELECT 1 FROM seeded WHERE id = 2);
 
 INSERT OR IGNORE INTO seeded (id) VALUES (2);
+
+-- Label templates (Settings → Label templates; printing). `elements` is the
+-- template's JSON element list. Built-ins are inserted from the API's
+-- templates/ folder on start-up if missing; they can be edited, not deleted.
+CREATE TABLE IF NOT EXISTS label_templates (
+  id          TEXT PRIMARY KEY,
+  name        TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  description TEXT,
+  width_mm    REAL NOT NULL,
+  height_mm   REAL NOT NULL,
+  elements    TEXT NOT NULL,
+  builtin     INTEGER NOT NULL DEFAULT 0,
+  updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);

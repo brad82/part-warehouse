@@ -8,10 +8,7 @@ import {
 import { useDispatch, useSelect } from "@wordpress/data";
 import { renderLabelSvg } from "@snowcat/shared";
 import { Svg } from "@features/labels";
-import {
-  useLabelCreatorData,
-  useSamplePart,
-} from "../LabelCreatorDataProvider";
+import { useLabelEditorData, useSamplePart } from "../LabelEditorDataProvider";
 import { MmControl } from "../blocks/controls/MmControl";
 import { FIELD_NAMES_PART } from "../model/fields";
 import { store } from "../store";
@@ -49,7 +46,7 @@ function LabelSettings() {
 
 /** Which part the canvas shows, or its field names. */
 function PreviewData() {
-  const { parts } = useLabelCreatorData();
+  const { parts } = useLabelEditorData();
   const sample = useSelect((select) => select(store).getSample(), []);
   const { selectSamplePart, setShowFields } = useDispatch(store);
   const options = useMemo(

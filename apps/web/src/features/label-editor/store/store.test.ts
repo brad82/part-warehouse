@@ -1,21 +1,28 @@
 import type { Block } from "@wordpress/blocks";
-import { SMALL_LABEL } from "@snowcat/shared";
 import { elementsToBlocks } from "../model/convert";
-import { initialState, reducer, type Action, type State } from "./reducer";
-import { canUndo, getScale, getTemplate, isDirty } from "./selectors";
+import { SMALL_LABEL } from "../testing/smallLabel";
+import {
+  initialState,
+  metaOf,
+  reducer,
+  type Action,
+  type State,
+} from "./reducer";
+import {
+  canUndo,
+  getSavedVersion,
+  getScale,
+  getTemplate,
+  isDirty,
+} from "./selectors";
 
 const blocks = elementsToBlocks(SMALL_LABEL.elements) as unknown as Block[];
-const meta = {
-  id: "t1",
-  name: "Test",
-  widthMm: SMALL_LABEL.widthMm,
-  heightMm: SMALL_LABEL.heightMm,
-};
+const meta = metaOf(SMALL_LABEL);
 const run = (...actions: Action[]): State =>
   actions.reduce(reducer, initialState);
 const opened = () => run({ type: "OPEN", meta, blocks });
 
-describe("label creator store", () => {
+describe("label editor store", () => {
   it("opens a template as an un-undoable starting point", () => {
     const state = opened();
     expect(getTemplate(state).elements).toEqual(SMALL_LABEL.elements);
@@ -64,5 +71,29 @@ describe("label creator store", () => {
       partCode: "A01-001-002",
       render: null,
     });
+  });
+
+  it("gives a draft its stored identity once saved", () => {
+    const draft = run({
+      type: "OPEN",
+      meta: { ...meta, id: "", builtin: false },
+      blocks,
+    });
+    expect(getSavedVersion(draft)).toBeNull();
+    expect(isDirty(draft)).toBe(true);
+    const stored = {
+      ...getTemplate(draft),
+      id: "small-copy",
+      updatedAt: "2026-02-02T00:00:00.000Z",
+    };
+    const saved = reducer(draft, { type: "SAVED", template: stored });
+    expect(saved.meta.id).toBe("small-copy");
+    expect(isDirty(saved)).toBe(false);
+  });
+
+  it("resets to a blank, not-ready store", () => {
+    expect(reducer({ ...opened(), ready: true }, { type: "RESET" })).toEqual(
+      initialState,
+    );
   });
 });

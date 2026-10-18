@@ -1,5 +1,5 @@
 import type { Block } from "@wordpress/blocks";
-import type { CustomLabelTemplate } from "@features/labels";
+import type { LabelTemplate } from "@snowcat/shared";
 import {
   commit,
   historyOf,
@@ -9,17 +9,38 @@ import {
   type History,
 } from "../model/history";
 
-/** The template minus its elements, which live in `blocks`. */
-export type TemplateMeta = Omit<CustomLabelTemplate, "elements">;
+/** The template minus its elements, which live in `blocks`. Id "" = a draft. */
+export type TemplateMeta = Omit<LabelTemplate, "elements">;
+
+/** `template` without its elements. */
+export const metaOf = ({
+  id,
+  name,
+  description,
+  widthMm,
+  heightMm,
+  builtin,
+  updatedAt,
+}: LabelTemplate): TemplateMeta => ({
+  id,
+  name,
+  description,
+  widthMm,
+  heightMm,
+  builtin,
+  updatedAt,
+});
 
 export type PanelName = "layers" | "settings";
 
 export type State = {
+  /** False until `initialize` has the stored templates and opens one. */
+  ready: boolean;
   meta: TemplateMeta;
   /** Front to back; see blocksToElements. */
   blocks: History<Block[]>;
-  /** Templates saved in this browser. */
-  saved: CustomLabelTemplate[];
+  /** Stored templates, as the API last returned them. */
+  saved: LabelTemplate[];
   sample: {
     /** Part the canvas renders; null until parts load. */
     partCode: string | null;
@@ -44,7 +65,10 @@ export type Action =
   | { type: "INPUT_BLOCKS"; blocks: Block[] }
   | { type: "UNDO" }
   | { type: "REDO" }
-  | { type: "SET_SAVED"; saved: CustomLabelTemplate[] }
+  | { type: "RESET" }
+  | { type: "READY" }
+  | { type: "SET_SAVED"; saved: LabelTemplate[] }
+  | { type: "SAVED"; template: LabelTemplate }
   | { type: "SET_SAMPLE_PART"; partCode: string }
   | { type: "SET_SAMPLE_RENDER"; render: string | null }
   | { type: "SET_SHOW_FIELDS"; showFields: boolean }
@@ -54,7 +78,16 @@ export type Action =
   | { type: "SET_NOTICE"; notice: string };
 
 export const initialState: State = {
-  meta: { id: "", name: "", widthMm: 62, heightMm: 29 },
+  ready: false,
+  meta: {
+    id: "",
+    name: "",
+    description: null,
+    widthMm: 62,
+    heightMm: 29,
+    builtin: false,
+    updatedAt: "",
+  },
   blocks: historyOf([]),
   saved: [],
   sample: { partCode: null, render: null, showFields: false },
@@ -83,8 +116,19 @@ export function reducer(state: State = initialState, action: Action): State {
       return { ...state, blocks: undo(state.blocks) };
     case "REDO":
       return { ...state, blocks: redo(state.blocks) };
+    case "RESET":
+      return initialState;
+    case "READY":
+      return { ...state, ready: true };
     case "SET_SAVED":
       return { ...state, saved: action.saved };
+    case "SAVED": {
+      // The stored copy becomes the open template's identity (a draft gets
+      // its id) and joins the saved list before the API list refreshes.
+      const meta = metaOf(action.template);
+      const others = state.saved.filter((t) => t.id !== meta.id);
+      return { ...state, meta, saved: [...others, action.template] };
+    }
     case "SET_SAMPLE_PART":
       return {
         ...state,

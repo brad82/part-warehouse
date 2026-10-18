@@ -1,4 +1,5 @@
-import { SMALL_LABEL, renderLabelSvg } from "@snowcat/shared";
+import { renderLabelSvg } from "@snowcat/shared";
+import { SMALL_LABEL } from "../testing/smallLabel";
 import { FIELD_NAMES_PART } from "./fields";
 
 describe("FIELD_NAMES_PART", () => {

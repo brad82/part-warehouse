@@ -4,12 +4,12 @@ import { initialState, reducer } from "./reducer";
 import * as selectors from "./selectors";
 
 /**
- * The label creator's editor state, as a @wordpress/data store beside
+ * The label editor's editor state, as a @wordpress/data store beside
  * Gutenberg's own `core/block-editor` (which keeps selection). Components
  * read it with `useSelect(store)` and change it with `useDispatch(store)`.
  * Call `initialize()` on entering the editor: the store outlives the page.
  */
-export const store = createReduxStore("snowcat/label-creator", {
+export const store = createReduxStore("snowcat/label-editor", {
   reducer: (state = initialState, action) => reducer(state, action),
   actions,
   selectors,

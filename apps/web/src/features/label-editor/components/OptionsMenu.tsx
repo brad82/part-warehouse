@@ -2,18 +2,23 @@ import { DropdownMenu, MenuGroup, MenuItem } from "@wordpress/components";
 import { useDispatch, useSelect } from "@wordpress/data";
 import { download, moreVertical, trash, upload } from "@wordpress/icons";
 import { useConfirmDiscard } from "../model/useConfirmDiscard";
+import { useTemplatePersistence } from "../model/useTemplatePersistence";
 import { store } from "../store";
 
 /** The ⋮ menu: export, import, delete. */
 export function OptionsMenu() {
-  const { name, isSaved } = useSelect(
+  const { name, deletable } = useSelect(
     (select) => ({
       name: select(store).getMeta().name,
-      isSaved: select(store).getSavedVersion() !== null,
+      // Drafts aren't stored; built-ins ship with the app.
+      deletable:
+        select(store).getSavedVersion() !== null &&
+        !select(store).getMeta().builtin,
     }),
     [],
   );
-  const { exportTemplate, importTemplate, deleteTemplate } = useDispatch(store);
+  const { exportTemplate, importTemplate } = useDispatch(store);
+  const { remove } = useTemplatePersistence();
   const confirmDiscard = useConfirmDiscard();
 
   return (
@@ -41,7 +46,7 @@ export function OptionsMenu() {
                 Import JSON…
               </MenuItem>
             </MenuGroup>
-            {isSaved ? (
+            {deletable ? (
               <MenuGroup>
                 <MenuItem
                   icon={trash}
@@ -50,7 +55,7 @@ export function OptionsMenu() {
                     () =>
                       window.confirm(
                         `Delete "${name}"? This can't be undone.`,
-                      ) && deleteTemplate(),
+                      ) && remove(),
                   )}
                 >
                   Delete template

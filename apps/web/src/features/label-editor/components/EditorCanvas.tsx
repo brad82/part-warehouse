@@ -7,10 +7,7 @@ import {
   WritingFlow,
 } from "@wordpress/block-editor";
 import { useDispatch, useSelect } from "@wordpress/data";
-import {
-  useLabelCreatorData,
-  useSamplePart,
-} from "../LabelCreatorDataProvider";
+import { useLabelEditorData, useSamplePart } from "../LabelEditorDataProvider";
 import { CanvasContext, type CanvasEnv } from "../model/CanvasContext";
 import { FIELD_NAMES_PART } from "../model/fields";
 import { store } from "../store";
@@ -30,7 +27,7 @@ export function EditorCanvas() {
     }),
     [],
   );
-  const { fields } = useLabelCreatorData();
+  const { fields } = useLabelEditorData();
   const part = useSamplePart();
 
   useEffect(() => {

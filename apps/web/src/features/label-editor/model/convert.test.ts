@@ -1,4 +1,4 @@
-import { SMALL_LABEL } from "@snowcat/shared";
+import { SMALL_LABEL } from "../testing/smallLabel";
 import {
   blockToElement,
   blocksToElements,

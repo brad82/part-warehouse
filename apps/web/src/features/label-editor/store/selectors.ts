@@ -1,5 +1,5 @@
 import { createSelector } from "@wordpress/data";
-import type { CustomLabelTemplate } from "@features/labels";
+import type { LabelTemplate } from "@snowcat/shared";
 import { blocksToElements } from "../model/convert";
 import { sameData } from "../model/sameData";
 import { fitScale } from "../model/zoom";
@@ -11,7 +11,7 @@ export const getBlocks = (state: State) => state.blocks.present;
 
 /** The template being edited, as it would save and print. */
 export const getTemplate = createSelector(
-  (state: State): CustomLabelTemplate => ({
+  (state: State): LabelTemplate => ({
     ...state.meta,
     elements: blocksToElements(state.blocks.present),
   }),
@@ -20,9 +20,11 @@ export const getTemplate = createSelector(
 
 export const getSavedTemplates = (state: State) => state.saved;
 
-/** The stored copy of the open template; null until it is first saved. */
+export const isReady = (state: State) => state.ready;
+
+/** The stored copy of the open template; null for a draft. */
 export const getSavedVersion = (state: State) =>
-  state.saved.find((t) => t.id === state.meta.id) ?? null;
+  (state.meta.id && state.saved.find((t) => t.id === state.meta.id)) || null;
 
 /** Differs from its saved copy (or has never been saved). */
 export const isDirty = createSelector(

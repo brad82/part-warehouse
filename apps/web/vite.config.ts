@@ -14,27 +14,56 @@ const https = existsSync(`${certDir}cert.pem`)
     }
   : undefined;
 
+type ModuleInfo = {
+  isEntry: boolean;
+  importers: readonly string[];
+  dynamicImporters: readonly string[];
+};
+
+/**
+ * True when only Gutenberg (the lazy label editor) pulls `id` in, so it can
+ * ride in the editor's chunk instead of the eager vendor chunk.
+ */
+function editorOnly(
+  id: string,
+  getModuleInfo: (id: string) => ModuleInfo | null,
+  seen = new Set<string>(),
+): boolean {
+  if (id.includes("@wordpress/")) return true;
+  if (!id.includes("node_modules")) return false;
+  if (seen.has(id)) return true;
+  seen.add(id);
+  const info = getModuleInfo(id);
+  if (!info || info.isEntry) return false;
+  const importers = [...info.importers, ...info.dynamicImporters];
+  return (
+    importers.length > 0 &&
+    importers.every((i) => editorOnly(i, getModuleInfo, seen))
+  );
+}
+
 export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id, { getModuleInfo }) {
           if (!id.includes("node_modules")) return;
           // React gets its own chunk: every other chunk imports it, so it
           // must not depend on them (a cycle leaves React undefined at load).
           if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) {
             return "react";
           }
+          // Media-upload workers (WASM, ~13MB) are dynamic imports Gutenberg
+          // only makes on upload; left unassigned they stay separate chunks.
+          if (/@wordpress\/(vips|video-conversion)\//.test(id)) return;
+          if (editorOnly(id, getModuleInfo)) return "wordpress";
           if (id.includes("three") || id.includes("@react-three")) {
             return "three";
           }
           if (id.includes("@zxing") || id.includes("bwip-js")) {
             return "barcodes";
           }
-          if (
-            id.includes("@mui/") ||
-            id.includes("@emotion/")
-          ) {
+          if (id.includes("@mui/") || id.includes("@emotion/")) {
             return "mui";
           }
           // Shared helpers (use-sync-external-store, @babel/runtime, …) used by

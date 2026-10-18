@@ -1,18 +1,9 @@
 import { createBlock, type Block } from "@wordpress/blocks";
-import {
-  deleteCustomTemplate,
-  loadCustomTemplates,
-  renderStlToPng,
-  saveCustomTemplate,
-  type CustomLabelTemplate,
-} from "@features/labels";
+import type { LabelElement, LabelTemplate } from "@snowcat/shared";
+import { renderStlToPng } from "@features/labels";
 import { registerLabelBlocks } from "../blocks/registerLabelBlocks";
 import { elementsToBlocks } from "../model/convert";
-import {
-  copyOf,
-  startingTemplate,
-  type StartingPoint,
-} from "../model/startingTemplates";
+import { blankDraft, draftOf, duplicateDraft, toInput } from "../model/drafts";
 import {
   downloadTemplate,
   pickJsonFile,
@@ -38,7 +29,7 @@ type Thunk<R = void> = (args: {
 }) => R;
 
 /** Gutenberg blocks for a template's elements (block types must be registered). */
-const createLabelBlocks = (elements: CustomLabelTemplate["elements"]) =>
+const createLabelBlocks = (elements: LabelElement[]) =>
   elementsToBlocks(elements).map(({ name, attributes }) =>
     createBlock(name, attributes),
   );
@@ -73,6 +64,18 @@ export const togglePanel = (panel: PanelName): Action => ({
   panel,
 });
 export const zoomToFit = (): Action => ({ type: "SET_ZOOM", zoom: null });
+/** Back to a blank, not-ready store (entering the editor). */
+export const reset = (): Action => ({ type: "RESET" });
+/** The stored templates, from the API. */
+export const setSaved = (saved: LabelTemplate[]): Action => ({
+  type: "SET_SAVED",
+  saved,
+});
+/** The API stored the open template (`template` is its stored copy). */
+export const templateSaved = (template: LabelTemplate): Action => ({
+  type: "SAVED",
+  template,
+});
 export const setViewport = (width: number, height: number): Action => ({
   type: "SET_VIEWPORT",
   width,
@@ -92,22 +95,23 @@ export const showNotice =
   };
 
 export const openTemplate =
-  ({ elements, ...meta }: CustomLabelTemplate): Thunk =>
+  ({ elements, ...meta }: LabelTemplate): Thunk =>
   ({ dispatch }) => {
     dispatch({ type: "OPEN", meta, blocks: createLabelBlocks(elements) });
   };
 
-/** Fresh state for a visit: saved templates reloaded, a Small label copy open. */
+/**
+ * Starts a visit once the stored templates are known: opens the first
+ * (built-ins come first) or, with none, a blank draft.
+ */
 export const initialize =
-  (): Thunk =>
+  (saved: LabelTemplate[]): Thunk =>
   ({ dispatch }) => {
     registerLabelBlocks();
-    dispatch({ type: "SET_SAVED", saved: loadCustomTemplates() });
-    dispatch(openTemplate(startingTemplate("small")));
+    dispatch({ type: "SET_SAVED", saved });
+    dispatch(openTemplate(saved[0] ?? blankDraft()));
+    dispatch({ type: "READY" });
   };
-
-export const startFrom = (from: StartingPoint) =>
-  openTemplate(startingTemplate(from));
 
 export const openSaved =
   (id: string): Thunk =>
@@ -116,43 +120,27 @@ export const openSaved =
     if (template) dispatch(openTemplate(template));
   };
 
-export const save =
-  (): Thunk =>
-  ({ dispatch, select }) => {
-    const ok = saveCustomTemplate(select.getTemplate());
-    dispatch({ type: "SET_SAVED", saved: loadCustomTemplates() });
-    dispatch(
-      showNotice(
-        ok
-          ? "Saved in this browser"
-          : "Couldn't save: browser storage is unavailable",
-      ),
-    );
-  };
+export const startBlank = () => openTemplate(blankDraft());
 
-/** Deletes the open template from storage and keeps editing an unsaved copy. */
-export const deleteTemplate =
+/** Opens an unsaved copy of the open template. */
+export const duplicate =
   (): Thunk =>
-  ({ dispatch, select }) => {
-    const template = select.getTemplate();
-    deleteCustomTemplate(template.id);
-    dispatch({ type: "SET_SAVED", saved: loadCustomTemplates() });
-    dispatch(openTemplate(copyOf(template)));
-    dispatch(showNotice("Template deleted"));
-  };
+  ({ dispatch, select }) =>
+    dispatch(openTemplate(duplicateDraft(select.getTemplate())));
 
 export const exportTemplate =
   (): Thunk =>
   ({ select }) =>
-    downloadTemplate(select.getTemplate());
+    downloadTemplate(toInput(select.getTemplate()));
 
+/** Opens a template file as a draft; saving stores it. */
 export const importTemplate =
   (): Thunk<Promise<void>> =>
   async ({ dispatch }) => {
     const file = await pickJsonFile();
     if (!file) return;
     try {
-      dispatch(openTemplate(await readTemplateFile(file)));
+      dispatch(openTemplate(draftOf(await readTemplateFile(file))));
       dispatch(showNotice(`Imported ${file.name}. Save to keep it.`));
     } catch (e) {
       dispatch(showNotice((e as Error).message));

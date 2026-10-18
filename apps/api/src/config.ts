@@ -11,4 +11,8 @@ export const config = {
   modelFilesDir:
     process.env.MODEL_FILES_DIR ?? path.join(projectRoot, "Model Files"),
   slicerApp: process.env.SLICER_APP ?? "PrusaSlicer",
+  /** Built-in label templates: one `<id>.json` each. */
+  labelTemplatesDir:
+    process.env.LABEL_TEMPLATES_DIR ??
+    path.join(appRoot, "apps", "api", "templates"),
 };

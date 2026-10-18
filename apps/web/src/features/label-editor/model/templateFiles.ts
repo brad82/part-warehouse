@@ -1,7 +1,10 @@
-import { parseTemplateJson, type CustomLabelTemplate } from "@features/labels";
+import {
+  labelTemplateInputSchema,
+  type LabelTemplateInput,
+} from "@snowcat/shared";
 
-/** Downloads `template` as `<name>.json`. */
-export function downloadTemplate(template: CustomLabelTemplate) {
+/** Downloads `template` as `<name>.json` (an import-ready template). */
+export function downloadTemplate(template: LabelTemplateInput) {
   const blob = new Blob([JSON.stringify(template, null, 2)], {
     type: "application/json",
   });
@@ -27,10 +30,14 @@ export function pickJsonFile(): Promise<File | null> {
 /** Parses a template file; throws a readable Error when it isn't one. */
 export async function readTemplateFile(
   file: File,
-): Promise<CustomLabelTemplate> {
+): Promise<LabelTemplateInput> {
+  let json: unknown;
   try {
-    return parseTemplateJson(await file.text());
+    json = JSON.parse(await file.text());
   } catch {
-    throw new Error(`${file.name} isn't a label template`);
+    throw new Error(`${file.name} isn't JSON`);
   }
+  const parsed = labelTemplateInputSchema.safeParse(json);
+  if (!parsed.success) throw new Error(`${file.name} isn't a label template`);
+  return parsed.data;
 }

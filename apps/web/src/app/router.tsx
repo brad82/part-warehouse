@@ -1,6 +1,15 @@
-import { Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Suspense } from "react";
+import { LinearProgress } from "@mui/material";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { BomContainer } from "@features/bom";
 import { DashboardContainer } from "@features/dashboard";
+import { LabelEditorContainer } from "@features/label-editor";
 import { PartsContainer } from "@features/parts";
 import {
   BomStructureContainer,
@@ -31,6 +40,15 @@ export function AppRoutes() {
       <Route path="/dashboard" element={<Navigate to="/" replace />} />
       <Route path="/catalog" element={<LegacyCatalogRedirect />} />
       <Route path="/bom" element={<BomContainer />} />
+      {/* Full-screen editor, outside the padded settings layout. */}
+      <Route
+        path="/settings/label-templates"
+        element={
+          <Suspense fallback={<LinearProgress sx={{ flex: 1 }} />}>
+            <LabelEditorContainer />
+          </Suspense>
+        }
+      />
       <Route path="/settings" element={<SettingsLayout />}>
         <Route index element={<SettingsContainer />} />
         <Route path="bom" element={<BomStructureContainer />} />

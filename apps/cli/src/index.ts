@@ -13,8 +13,9 @@ Commands:
             --db <path>   SQLite file (default: ${config.dbPath})
 
   labels [codes…]
-            PDF of small labels on an Avery 5160 sheet (3×10, US Letter), one
-            per part: the codes given plus any parts matching --query.
+            PDF of labels on an Avery 5160 sheet (3×10, US Letter), one per
+            part: the codes given plus any parts matching --query.
+            --template <id> Label template (default: small); must fit a slot
             --query <text>  Same search as the app (code, name, group, …)
             --start <n>     First free slot, 1–30, left→right (default: 1)
             --out <path>    PDF file (default: labels.pdf)
@@ -26,6 +27,7 @@ const { positionals, values } = parseArgs({
     csv: { type: "string", default: config.partsIndexCsv },
     db: { type: "string", default: config.dbPath },
     query: { type: "string" },
+    template: { type: "string", default: "small" },
     start: { type: "string", default: "1" },
     out: { type: "string", default: "labels.pdf" },
     help: { type: "boolean", short: "h" },
@@ -40,6 +42,8 @@ if (values.help) {
 } else if (command === "labels") {
   await runLabels({
     dbPath: values.db,
+    templatesDir: config.labelTemplatesDir,
+    templateId: values.template,
     codes: args,
     query: values.query,
     start: Number(values.start),

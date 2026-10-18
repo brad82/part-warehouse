@@ -1,6 +1,7 @@
 import { Dropdown, MenuGroup, MenuItem } from "@wordpress/components";
 import { useDispatch, useSelect } from "@wordpress/data";
 import { check, chevronDown, Icon, upload } from "@wordpress/icons";
+import { isDraft } from "../model/drafts";
 import { useConfirmDiscard } from "../model/useConfirmDiscard";
 import { store } from "../store";
 
@@ -13,7 +14,8 @@ export function TemplateSwitcher() {
     }),
     [],
   );
-  const { openSaved, startFrom, importTemplate } = useDispatch(store);
+  const { openSaved, startBlank, duplicate, importTemplate } =
+    useDispatch(store);
   const confirmDiscard = useConfirmDiscard();
 
   return (
@@ -30,7 +32,14 @@ export function TemplateSwitcher() {
           <span className="label-editor__title-name">
             {meta.name || "Untitled"}
           </span>
-          <span className="label-editor__title-kind">· Label template</span>
+          <span className="label-editor__title-kind">
+            ·{" "}
+            {isDraft(meta)
+              ? "Unsaved draft"
+              : meta.builtin
+                ? "Built-in template"
+                : "Label template"}
+          </span>
           <Icon icon={chevronDown} size={16} />
         </button>
       )}
@@ -43,7 +52,7 @@ export function TemplateSwitcher() {
         return (
           <div className="label-editor__title-menu">
             {saved.length ? (
-              <MenuGroup label="Saved templates">
+              <MenuGroup label="Templates">
                 {saved.map((t) => {
                   const current = t.id === meta.id;
                   return (
@@ -56,17 +65,21 @@ export function TemplateSwitcher() {
                       }
                     >
                       {t.name}
+                      {t.builtin ? (
+                        <span className="label-editor__menu-note">
+                          {" "}
+                          · built-in
+                        </span>
+                      ) : null}
                     </MenuItem>
                   );
                 })}
               </MenuGroup>
             ) : null}
             <MenuGroup label="Start from">
-              <MenuItem onClick={leaveTo(() => startFrom("blank"))}>
-                Blank label
-              </MenuItem>
-              <MenuItem onClick={leaveTo(() => startFrom("small"))}>
-                Copy of Small label
+              <MenuItem onClick={leaveTo(startBlank)}>Blank label</MenuItem>
+              <MenuItem onClick={leaveTo(duplicate)}>
+                Duplicate “{meta.name}”
               </MenuItem>
               <MenuItem icon={upload} onClick={leaveTo(importTemplate)}>
                 Import JSON…

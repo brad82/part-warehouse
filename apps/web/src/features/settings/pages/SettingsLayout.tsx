@@ -6,7 +6,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Box as BoxIcon, Network, Palette } from "lucide-react";
+import { Box as BoxIcon, Network, Palette, Tag } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const SECTIONS = [
@@ -16,6 +16,11 @@ const SECTIONS = [
     to: "/settings/stl-preview",
     label: "STL Preview",
     icon: <Palette size={18} />,
+  },
+  {
+    to: "/settings/label-templates",
+    label: "Label templates",
+    icon: <Tag size={18} />,
   },
 ];
 

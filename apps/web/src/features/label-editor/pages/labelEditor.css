@@ -102,6 +102,10 @@
   color: var(--le-muted);
 }
 
+.label-editor__menu-note {
+  color: var(--le-muted);
+}
+
 .label-editor__title-menu {
   min-width: 260px;
 }

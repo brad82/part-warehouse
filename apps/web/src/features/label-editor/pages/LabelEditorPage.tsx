@@ -1,4 +1,4 @@
-import "./labelCreator.css";
+import "./labelEditor.css";
 import { useSelect } from "@wordpress/data";
 import { EditorCanvas } from "../components/EditorCanvas";
 import { EditorHeader } from "../components/EditorHeader";
@@ -12,7 +12,7 @@ import { store } from "../store";
  * Label template editor laid out like the WordPress block editor: top bar,
  * Layers left, Template/Block settings right, status bar below.
  */
-export function LabelCreatorPage() {
+export function LabelEditorPage() {
   const { layersOpen, settingsOpen } = useSelect(
     (select) => ({
       layersOpen: select(store).isPanelOpen("layers"),

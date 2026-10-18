@@ -7,8 +7,9 @@ import {
   redo,
   undo,
 } from "@wordpress/icons";
-import { useLabelCreatorData } from "../LabelCreatorDataProvider";
+import { useLabelEditorData } from "../LabelEditorDataProvider";
 import { useConfirmDiscard } from "../model/useConfirmDiscard";
+import { useTemplatePersistence } from "../model/useTemplatePersistence";
 import { store } from "../store";
 import { BlockInserter } from "./BlockInserter";
 import { OptionsMenu } from "./OptionsMenu";
@@ -27,7 +28,8 @@ export function EditorHeader() {
     [],
   );
   const actions = useDispatch(store);
-  const { onExit } = useLabelCreatorData();
+  const { save } = useTemplatePersistence();
+  const { onExit } = useLabelEditorData();
   const confirmDiscard = useConfirmDiscard();
 
   return (
@@ -80,7 +82,7 @@ export function EditorHeader() {
         <Button
           variant="primary"
           size="compact"
-          onClick={actions.save}
+          onClick={save}
           disabled={!s.dirty}
           accessibleWhenDisabled
         >
