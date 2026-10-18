@@ -1,0 +1,73 @@
+import { z } from "zod";
+import { SYMBOLOGIES } from "./barcodes.js";
+import type {
+  LabelBarcodeElement,
+  LabelElement,
+  LabelImageElement,
+  LabelTemplate,
+  LabelTemplateInput,
+  LabelTextElement,
+  Symbology,
+} from "./types.js";
+
+const mm = z.number().finite();
+const sizeMm = mm.positive();
+
+const barcodeElementSchema = z.object({
+  type: z.literal("barcode"),
+  symbology: z.enum(Object.keys(SYMBOLOGIES) as [Symbology, ...Symbology[]]),
+  field: z.string().min(1),
+  x: mm,
+  y: mm,
+  width: sizeMm,
+  height: sizeMm,
+  showText: z.boolean().optional(),
+  ecLevel: z.enum(["L", "M", "Q", "H"]).optional(),
+  rectangular: z.boolean().optional(),
+  checkDigit: z.boolean().optional(),
+}) satisfies z.ZodType<LabelBarcodeElement>;
+
+const textElementSchema = z.object({
+  type: z.literal("text"),
+  text: z.string(),
+  x: mm,
+  y: mm,
+  width: sizeMm,
+  font: z.enum(["sans", "sans-bold", "mono-bold"]),
+  fontSizePt: sizeMm,
+  lineHeight: sizeMm,
+  maxLines: z.number().int().min(1),
+}) satisfies z.ZodType<LabelTextElement>;
+
+const imageElementSchema = z.object({
+  type: z.literal("image"),
+  source: z.literal("render"),
+  x: mm,
+  y: mm,
+  width: sizeMm,
+  height: sizeMm,
+  outlineWidth: mm.nonnegative().optional(),
+}) satisfies z.ZodType<LabelImageElement>;
+
+export const labelElementSchema = z.discriminatedUnion("type", [
+  barcodeElementSchema,
+  textElementSchema,
+  imageElementSchema,
+]) satisfies z.ZodType<LabelElement>;
+
+/** Body of POST / PUT /label-templates, and an exported template file. */
+export const labelTemplateInputSchema = z.object({
+  name: z.string().trim().min(1),
+  description: z.string().trim().nullable().default(null),
+  widthMm: sizeMm,
+  heightMm: sizeMm,
+  elements: z.array(labelElementSchema),
+}) satisfies z.ZodType<LabelTemplateInput, z.ZodTypeDef, unknown>;
+
+export const labelTemplateSchema = labelTemplateInputSchema.extend({
+  id: z.string(),
+  builtin: z.boolean(),
+  updatedAt: z.string(),
+}) satisfies z.ZodType<LabelTemplate, z.ZodTypeDef, unknown>;
+
+export const labelTemplateIdParamsSchema = z.object({ id: z.string().min(1) });

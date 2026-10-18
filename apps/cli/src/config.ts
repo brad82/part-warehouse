@@ -9,4 +9,8 @@ export const config = {
   dbPath: process.env.DB_PATH ?? path.join(appRoot, "data", "parts.db"),
   partsIndexCsv:
     process.env.PARTS_INDEX_CSV ?? path.join(projectRoot, "Parts Index.csv"),
+  /** Built-in label templates, shared with the API. */
+  labelTemplatesDir:
+    process.env.LABEL_TEMPLATES_DIR ??
+    path.join(appRoot, "apps", "api", "templates"),
 };

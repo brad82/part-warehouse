@@ -1,0 +1,17 @@
+{
+  "name": "Bag label",
+  "description": "Brother QL-800 · 62mm continuous (DK-22205) · 62×100mm",
+  "widthMm": 62,
+  "heightMm": 100,
+  "elements": [
+    { "type": "text", "text": "{name}", "x": 3, "y": 6.7, "width": 56, "font": "sans-bold", "fontSizePt": 13, "lineHeight": 5, "maxLines": 2 },
+    { "type": "text", "text": "{code}", "x": 20, "y": 18.5, "width": 38.2, "font": "mono-bold", "fontSizePt": 11, "lineHeight": 4.3, "maxLines": 1 },
+    { "type": "text", "text": "{detail}", "x": 20, "y": 23.6, "width": 38.6, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
+    { "type": "text", "text": "Rev {revision}", "x": 2.7, "y": 88.6, "width": 11, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
+    { "type": "text", "text": "Qty: {qtyPerBuild}", "x": 2.6, "y": 84.4, "width": 56, "font": "sans-bold", "fontSizePt": 16, "lineHeight": 6, "maxLines": 1 },
+    { "type": "image", "source": "render", "x": 3, "y": 32, "width": 56, "height": 46, "outlineWidth": 0.3 },
+    { "type": "barcode", "symbology": "code128", "field": "code", "x": 2.9, "y": 90.9, "width": 40, "height": 6.5 },
+    { "type": "barcode", "symbology": "datamatrix", "field": "code", "x": 3.1, "y": 15.1, "width": 14, "height": 14 },
+    { "type": "text", "text": "{supplier}", "x": 19.6, "y": 27.8, "width": 40, "font": "sans", "fontSizePt": 8, "lineHeight": 3.4, "maxLines": 1 }
+  ]
+}

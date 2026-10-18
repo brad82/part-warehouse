@@ -1,15 +1,23 @@
-import type { LabelTemplate } from "./types.js";
+import type { LabelTemplate } from "@snowcat/shared";
 
-/**
- * 1×2⅝in mailer label (Avery 5160): QR left; code, name (2 lines) and
- * qty/rev right. 3mm padding; the text block is centred for a 2-line name.
- */
+/** The shipped Small label (apps/api/templates/small.json), for tests. */
 export const SMALL_LABEL: LabelTemplate = {
   id: "small",
+  name: "Small label",
+  description:
+    "QR, code, name, qty and rev · 1×2⅝in mailer label (Avery 5160) · 66.7×25.4mm",
   widthMm: 66.675,
   heightMm: 25.4,
   elements: [
-    { type: "qr", field: "code", x: 3, y: 3.7, size: 18 },
+    {
+      type: "barcode",
+      symbology: "qrcode",
+      field: "code",
+      x: 3,
+      y: 3.7,
+      width: 18,
+      height: 18,
+    },
     {
       type: "text",
       text: "{code}",
@@ -55,4 +63,6 @@ export const SMALL_LABEL: LabelTemplate = {
       maxLines: 1,
     },
   ],
+  builtin: true,
+  updatedAt: "2026-01-01T00:00:00.000Z",
 };

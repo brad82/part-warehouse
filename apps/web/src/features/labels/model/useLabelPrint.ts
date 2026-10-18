@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import type { Part } from "@snowcat/shared";
+import type { LabelTemplate, Part } from "@snowcat/shared";
 import { renderStlToPng } from "./renderStlToPng";
-import { templateById, type LabelTemplate } from "./templates";
+
+/** Whether `template` prints the part's 3D render anywhere. */
+export const usesRender = (template: LabelTemplate) =>
+  template.elements.some((el) => el.type === "image");
 
 /**
  * Owns the label dialog's choices (template, copies, 3D render) and the
  * print lifecycle: mount labels into the print root, wait a frame for
- * images, call window.print(), unmount after `afterprint`.
+ * images, call window.print(), unmount after `afterprint`. `templates`
+ * come from the API; until they load there is no template.
  */
-export function useLabelPrint(part: Part, open: boolean) {
-  const [templateId, setTemplateId] = useState<LabelTemplate["id"]>("bag");
+export function useLabelPrint(
+  part: Part,
+  open: boolean,
+  templates: LabelTemplate[],
+) {
+  const [templateId, setTemplateId] = useState<string | null>(null);
   const [copies, setCopies] = useState(1);
   const [includeRender, setIncludeRender] = useState(true);
   const [render, setRender] = useState<string | null>(null);
   const [rendering, setRendering] = useState(false);
   const [printing, setPrinting] = useState(false);
 
-  const template = templateById(templateId);
-  const wantsRender = template.supportsRender && includeRender;
+  const template =
+    templates.find((t) => t.id === templateId) ?? templates[0] ?? null;
+  const wantsRender = !!template && usesRender(template) && includeRender;
 
   useEffect(() => {
     if (!open || !wantsRender) return;
