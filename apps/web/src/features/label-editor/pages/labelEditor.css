@@ -1,0 +1,411 @@
+/*
+ * Editor frame modelled on the WordPress block editor. Gutenberg's UI is
+ * light-only, so the frame stays light in dark mode too.
+ */
+.label-editor {
+  --le-border: #e0e0e0;
+  --le-muted: #757575;
+  --le-canvas-bg: #f0f0f0;
+  --le-accent: var(--wp-admin-theme-color, #3858e9);
+
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: #1e1e1e;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    sans-serif;
+  font-size: 13px;
+}
+
+/* Top bar */
+.label-editor__header {
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--le-border);
+}
+
+.label-editor__header-side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.label-editor__header-side.is-end {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.label-editor__inserter-toggle.components-button.has-icon {
+  min-width: 32px;
+  margin: 0 4px;
+}
+
+.label-editor__inserter-toggle svg {
+  transition: transform 0.15s ease;
+}
+
+.label-editor__inserter-toggle.is-pressed svg {
+  transform: rotate(45deg);
+}
+
+/* Centre "command bar" with the template name */
+.label-editor__title {
+  flex: 0 1 440px;
+  min-width: 0;
+}
+
+.label-editor__title-button {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: #f0f0f0;
+  color: #1e1e1e;
+  font: inherit;
+  cursor: pointer;
+}
+
+.label-editor__title-button:hover,
+.label-editor__title-button[aria-expanded="true"] {
+  background: #e0e0e0;
+}
+
+.label-editor__title-button:focus-visible {
+  outline: 2px solid var(--le-accent);
+  outline-offset: 1px;
+}
+
+.label-editor__title-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.label-editor__title-kind {
+  flex-shrink: 0;
+  color: var(--le-muted);
+}
+
+.label-editor__title-menu {
+  min-width: 260px;
+}
+
+/* Body: sidebars around the canvas */
+.label-editor__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.label-editor__sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #fff;
+}
+
+.label-editor__sidebar.is-start {
+  border-right: 1px solid var(--le-border);
+}
+
+.label-editor__sidebar.is-end {
+  width: 300px;
+  border-left: 1px solid var(--le-border);
+}
+
+.label-editor__sidebar-header {
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 8px;
+  border-bottom: 1px solid var(--le-border);
+}
+
+.label-editor__tabs {
+  display: flex;
+  height: 100%;
+}
+
+.label-editor__tab {
+  position: relative;
+  height: 100%;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: #1e1e1e;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.label-editor__tab:hover {
+  color: var(--le-accent);
+}
+
+.label-editor__tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--le-accent);
+}
+
+.label-editor__sidebar-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.label-editor__sidebar.is-start .label-editor__sidebar-body {
+  padding: 8px;
+}
+
+.label-editor__sidebar-hint {
+  margin: 4px 8px 8px;
+  color: var(--le-muted);
+  font-size: 12px;
+}
+
+.label-editor__print-preview {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: var(--le-canvas-bg);
+  border-radius: 2px;
+}
+
+.label-editor__print-preview > * {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Canvas */
+.label-editor__canvas-area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: var(--le-canvas-bg);
+}
+
+.label-editor__canvas-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  display: flex;
+  padding: 60px;
+}
+
+.label-editor__canvas {
+  position: relative;
+  flex-shrink: 0;
+  /* Centres when it fits, scrolls from the edge when it doesn't. */
+  margin: auto;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 6px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Elements are absolutely placed against the canvas, not the list. */
+.label-editor__canvas .is-root-container {
+  position: static;
+}
+
+.label-editor .label-element {
+  margin: 0 !important;
+  cursor: move;
+  /* Safari only honours the prefixed property. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+.label-editor .label-element.is-dragging {
+  opacity: 0.85;
+}
+
+.label-editor .label-element:not(.is-selected):hover {
+  outline: 1px dashed var(--le-accent);
+}
+
+.label-element__svg,
+.label-element__svg > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.label-element__placeholder {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed #999;
+  color: #666;
+  font:
+    11px/1.2 system-ui,
+    sans-serif;
+  text-align: center;
+}
+
+/* Status bar */
+.label-editor__footer {
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 8px 0 16px;
+  border-top: 1px solid var(--le-border);
+  color: var(--le-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.label-editor__footer-spacer {
+  flex: 1;
+}
+
+.label-editor__footer-status {
+  color: #1e1e1e;
+}
+
+.label-editor__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.label-editor__breadcrumb button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--le-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.label-editor__breadcrumb button:hover {
+  color: var(--le-accent);
+  text-decoration: underline;
+}
+
+.label-editor__breadcrumb .is-current {
+  color: #1e1e1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.label-editor__zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 12px;
+  border-left: 1px solid var(--le-border);
+}
+
+.label-editor__zoom .label-editor__zoom-value.components-button {
+  min-width: 52px;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Inspector controls */
+.label-inspector__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.label-inspector__gap {
+  margin-top: 16px;
+}
+
+.label-editor .label-element.is-selected {
+  outline: 1px solid var(--le-accent);
+}
+
+/* Resize handles on the selected element */
+.label-element__handle {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1.5px solid var(--le-accent);
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  z-index: 1;
+}
+
+.label-element__handle.is-nw {
+  left: 0;
+  top: 0;
+  cursor: nwse-resize;
+}
+.label-element__handle.is-n {
+  left: 50%;
+  top: 0;
+  cursor: ns-resize;
+}
+.label-element__handle.is-ne {
+  left: 100%;
+  top: 0;
+  cursor: nesw-resize;
+}
+.label-element__handle.is-e {
+  left: 100%;
+  top: 50%;
+  cursor: ew-resize;
+}
+.label-element__handle.is-se {
+  left: 100%;
+  top: 100%;
+  cursor: nwse-resize;
+}
+.label-element__handle.is-s {
+  left: 50%;
+  top: 100%;
+  cursor: ns-resize;
+}
+.label-element__handle.is-sw {
+  left: 0;
+  top: 100%;
+  cursor: nesw-resize;
+}
+.label-element__handle.is-w {
+  left: 0;
+  top: 50%;
+  cursor: ew-resize;
+}
