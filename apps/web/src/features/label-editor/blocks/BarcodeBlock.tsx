@@ -11,7 +11,7 @@ import {
   type LabelBarcodeElement,
   type QrErrorCorrection,
   type Symbology,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { ScanBarcode } from "lucide-react";
 import { useCanvasEnv } from "../model/CanvasContext";
 import { LABEL_BLOCK } from "../model/convert";

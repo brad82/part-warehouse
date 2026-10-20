@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Grouping } from "@snowcat/shared";
+import type { Grouping } from "@parts-warehouse/shared";
 import { nextGroupingId } from "./nextGroupingId";
 
 const g = (

@@ -1,4 +1,4 @@
-import type { LabelTemplate, LabelTemplateInput } from "@snowcat/shared";
+import type { LabelTemplate, LabelTemplateInput } from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
 
 export const labelTemplatesApi = baseApi.injectEndpoints({

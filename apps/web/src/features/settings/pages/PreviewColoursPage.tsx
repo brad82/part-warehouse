@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import type { PreviewColour, PreviewColourCreate } from "@snowcat/shared";
+import type { PreviewColour, PreviewColourCreate } from "@parts-warehouse/shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { PreviewColourDialog } from "../components/PreviewColourDialog";
 

@@ -1,4 +1,4 @@
-import type { LabelTemplate } from "@snowcat/shared";
+import type { LabelTemplate } from "@parts-warehouse/shared";
 
 /** The shipped Small label (apps/api/templates/small.json), for tests. */
 export const SMALL_LABEL: LabelTemplate = {

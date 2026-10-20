@@ -3,7 +3,7 @@ import path from "node:path";
 import {
   labelTemplateInputSchema,
   type LabelTemplateInput,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 
 /**
  * The built-in templates: every `<id>.json` in `dir`, validated. Throws

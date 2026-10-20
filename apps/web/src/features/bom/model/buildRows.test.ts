@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Grouping, Part } from "@snowcat/shared";
+import type { Grouping, Part } from "@parts-warehouse/shared";
 import { buildRows, rowsInGrouping } from "./buildRows";
 
 const groupings: Grouping[] = [
@@ -22,6 +22,7 @@ const part: Part = {
   status: "planned",
   source: "csv",
   updatedAt: "2026-10-16T00:00:00.000Z",
+  image: null,
 };
 
 describe("buildRows", () => {

@@ -10,6 +10,14 @@ export const config = {
   dbPath: process.env.DB_PATH ?? path.join(appRoot, "data", "parts.db"),
   modelFilesDir:
     process.env.MODEL_FILES_DIR ?? path.join(projectRoot, "Model Files"),
+  /** Part preview images (uploaded or scraped), managed by the API. */
+  partImagesDir:
+    process.env.PART_IMAGES_DIR ?? path.join(appRoot, "data", "part-images"),
+  /**
+   * host:port of the optional image-scraper app (gRPC). Unset: no scraping
+   * from supplier links; uploads still work.
+   */
+  imageScraperUrl: process.env.IMAGE_SCRAPER_URL || null,
   slicerApp: process.env.SLICER_APP ?? "PrusaSlicer",
   /** Built-in label templates: one `<id>.json` each. */
   labelTemplatesDir:

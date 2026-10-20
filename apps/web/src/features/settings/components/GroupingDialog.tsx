@@ -13,7 +13,7 @@ import {
   GROUPING_ID_PATTERNS,
   type Grouping,
   type Taxonomy,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { codePrefix } from "../model/nextGroupingId";
 import { TAXONOMY_LABELS } from "../model/taxonomy";
 

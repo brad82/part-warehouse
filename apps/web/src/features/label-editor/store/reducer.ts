@@ -1,5 +1,5 @@
 import type { Block } from "@wordpress/blocks";
-import type { LabelTemplate } from "@snowcat/shared";
+import type { LabelTemplate } from "@parts-warehouse/shared";
 import {
   commit,
   historyOf,

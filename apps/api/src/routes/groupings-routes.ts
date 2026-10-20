@@ -3,8 +3,8 @@ import {
   groupingCreateSchema,
   groupingIdParamsSchema,
   groupingUpdateSchema,
-} from "@snowcat/shared";
-import type { PartsRepository } from "@snowcat/db";
+} from "@parts-warehouse/shared";
+import type { PartsRepository } from "@parts-warehouse/db";
 
 /** Modules, sub-assemblies and groups, edited on Settings → BOM structure. */
 export const groupingsRoutes: FastifyPluginAsyncZod<{

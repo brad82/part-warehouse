@@ -1,7 +1,7 @@
 import {
   labelTemplateInputSchema,
   type LabelTemplateInput,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 
 /** Downloads `template` as `<name>.json` (an import-ready template). */
 export function downloadTemplate(template: LabelTemplateInput) {

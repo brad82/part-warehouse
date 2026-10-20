@@ -12,8 +12,9 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "@snowcat/shared": ["packages/shared/src/index.ts"],
-      "@snowcat/db": ["packages/db/src/index.ts"]
+      "@parts-warehouse/shared": ["packages/shared/src/index.ts"],
+      "@parts-warehouse/db": ["packages/db/src/index.ts"],
+      "@parts-warehouse/image-scraper-proto": ["packages/image-scraper-proto/src/index.ts"]
     }
   }
 }

@@ -10,6 +10,7 @@ export const ATTR = {
   filePath: "file_path",
   sku: "sku",
   supplier: "supplier",
+  supplierUrl: "supplier_url",
 } as const;
 
 export type AttributeParse =

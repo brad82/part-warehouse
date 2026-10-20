@@ -11,7 +11,7 @@ import type {
   PreviewColour,
   PreviewColourCreate,
   PreviewColourUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
 
 // Lists come from partsApi (listPartTypes, listAttributeDefs). Changing a

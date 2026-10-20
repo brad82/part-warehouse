@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [api, web, cli]
+        app: [api, web, cli, image-scraper]
     steps:
       - uses: actions/checkout@v4
 

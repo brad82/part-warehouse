@@ -1,6 +1,6 @@
 import { InspectorControls } from "@wordpress/block-editor";
 import { PanelBody, ToggleControl } from "@wordpress/components";
-import type { LabelImageElement } from "@snowcat/shared";
+import type { LabelImageElement } from "@parts-warehouse/shared";
 import { Box } from "lucide-react";
 import { LABEL_BLOCK } from "../model/convert";
 import { MmControl } from "./controls/MmControl";
@@ -58,17 +58,17 @@ function PartRenderingEdit({
       </InspectorControls>
       <ElementFrame
         el={{ type: "image", ...attributes }}
-        placeholder="3D render"
+        placeholder="Part render"
       />
     </>
   );
 }
 
-/** The part's 3D render, fitted into its box (`LabelImageElement`). */
+/** The part's 3D render (or image, without an STL), fitted into its box (`LabelImageElement`). */
 export function registerPartRenderingBlock() {
   registerLabelBlock(LABEL_BLOCK.image, {
     title: "Part render",
-    description: "The part's 3D render, fitted into its box.",
+    description: "The part's 3D render, or its image if it has no STL, fitted into its box.",
     icon: <Box size={20} />,
     attributes: {
       source: str("render"),

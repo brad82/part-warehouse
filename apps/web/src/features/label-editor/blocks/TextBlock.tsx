@@ -1,6 +1,6 @@
 import { InspectorControls } from "@wordpress/block-editor";
 import { PanelBody, SelectControl, TextControl } from "@wordpress/components";
-import type { LabelFont, LabelTextElement } from "@snowcat/shared";
+import type { LabelFont, LabelTextElement } from "@parts-warehouse/shared";
 import { Type } from "lucide-react";
 import { LABEL_BLOCK } from "../model/convert";
 import { FieldSelect } from "./controls/FieldSelect";

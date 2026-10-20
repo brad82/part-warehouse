@@ -4,7 +4,7 @@ import {
   type AttributeDataType,
   type AttributeDef,
   type AttributeDefCreate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { slug } from "./slug";
 
 export type AttributeFormValues = {

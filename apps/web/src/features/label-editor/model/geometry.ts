@@ -1,4 +1,4 @@
-import { SYMBOLOGIES, type LabelElement } from "@snowcat/shared";
+import { SYMBOLOGIES, type LabelElement } from "@parts-warehouse/shared";
 
 /** Compass point of a resize handle on an element's box. */
 export type Handle = "n" | "ne" | "e" | "se" | "s" | "sw" | "w" | "nw";

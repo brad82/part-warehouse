@@ -1,4 +1,4 @@
-import type { LabelTemplate, LabelTemplateInput } from "@snowcat/shared";
+import type { LabelTemplate, LabelTemplateInput } from "@parts-warehouse/shared";
 
 /**
  * A template not stored yet: no id until its first save creates it. Drafts

@@ -1,4 +1,4 @@
-import type { Grouping, Part } from "@snowcat/shared";
+import type { Grouping, Part } from "@parts-warehouse/shared";
 
 export type GroupingRow = {
   grouping: Grouping;

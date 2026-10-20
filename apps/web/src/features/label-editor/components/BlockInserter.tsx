@@ -3,7 +3,7 @@ import { createBlock, type Block } from "@wordpress/blocks";
 import { Button, Dropdown, MenuGroup, MenuItem } from "@wordpress/components";
 import { useDispatch } from "@wordpress/data";
 import { plus } from "@wordpress/icons";
-import { SYMBOLOGIES } from "@snowcat/shared";
+import { SYMBOLOGIES } from "@parts-warehouse/shared";
 import { Barcode, Box as BoxIcon, QrCode, Type } from "lucide-react";
 import { LABEL_BLOCK } from "../model/convert";
 

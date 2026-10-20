@@ -14,8 +14,8 @@
  */
 import { readFileSync } from "node:fs";
 import type Database from "better-sqlite3";
-import { attributesRepository, openDb, partsRepository } from "@snowcat/db";
-import { ATTR } from "@snowcat/shared";
+import { attributesRepository, openDb, partsRepository } from "@parts-warehouse/db";
+import { ATTR } from "@parts-warehouse/shared";
 import { splitColourMaterial } from "../lib/colourMaterial.js";
 import { parseCsv } from "../lib/csv.js";
 

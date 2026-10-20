@@ -88,6 +88,7 @@ const part: Part = {
   status: "planned",
   source: "csv",
   updatedAt: "",
+  image: null,
 };
 
 describe("measureText", () => {

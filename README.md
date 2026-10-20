@@ -1,18 +1,31 @@
-# Snowcat Parts
+# Parts Warehouse
 
-Local app for the 4x3D Snowcat parts index: browse/search parts, track stock
+Local parts index app: browse/search parts, track stock
 and print data, preview STLs, scan labels, and print bag labels.
 
 ```sh
 npm install
 npm run import   # Parts Index.csv → data/parts.db (re-runnable; keeps stock/print data)
-npm run dev      # API on :4000, web on http://localhost:3000
+npm run dev      # API on :4000, web on http://localhost:3000, image scraper on :50051
+npm run dev:core # the same without the image scraper
 npm test && npm run typecheck && npm run lint
 ```
 
 - Layout: `apps/api` (Fastify), `apps/web` (React), `apps/cli` (import and
-  other one-off commands), `packages/db` (SQLite schema + repositories),
-  `packages/shared` (zod schemas, used everywhere).
+  other one-off commands), `apps/image-scraper` (optional, gRPC),
+  `packages/db` (SQLite schema + repositories), `packages/shared` (zod
+  schemas, used everywhere), `packages/image-scraper-proto` (the scraper's
+  gRPC contract and client).
+- Part images: any part can have one (Image tab, or the only preview for
+  parts without an STL). Upload, drop, paste or take a photo; images are
+  centre-cropped to a 1024 px square in `data/part-images/`. Without an STL,
+  labels print the image instead of the 3D render.
+- Image scraper (optional): with `IMAGE_SCRAPER_URL` set, the API asks
+  `apps/image-scraper` to find the image on a part's Supplier link. It
+  tries a plain fetch, then headless Chromium (`npm run browser:install -w
+  apps/image-scraper` once). It never solves robot checks; to solve one
+  yourself, run with `PAGE_BROWSER_HEADED=1` and a Chromium window opens
+  for it. Its cookies stay in `data/browser-profile/`.
 - CLI: `npm run cli -- --help`. Other CSV or db:
   `npm run cli -- import --csv <path> --db <path>`.
 - Label sheets: `npm run cli -- labels [codes…] --query <text> --start <1-30>`
@@ -74,5 +87,9 @@ docker compose up -d --build   # http://localhost:3000 (WEB_PORT=8080 to change)
 - Host paths (e.g. model files for `api`) go in the
   gitignored `docker-compose.override.yml`, which compose loads automatically.
   The `cli` service is in the `tools` profile, so `up` doesn't start it.
+- Image scraper: off unless you start its profile and point the API at it:
+  `IMAGE_SCRAPER_URL=image-scraper:50051 docker compose --profile scraper up -d --build`.
+  Its browser cookies live in the `scraper-data` volume. There's no display
+  in the container, so robot checks can't be solved there.
 - "Open in PrusaSlicer" doesn't work from a container; use `npm run dev` for that.
 - Served over plain HTTP, so camera scanning only works on `localhost`.

@@ -6,8 +6,13 @@ import type {
   PartType,
   PartUpdate,
   PreviewColour,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
+
+const partInvalidates = (_result: unknown, _error: unknown, { code }: { code: string }) => [
+  "Part" as const,
+  { type: "Part" as const, id: code },
+];
 
 export const partsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -25,10 +30,31 @@ export const partsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: update,
       }),
-      invalidatesTags: (_result, _error, { code }) => [
-        "Part",
-        { type: "Part", id: code },
-      ],
+      invalidatesTags: partInvalidates,
+    }),
+    uploadPartImage: build.mutation<Part, { code: string; file: File }>({
+      query: ({ code, file }) => {
+        const body = new FormData();
+        body.append("file", file);
+        return { url: `/parts/${code}/image`, method: "PUT", body };
+      },
+      invalidatesTags: partInvalidates,
+    }),
+    scrapePartImage: build.mutation<Part, { code: string }>({
+      query: ({ code }) => ({ url: `/parts/${code}/image/scrape`, method: "POST" }),
+      invalidatesTags: partInvalidates,
+    }),
+    selectPartImage: build.mutation<Part, { code: string; url: string }>({
+      query: ({ code, url }) => ({
+        url: `/parts/${code}/image/select`,
+        method: "POST",
+        body: { url },
+      }),
+      invalidatesTags: partInvalidates,
+    }),
+    deletePartImage: build.mutation<Part, { code: string }>({
+      query: ({ code }) => ({ url: `/parts/${code}/image`, method: "DELETE" }),
+      invalidatesTags: partInvalidates,
     }),
     openInSlicer: build.mutation<void, string>({
       query: (code) => ({ url: `/parts/${code}/open-in-slicer`, method: "POST" }),
@@ -68,6 +94,10 @@ export const {
   useUpdatePartMutation,
   useCreatePartMutation,
   useOpenInSlicerMutation,
+  useUploadPartImageMutation,
+  useScrapePartImageMutation,
+  useSelectPartImageMutation,
+  useDeletePartImageMutation,
   useLazyNextPartNumberQuery,
   useListPartTypesQuery,
   useListAttributeDefsQuery,

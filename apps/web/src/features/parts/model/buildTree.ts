@@ -1,4 +1,4 @@
-import type { Grouping, Part, Taxonomy } from "@snowcat/shared";
+import type { Grouping, Part, Taxonomy } from "@parts-warehouse/shared";
 
 export type TreeNode =
   | {

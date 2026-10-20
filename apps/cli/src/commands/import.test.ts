@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@snowcat/db";
+import { openDb, partsRepository } from "@parts-warehouse/db";
 import { importParts } from "./import.js";
 
 const core =

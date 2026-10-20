@@ -1,4 +1,4 @@
-import type { AttributeDef } from "@snowcat/shared";
+import type { AttributeDef } from "@parts-warehouse/shared";
 
 /** Field label with its unit, e.g. "Print time (min)", "Price (CAD)". */
 export function attributeLabel(def: Pick<AttributeDef, "label" | "unit">): string {

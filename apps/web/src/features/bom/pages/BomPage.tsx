@@ -7,7 +7,7 @@ import {
   isNumericAttribute,
   type AttributeDef,
   type PartUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { attributeLabel, formatMinutes, stockCoverage } from "@features/parts";
 import type { BomRow } from "../model/buildRows";
 import { rowUpdate } from "../model/rowUpdate";

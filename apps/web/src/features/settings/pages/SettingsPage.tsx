@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import { Lock, Pencil, Plus, Trash2 } from "lucide-react";
-import type { AttributeDef, AttributeDefCreate, PartType } from "@snowcat/shared";
+import type { AttributeDef, AttributeDefCreate, PartType } from "@parts-warehouse/shared";
 import { AttributeDialog } from "../components/AttributeDialog";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { PartTypeDialog } from "../components/PartTypeDialog";

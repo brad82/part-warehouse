@@ -10,8 +10,9 @@ import {
   type Part,
   type PartCreate,
   type PartUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { DomainError } from "../errors.js";
+import { toPartImage, type PartImageRow } from "./partImagesRepository.js";
 
 type PartRow = {
   code: string;
@@ -45,7 +46,11 @@ type AttributeRow = {
 
 type Attributes = Part["attributes"];
 
-function toPart(row: PartRow, attributes: Attributes = {}): Part {
+function toPart(
+  row: PartRow,
+  attributes: Attributes = {},
+  image?: PartImageRow,
+): Part {
   return {
     code: row.code,
     groupId: row.group_id,
@@ -60,6 +65,7 @@ function toPart(row: PartRow, attributes: Attributes = {}): Part {
     status: row.status,
     source: row.source,
     updatedAt: row.updated_at,
+    image: image ? toPartImage(image) : null,
   };
 }
 
@@ -153,7 +159,14 @@ export function partsRepository(db: Database.Database) {
       const attributes = foldAttributes(
         db.prepare<[], AttributeRow>(SELECT_ATTRIBUTES).all(),
       );
-      const withAttributes = (row: PartRow) => toPart(row, attributes.get(row.code));
+      const images = new Map(
+        db
+          .prepare<[], PartImageRow>("SELECT * FROM part_images")
+          .all()
+          .map((r) => [r.part_code, r]),
+      );
+      const withAttributes = (row: PartRow) =>
+        toPart(row, attributes.get(row.code), images.get(row.code));
       if (!q) {
         return db
           .prepare<[], PartRow>("SELECT * FROM parts ORDER BY code")
@@ -188,7 +201,10 @@ export function partsRepository(db: Database.Database) {
           .prepare<[string], AttributeRow>(`${SELECT_ATTRIBUTES} WHERE pa.part_code = ?`)
           .all(code),
       );
-      return toPart(row, attributes.get(code));
+      const image = db
+        .prepare<[string], PartImageRow>("SELECT * FROM part_images WHERE part_code = ?")
+        .get(code);
+      return toPart(row, attributes.get(code), image);
     },
 
     updatePart(code: string, update: PartUpdate): Part | null {

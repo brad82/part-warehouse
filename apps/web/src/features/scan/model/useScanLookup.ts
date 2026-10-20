@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { parseScan } from "@snowcat/shared";
+import { parseScan } from "@parts-warehouse/shared";
 
 /**
  * Turns raw scanned text into a confirmed part code. `lookup` resolves

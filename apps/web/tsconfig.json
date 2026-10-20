@@ -9,7 +9,7 @@
     "noEmit": true,
     "types": ["vite/client", "vitest/globals"],
     "paths": {
-      "@snowcat/shared": ["packages/shared/src/index.ts"],
+      "@parts-warehouse/shared": ["packages/shared/src/index.ts"],
       "@app/*": ["apps/web/src/app/*"],
       "@features/*": ["apps/web/src/features/*"],
       "@shared/*": ["apps/web/src/shared/*"]

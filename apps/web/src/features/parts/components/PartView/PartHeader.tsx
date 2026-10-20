@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Pencil, Table2 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
-import { ATTR, attrText } from "@snowcat/shared";
+import { ATTR, attrText } from "@parts-warehouse/shared";
 import { PrintLabelButton } from "@features/labels";
 import { ancestorIds } from "../../model/buildTree";
 import { useRenamePart, useSelectedPart } from "../../PartsProvider";

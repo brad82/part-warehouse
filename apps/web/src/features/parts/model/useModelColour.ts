@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { resolvePreviewColour, type PreviewColour } from "@snowcat/shared";
+import { resolvePreviewColour, type PreviewColour } from "@parts-warehouse/shared";
 
 /** "auto" follows the part's colour attribute; a number is a preview colour id. */
 export type ModelColourChoice = "auto" | number;

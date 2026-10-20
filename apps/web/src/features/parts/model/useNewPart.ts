@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { partCreateSchema, type Grouping, type PartCreate, type PartType } from "@snowcat/shared";
+import { partCreateSchema, type Grouping, type PartCreate, type PartType } from "@parts-warehouse/shared";
 
 type Options = {
   groupings: Grouping[];

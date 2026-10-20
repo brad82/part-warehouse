@@ -1,4 +1,4 @@
-import type { Grouping, Part, PartType } from "@snowcat/shared";
+import type { Grouping, Part, PartType } from "@parts-warehouse/shared";
 import { ancestorIds, partTotals } from "@features/parts";
 
 export type BomRow = Part & {

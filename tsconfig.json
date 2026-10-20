@@ -3,7 +3,9 @@
   "references": [
     { "path": "packages/shared" },
     { "path": "packages/db" },
+    { "path": "packages/image-scraper-proto" },
     { "path": "apps/api" },
+    { "path": "apps/image-scraper" },
     { "path": "apps/cli" },
     { "path": "apps/web" }
   ]

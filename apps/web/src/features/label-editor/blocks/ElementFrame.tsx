@@ -8,7 +8,7 @@ import {
   elementBox,
   renderElementSvg,
   type LabelElement,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { useCanvasEnv } from "../model/CanvasContext";
 import { applyGesture, resizeHandles } from "../model/geometry";
 import { usePointerGesture } from "./utils/usePointerGesture";

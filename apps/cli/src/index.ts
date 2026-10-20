@@ -4,7 +4,7 @@ import { runImport } from "./commands/import.js";
 import { runLabels } from "./commands/labels.js";
 import { config } from "./config.js";
 
-const usage = `Usage: snowcat <command> [options]
+const usage = `Usage: parts-warehouse <command> [options]
 
 Commands:
   import    Import a parts CSV into the database (re-runnable). Extra columns

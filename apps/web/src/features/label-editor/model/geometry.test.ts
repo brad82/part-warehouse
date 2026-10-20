@@ -2,7 +2,7 @@ import type {
   LabelImageElement,
   LabelBarcodeElement,
   LabelTextElement,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { applyGesture, resizeHandles, type Gesture } from "./geometry";
 
 const qr: LabelBarcodeElement = {

@@ -11,7 +11,7 @@ import {
   type TextFieldProps,
 } from "@mui/material";
 import { Save, Undo2 } from "lucide-react";
-import { ATTR, type AttributeDef } from "@snowcat/shared";
+import { ATTR, type AttributeDef } from "@parts-warehouse/shared";
 import { attrErrorKey, type CoreField } from "../../model/usePartDraft";
 import { usePartForm } from "../../PartsProvider";
 import { AttributeField } from "./AttributeField";

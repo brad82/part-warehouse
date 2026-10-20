@@ -3,7 +3,7 @@ import type {
   LabelElement,
   LabelTemplate,
   LabelTemplateInput,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { DomainError } from "../errors.js";
 
 type Row = {
