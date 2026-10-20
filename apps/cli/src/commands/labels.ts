@@ -12,7 +12,7 @@ import {
   loadLabelTemplateFiles,
   openDb,
   partsRepository,
-} from "@snowcat/db";
+} from "@parts-warehouse/db";
 import {
   AVERY_5160,
   renderLabelSvg,
@@ -22,7 +22,7 @@ import {
   type LabelLayout,
   type LabelTemplate,
   type Part,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 
 const MM_TO_PT = 72 / 25.4;
 
@@ -92,7 +92,7 @@ export function renderLabelsPdf(
   const doc = new PDFDocument({
     size: [sheet.pageWidthMm * MM_TO_PT, sheet.pageHeightMm * MM_TO_PT],
     margin: 0,
-    info: { Title: "Snowcat labels" },
+    info: { Title: "Parts Warehouse labels" },
   });
   const chunks: Buffer[] = [];
   doc.on("data", (chunk: Buffer) => chunks.push(chunk));

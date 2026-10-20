@@ -6,7 +6,7 @@ import {
   type AttributeValue,
   type Part,
   type PartUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 
 /**
  * Form values as typed: numbers stay strings until submit. Name and stock

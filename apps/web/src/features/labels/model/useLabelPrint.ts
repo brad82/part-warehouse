@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { LabelTemplate, Part } from "@snowcat/shared";
-import { renderStlToPng } from "./renderStlToPng";
+import type { LabelTemplate, Part } from "@parts-warehouse/shared";
+import { renderPartPreview } from "./renderPartPreview";
 
-/** Whether `template` prints the part's 3D render anywhere. */
+/** Whether `template` prints the part's render or image anywhere. */
 export const usesRender = (template: LabelTemplate) =>
   template.elements.some((el) => el.type === "image");
 
@@ -32,7 +32,7 @@ export function useLabelPrint(
     if (!open || !wantsRender) return;
     let cancelled = false;
     setRendering(true);
-    renderStlToPng(part.code).then((url) => {
+    renderPartPreview(part.code).then((url) => {
       if (cancelled) return;
       setRender(url);
       setRendering(false);

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package partswarehouse.imagescraper.v1;
+
+// Finds and downloads product images from supplier pages. Optional: the
+// API runs without it (uploads only). Errors carry a message fit to show
+// the user; FAILED_PRECONDITION means the site refused (e.g. a robot check).
+service ImageScraper {
+  // Image URLs a product page offers, best first. May load the page in a
+  // browser, so allow a generous deadline.
+  rpc FindImages(FindImagesRequest) returns (FindImagesResponse);
+  // Downloads one image (up to 15 MB).
+  rpc FetchImage(FetchImageRequest) returns (FetchImageResponse);
+}
+
+message FindImagesRequest {
+  string page_url = 1;
+}
+
+message FindImagesResponse {
+  repeated string image_urls = 1;
+}
+
+message FetchImageRequest {
+  string url = 1;
+}
+
+message FetchImageResponse {
+  bytes data = 1;
+  string content_type = 2;
+}

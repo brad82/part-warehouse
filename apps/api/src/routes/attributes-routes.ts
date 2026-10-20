@@ -6,8 +6,8 @@ import {
   partTypeCreateSchema,
   partTypeIdParamsSchema,
   partTypeUpdateSchema,
-} from "@snowcat/shared";
-import type { AttributesRepository } from "@snowcat/db";
+} from "@parts-warehouse/shared";
+import type { AttributesRepository } from "@parts-warehouse/db";
 
 /** Part types and attribute definitions, edited on the Settings page. */
 export const attributesRoutes: FastifyPluginAsyncZod<{

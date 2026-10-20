@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Grouping, Part } from "@snowcat/shared";
+import type { Grouping, Part } from "@parts-warehouse/shared";
 import { ancestorIds, groupingIds, type TreeNode } from "./buildTree";
 
 /**

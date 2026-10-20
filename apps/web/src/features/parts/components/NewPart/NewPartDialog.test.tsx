@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { Grouping, PartType } from "@snowcat/shared";
+import type { Grouping, PartType } from "@parts-warehouse/shared";
 import { NewPartDialog } from "./NewPartDialog";
 
 const groupings: Grouping[] = [

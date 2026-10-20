@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ATTR } from "@parts-warehouse/shared";
 import { errorMessage } from "@shared/api/errors";
 import {
   useGetPartQuery,
@@ -10,6 +11,7 @@ import {
   useListPreviewColoursQuery,
   useUpdatePartMutation,
 } from "../api/partsApi";
+import { usePartImageActions } from "../api/usePartImageActions";
 import { useDebouncedValue } from "../model/useDebouncedValue";
 import { PartsProvider } from "../PartsProvider";
 import { PartsPage } from "./PartsPage";
@@ -32,6 +34,7 @@ export function PartsContainer() {
   const [updatePart, updateState] = useUpdatePartMutation();
   // Its own instance, so a stock or rename error isn't shown as a form error.
   const [updateNow] = useUpdatePartMutation();
+  const imageActions = usePartImageActions(code);
 
   const selectedError =
     selected.error && "status" in selected.error && selected.error.status === 404
@@ -56,8 +59,15 @@ export function PartsContainer() {
       saving={updateState.isLoading}
       saveError={errorMessage(updateState.error, "Couldn't save. Try again.")}
       onSave={async (update) => {
-        if (code) await updatePart({ code, update }).unwrap();
+        if (!code) return;
+        const saved = await updatePart({ code, update }).unwrap();
+        // A new supplier link on a part without an image: look for one in
+        // the background (the image panel shows progress).
+        if (imageActions.canScrape && update.attributes?.[ATTR.supplierUrl] && !saved.image) {
+          void imageActions.scrape();
+        }
       }}
+      imageActions={imageActions}
       onSaveNow={async (update) => {
         if (!code) return;
         try {

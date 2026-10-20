@@ -3,7 +3,7 @@ import type {
   PreviewColour,
   PreviewColourCreate,
   PreviewColourUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { DomainError } from "../errors.js";
 
 const SELECT = "SELECT id, name, hex, sort FROM preview_colours";

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { LabelAssets, Part } from "@snowcat/shared";
+import type { LabelAssets, Part } from "@parts-warehouse/shared";
 
 export type FieldOption = { value: string; label: string };
 

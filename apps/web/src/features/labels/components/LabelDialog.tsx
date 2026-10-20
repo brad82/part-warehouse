@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Printer } from "lucide-react";
-import type { Part } from "@snowcat/shared";
+import type { Part } from "@parts-warehouse/shared";
 import { errorMessage } from "@shared/api/errors";
 import { useListLabelTemplatesQuery } from "../api/labelTemplatesApi";
 import { useLabelPrint, usesRender } from "../model/useLabelPrint";
@@ -93,7 +93,7 @@ export function LabelDialog({ part, open, onClose }: Props) {
                       onChange={(e) => label.setIncludeRender(e.target.checked)}
                     />
                   }
-                  label="3D render"
+                  label="Part render / image"
                 />
               ) : null}
             </Box>

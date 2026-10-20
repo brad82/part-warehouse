@@ -1,5 +1,5 @@
 {
-  "name": "@snowcat/web",
+  "name": "@parts-warehouse/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -18,7 +18,7 @@
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.1.2",
     "@reduxjs/toolkit": "^2.11.2",
-    "@snowcat/shared": "file:../../packages/shared",
+    "@parts-warehouse/shared": "file:../../packages/shared",
     "@vitejs/plugin-react": "^4.4.1",
     "@wordpress/block-editor": "^18.1.0",
     "@wordpress/blocks": "^16.2.0",

@@ -9,7 +9,7 @@ import * as selectors from "./selectors";
  * read it with `useSelect(store)` and change it with `useDispatch(store)`.
  * Call `initialize()` on entering the editor: the store outlives the page.
  */
-export const store = createReduxStore("snowcat/label-editor", {
+export const store = createReduxStore("parts-warehouse/label-editor", {
   reducer: (state = initialState, action) => reducer(state, action),
   actions,
   selectors,

@@ -2,13 +2,18 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
-import type { AttributeDef, Grouping, Part, PartType, PartUpdate } from "@snowcat/shared";
+import type { AttributeDef, Grouping, Part, PartType, PartUpdate } from "@parts-warehouse/shared";
+import type { PartImageActions } from "../model/partImageActions";
 import { PartsProvider } from "../PartsProvider";
 import { PartsPage } from "./PartsPage";
 
 // WebGL isn't available in jsdom.
 vi.mock("../components/PartView/StlViewer", () => ({
   StlViewer: () => <div>stl viewer</div>,
+}));
+// Calls RTK Query itself; only shown for parts with an STL.
+vi.mock("../components/PartView/OpenInSlicerButton", () => ({
+  OpenInSlicerButton: () => null,
 }));
 
 const groupings: Grouping[] = [
@@ -31,6 +36,7 @@ const part = (code: string, name: string): Part => ({
   status: "planned",
   source: "csv",
   updatedAt: "2026-10-16T00:00:00.000Z",
+  image: null,
 });
 
 const partTypes: PartType[] = [
@@ -61,6 +67,17 @@ const parts = [
   part("A01-001-002", "Left Outer Grouser 2"),
 ];
 
+const stubImageActions = (): PartImageActions => ({
+  canScrape: true,
+  busy: null,
+  error: null,
+  clearError: vi.fn(),
+  upload: vi.fn(async () => {}),
+  scrape: vi.fn(async () => {}),
+  select: vi.fn(async () => {}),
+  remove: vi.fn(async () => {}),
+});
+
 function renderPage(overrides: Partial<Parameters<typeof PartsProvider>[0]> = {}) {
   const props = {
     groupings,
@@ -80,6 +97,7 @@ function renderPage(overrides: Partial<Parameters<typeof PartsProvider>[0]> = {}
     saveError: null,
     onSave: vi.fn<(update: PartUpdate) => Promise<void>>(async () => {}),
     onSaveNow: vi.fn<(update: PartUpdate) => Promise<void>>(async () => {}),
+    imageActions: stubImageActions(),
     ...overrides,
   };
   const tree = (p: typeof props) => (
@@ -250,4 +268,74 @@ describe("PartsPage", () => {
     expect(props.onSelect).toHaveBeenCalledWith("A01-001-002");
   });
 
+
+  describe("preview", () => {
+    const withImage: Part = {
+      ...parts[0],
+      image: {
+        source: "scrape",
+        sourceUrl: "https://cdn.example.com/a.jpg",
+        candidates: ["https://cdn.example.com/a.jpg", "https://cdn.example.com/b.jpg"],
+        updatedAt: "2026-10-18T00:00:00.000Z",
+      },
+    };
+
+    it("shows only the image panel for a part without an STL", () => {
+      renderPage();
+      expect(screen.queryByRole("tab")).toBeNull();
+      expect(screen.getByRole("button", { name: "Upload image" })).toBeInTheDocument();
+    });
+
+    it("offers the supplier link when there is one", async () => {
+      const user = userEvent.setup();
+      const linked = { ...parts[0], attributes: { ...parts[0].attributes, supplier_url: "https://shop.example.com/bolt" } };
+      const props = renderPage({ selected: linked });
+      await user.click(screen.getByRole("button", { name: "Fetch from supplier link" }));
+      expect(props.imageActions.scrape).toHaveBeenCalled();
+    });
+
+    it("hides supplier-link fetching without the image-scraper module", () => {
+      const linked = { ...parts[0], attributes: { ...parts[0].attributes, supplier_url: "https://shop.example.com/bolt" } };
+      renderPage({
+        selected: linked,
+        imageActions: { ...stubImageActions(), canScrape: false },
+      });
+      expect(screen.queryByRole("button", { name: "Fetch from supplier link" })).toBeNull();
+      expect(screen.getByRole("button", { name: "Upload image" })).toBeInTheDocument();
+    });
+
+    it("shows the image with a picker when the scrape found several", async () => {
+      const user = userEvent.setup();
+      renderPage({ selected: withImage });
+      expect(screen.getByRole("img", { name: withImage.name })).toHaveAttribute(
+        "src",
+        "/api/parts/A01-001-001/image?v=2026-10-18T00%3A00%3A00.000Z",
+      );
+      await user.click(screen.getByRole("button", { name: "Choose another image" }));
+      expect(screen.getByRole("dialog", { name: "Choose an image" })).toBeInTheDocument();
+    });
+
+    it("tabs between the STL and the image, remembering the pick", async () => {
+      const user = userEvent.setup();
+      localStorage.removeItem("partPreviewTab");
+      const both = { ...withImage, attributes: { ...withImage.attributes, file_path: "a.stl" } };
+      const { rerender } = renderPage({ selected: both });
+      expect(screen.getByRole("tab", { name: "3D model" })).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByText("stl viewer")).toBeInTheDocument();
+
+      await user.click(screen.getByRole("tab", { name: "Image" }));
+      expect(screen.getByRole("img", { name: both.name })).toBeInTheDocument();
+      expect(localStorage.getItem("partPreviewTab")).toBe("image");
+
+      // Another part with both opens on the remembered tab.
+      rerender({ selected: { ...both, code: "A01-001-002" }, selectedCode: "A01-001-002" });
+      expect(screen.getByRole("tab", { name: "Image" })).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("opens on the model when the part has no image yet", () => {
+      localStorage.setItem("partPreviewTab", "image");
+      renderPage({ selected: { ...parts[0], attributes: { ...parts[0].attributes, file_path: "a.stl" } } });
+      expect(screen.getByRole("tab", { name: "3D model" })).toHaveAttribute("aria-selected", "true");
+    });
+  });
 });

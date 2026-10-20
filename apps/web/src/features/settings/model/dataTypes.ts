@@ -1,4 +1,4 @@
-import type { AttributeDataType } from "@snowcat/shared";
+import type { AttributeDataType } from "@parts-warehouse/shared";
 
 export const DATA_TYPE_LABELS: Record<AttributeDataType, string> = {
   text: "Text",

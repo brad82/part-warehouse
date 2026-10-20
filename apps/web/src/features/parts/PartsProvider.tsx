@@ -6,8 +6,9 @@ import type {
   PartType,
   PartUpdate,
   PreviewColour,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { defsForType } from "./model/attributeFields";
+import type { PartImageActions } from "./model/partImageActions";
 import { buildTree } from "./model/buildTree";
 import { usePartDraft, type PartDraft } from "./model/usePartDraft";
 import { usePartStock, type PartStock } from "./model/usePartStock";
@@ -37,6 +38,8 @@ type Props = {
    * Throws a readable Error on failure.
    */
   onSaveNow: (update: PartUpdate) => Promise<void>;
+  /** Upload / scrape / swap / remove the selected part's image. */
+  imageActions: PartImageActions;
 };
 
 type PartsContextValue = Omit<Props, "children"> & {
@@ -117,6 +120,11 @@ export function usePartForm() {
     [attributeDefs, partTypeId],
   );
   return { ...draft, part: selected, saving, saveError, partTypes, defs };
+}
+
+export function usePartImage() {
+  const { selected, imageActions } = usePartsContext();
+  return { part: selected, ...imageActions };
 }
 
 export function usePartStockStrip() {

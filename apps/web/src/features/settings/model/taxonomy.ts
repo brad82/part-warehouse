@@ -1,4 +1,4 @@
-import type { Taxonomy } from "@snowcat/shared";
+import type { Taxonomy } from "@parts-warehouse/shared";
 
 export const TAXONOMY_LABELS: Record<Taxonomy, string> = {
   module: "Module",

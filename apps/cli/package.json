@@ -1,5 +1,5 @@
 {
-  "name": "@snowcat/cli",
+  "name": "@parts-warehouse/cli",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@snowcat/db": "file:../../packages/db",
-    "@snowcat/shared": "file:../../packages/shared",
+    "@parts-warehouse/db": "file:../../packages/db",
+    "@parts-warehouse/shared": "file:../../packages/shared",
     "pdfkit": "^0.17.2",
     "svg-to-pdfkit": "^0.1.8"
   },

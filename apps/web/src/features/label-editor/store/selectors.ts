@@ -1,5 +1,5 @@
 import { createSelector } from "@wordpress/data";
-import type { LabelTemplate } from "@snowcat/shared";
+import type { LabelTemplate } from "@parts-warehouse/shared";
 import { blocksToElements } from "../model/convert";
 import { sameData } from "../model/sameData";
 import { fitScale } from "../model/zoom";

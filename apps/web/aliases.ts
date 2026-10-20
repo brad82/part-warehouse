@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from "node:url";
 
 export const aliases = {
-  "@snowcat/shared": fileURLToPath(
+  "@parts-warehouse/shared": fileURLToPath(
     new URL("../../packages/shared/src/index.ts", import.meta.url),
   ),
   "@app": fileURLToPath(new URL("./src/app", import.meta.url)),

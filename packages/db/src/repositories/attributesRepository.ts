@@ -7,7 +7,7 @@ import {
   type PartType,
   type PartTypeCreate,
   type PartTypeUpdate,
-} from "@snowcat/shared";
+} from "@parts-warehouse/shared";
 import { DomainError } from "../errors.js";
 
 type AttributeDefRow = {

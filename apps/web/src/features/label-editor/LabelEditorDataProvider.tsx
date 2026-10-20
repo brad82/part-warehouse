@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { useDispatch, useSelect } from "@wordpress/data";
-import type { LabelTemplate, LabelTemplateInput, Part } from "@snowcat/shared";
+import type { LabelTemplate, LabelTemplateInput, Part } from "@parts-warehouse/shared";
 import type { FieldOption } from "./model/CanvasContext";
 import { store } from "./store";
 

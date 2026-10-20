@@ -4,9 +4,11 @@ import {
   attributesRepository,
   labelTemplatesRepository,
   loadLabelTemplateFiles,
+  partImagesRepository,
   partsRepository,
   previewColoursRepository,
-} from "@snowcat/db";
+} from "@parts-warehouse/db";
+import type { Capabilities } from "@parts-warehouse/shared";
 import type Database from "better-sqlite3";
 import Fastify from "fastify";
 import {
@@ -14,11 +16,13 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import type { ImageScraper } from "@parts-warehouse/image-scraper-proto";
 import { config } from "./config.js";
 import type { OpenInSlicer } from "./lib/slicer.js";
 import { attributesRoutes } from "./routes/attributes-routes.js";
 import { groupingsRoutes } from "./routes/groupings-routes.js";
 import { labelTemplatesRoutes } from "./routes/label-templates-routes.js";
+import { partImagesRoutes } from "./routes/part-images-routes.js";
 import { partsRoutes } from "./routes/parts-routes.js";
 import { previewColoursRoutes } from "./routes/preview-colours-routes.js";
 
@@ -26,6 +30,9 @@ type Options = {
   db: Database.Database;
   modelFilesDir?: string;
   openInSlicer?: OpenInSlicer;
+  partImagesDir?: string;
+  /** The optional image-scraper app (a gRPC client); null turns scraping off. */
+  scraper?: ImageScraper | null;
   logger?: boolean;
   /** Folder of built-in label templates, added to the db if missing. */
   labelTemplatesDir?: string;
@@ -35,6 +42,8 @@ export async function buildServer({
   db,
   modelFilesDir,
   openInSlicer,
+  partImagesDir,
+  scraper = null,
   logger = true,
   labelTemplatesDir = config.labelTemplatesDir,
 }: Options) {
@@ -47,11 +56,19 @@ export async function buildServer({
   const repo = partsRepository(db);
   const attributes = attributesRepository(db);
   app.get("/health", async () => ({ ok: true }));
+  // Optional modules installed, so the web app can hide what's missing.
+  app.get("/capabilities", async (): Promise<Capabilities> => ({ imageScraper: scraper != null }));
   await app.register(partsRoutes, {
     repo,
     attributes,
     modelFilesDir,
     openInSlicer,
+  });
+  await app.register(partImagesRoutes, {
+    repo,
+    images: partImagesRepository(db),
+    partImagesDir,
+    scraper,
   });
   await app.register(attributesRoutes, { attributes });
   await app.register(groupingsRoutes, { repo });

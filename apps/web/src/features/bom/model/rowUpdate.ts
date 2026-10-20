@@ -1,4 +1,4 @@
-import { partUpdateSchema, type PartUpdate } from "@snowcat/shared";
+import { partUpdateSchema, type PartUpdate } from "@parts-warehouse/shared";
 import type { BomRow } from "./buildRows";
 
 /** Fields the grid lets you edit inline. */

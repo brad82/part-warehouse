@@ -1,5 +1,5 @@
 {
-  "name": "@snowcat/db",
+  "name": "@parts-warehouse/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@snowcat/shared": "file:../shared",
+    "@parts-warehouse/shared": "file:../shared",
     "better-sqlite3": "^12.2.0"
   },
   "devDependencies": {

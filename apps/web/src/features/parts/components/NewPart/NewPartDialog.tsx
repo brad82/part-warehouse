@@ -13,7 +13,7 @@ import {
   Typography,
   type TextFieldProps,
 } from "@mui/material";
-import type { Grouping, PartCreate, PartType } from "@snowcat/shared";
+import type { Grouping, PartCreate, PartType } from "@parts-warehouse/shared";
 import { useNewPart, type NewPartValues } from "../../model/useNewPart";
 
 type Props = {

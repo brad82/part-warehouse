@@ -16,7 +16,7 @@ import {
   TextField,
   type TextFieldProps,
 } from "@mui/material";
-import type { AttributeDef, AttributeDefCreate, PartType } from "@snowcat/shared";
+import type { AttributeDef, AttributeDefCreate, PartType } from "@parts-warehouse/shared";
 import { useAttributeForm, type AttributeFormValues } from "../model/useAttributeForm";
 import { DATA_TYPE_LABELS } from "../model/dataTypes";
 

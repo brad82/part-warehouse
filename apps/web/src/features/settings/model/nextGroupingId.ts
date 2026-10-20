@@ -1,4 +1,4 @@
-import type { Grouping, Taxonomy } from "@snowcat/shared";
+import type { Grouping, Taxonomy } from "@parts-warehouse/shared";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

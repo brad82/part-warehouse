@@ -13,11 +13,15 @@ coverage/
 # Local SQLite database (rebuilt with `npm run import`)
 data/*.db
 data/*.db-*
+# Part images uploaded or scraped in the app (PART_IMAGES_DIR)
+data/part-images/
+# Cookies of the supplier-page browser (BROWSER_PROFILE_DIR)
+data/browser-profile/
 
 # Local HTTPS certs for the Vite dev server
 certs/
 
-# Environment overrides (PORT, HOST, DB_PATH, MODEL_FILES_DIR, PARTS_INDEX_CSV)
+# Environment overrides (PORT, HOST, DB_PATH, MODEL_FILES_DIR, PART_IMAGES_DIR, PARTS_INDEX_CSV)
 .env
 .env.*
 !.env.example

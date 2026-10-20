@@ -1,4 +1,4 @@
-import { renderLabelSvg } from "@snowcat/shared";
+import { renderLabelSvg } from "@parts-warehouse/shared";
 import { SMALL_LABEL } from "../testing/smallLabel";
 import { FIELD_NAMES_PART } from "./fields";
 

@@ -3,8 +3,8 @@ import {
   previewColourCreateSchema,
   previewColourIdParamsSchema,
   previewColourUpdateSchema,
-} from "@snowcat/shared";
-import type { PreviewColoursRepository } from "@snowcat/db";
+} from "@parts-warehouse/shared";
+import type { PreviewColoursRepository } from "@parts-warehouse/db";
 
 /** STL viewer colours, edited on Settings → STL Preview. */
 export const previewColoursRoutes: FastifyPluginAsyncZod<{

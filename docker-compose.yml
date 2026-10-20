@@ -5,8 +5,23 @@ services:
       dockerfile: apps/api/.docker/Dockerfile
     init: true
     restart: unless-stopped
+    environment:
+      # Set to image-scraper:50051 when running the scraper profile.
+      IMAGE_SCRAPER_URL: ${IMAGE_SCRAPER_URL:-}
     volumes:
       - parts-data:/data
+
+  # Optional supplier-link image scraping (headless Chromium):
+  #   IMAGE_SCRAPER_URL=image-scraper:50051 docker compose --profile scraper up -d
+  image-scraper:
+    profiles: [scraper]
+    build:
+      context: .
+      dockerfile: apps/image-scraper/.docker/Dockerfile
+    init: true
+    restart: unless-stopped
+    volumes:
+      - scraper-data:/data
 
   web:
     build:
@@ -30,3 +45,4 @@ services:
 
 volumes:
   parts-data:
+  scraper-data:

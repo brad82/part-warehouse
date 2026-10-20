@@ -5,13 +5,14 @@ import { Bounds, OrbitControls } from "@react-three/drei";
 import { FileX } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import type { BufferGeometry } from "three";
-import type { PreviewColour } from "@snowcat/shared";
+import type { PreviewColour } from "@parts-warehouse/shared";
 import { StlNotFoundError, fetchStlGeometry } from "@shared/lib/stl";
 import { useModelColour } from "../../model/useModelColour";
 import {
   VIEWER_BACKGROUNDS,
   useViewerAppearance,
 } from "../../model/useViewerAppearance";
+import { previewFrameSx } from "./previewFrame";
 import { ViewerGrid, useGridMetrics } from "./ViewerGrid";
 import { ViewerToolbar } from "./ViewerToolbar";
 
@@ -29,12 +30,7 @@ type LoadState =
   | { status: "error"; message: string };
 
 const viewerStyles = {
-  paper: {
-    height: { xs: 300, sm: 360, lg: "calc(100dvh - 200px)" },
-    minHeight: 360,
-    position: "relative",
-    overflow: "hidden",
-  },
+  paper: previewFrameSx,
   overlay: {
     position: "absolute",
     inset: 0,

@@ -115,6 +115,23 @@ export const groupingCreateSchema = groupingSchema
     }
   });
 
+/**
+ * A part's preview image. The file is served by `GET /parts/:code/image`;
+ * `updatedAt` changes with each new image, so it doubles as a cache-buster.
+ * `candidates` are the image URLs the last supplier-link scrape found.
+ */
+export const partImageSchema = z.object({
+  source: z.enum(["upload", "scrape"]),
+  sourceUrl: z.string().nullable(),
+  candidates: z.array(z.string()),
+  updatedAt: z.string(),
+});
+
+/** Optional modules the API has (GET /capabilities). */
+export const capabilitiesSchema = z.object({ imageScraper: z.boolean() });
+
+export const partImageSelectSchema = z.object({ url: z.string().url() });
+
 export const partSchema = z.object({
   code: partCodeSchema,
   groupId: z.string(),
@@ -130,6 +147,7 @@ export const partSchema = z.object({
   status: partStatusSchema,
   source: z.string(),
   updatedAt: z.string(),
+  image: partImageSchema.nullable(),
 });
 
 /**
@@ -179,6 +197,8 @@ export type Grouping = z.infer<typeof groupingSchema>;
 export type GroupingUpdate = z.infer<typeof groupingUpdateSchema>;
 export type GroupingCreate = z.infer<typeof groupingCreateSchema>;
 export type Part = z.infer<typeof partSchema>;
+export type PartImage = z.infer<typeof partImageSchema>;
+export type Capabilities = z.infer<typeof capabilitiesSchema>;
 export type PartUpdate = z.infer<typeof partUpdateSchema>;
 export type PartCreate = z.infer<typeof partCreateSchema>;
 export type PartType = z.infer<typeof partTypeSchema>;

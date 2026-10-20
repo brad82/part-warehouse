@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { Box } from "@mui/material";
-import type { LabelTemplate, Part } from "@snowcat/shared";
+import type { LabelTemplate, Part } from "@parts-warehouse/shared";
 import { TemplateLabel } from "./Templates/TemplateLabel";
 
 type Props = {

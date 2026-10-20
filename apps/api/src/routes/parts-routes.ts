@@ -9,8 +9,8 @@ import {
   partCreateSchema,
   partListQuerySchema,
   partUpdateSchema,
-} from "@snowcat/shared";
-import type { AttributesRepository, PartsRepository } from "@snowcat/db";
+} from "@parts-warehouse/shared";
+import type { AttributesRepository, PartsRepository } from "@parts-warehouse/db";
 import { config } from "../config.js";
 import { toCsv } from "../lib/csv.js";
 import { slicerLauncher, type OpenInSlicer } from "../lib/slicer.js";

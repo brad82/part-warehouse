@@ -9,7 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import type { PartType } from "@snowcat/shared";
+import type { PartType } from "@parts-warehouse/shared";
 
 type Props = {
   partType: PartType | null;

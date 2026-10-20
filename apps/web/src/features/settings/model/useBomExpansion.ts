@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { GroupingRow } from "./groupingRows";
 
-const STORAGE_KEY = "snowcat.bomStructure.expanded";
+const STORAGE_KEY = "parts-warehouse.bomStructure.expanded";
 
 function load(): Set<string> | null {
   try {

@@ -1,4 +1,4 @@
-import { attrNumber, type Part } from "@snowcat/shared";
+import { attrNumber, type Part } from "@parts-warehouse/shared";
 
 export const PRICE_KEY = "price";
 

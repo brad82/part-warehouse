@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Box, LinearProgress } from "@mui/material";
 import { useDispatch, useSelect } from "@wordpress/data";
-import type { LabelTemplateInput } from "@snowcat/shared";
+import type { LabelTemplateInput } from "@parts-warehouse/shared";
 import {
   useCreateLabelTemplateMutation,
   useDeleteLabelTemplateMutation,

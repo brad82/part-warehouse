@@ -1,6 +1,6 @@
 import { createBlock, type Block } from "@wordpress/blocks";
-import type { LabelElement, LabelTemplate } from "@snowcat/shared";
-import { renderStlToPng } from "@features/labels";
+import type { LabelElement, LabelTemplate } from "@parts-warehouse/shared";
+import { renderPartPreview } from "@features/labels";
 import { registerLabelBlocks } from "../blocks/registerLabelBlocks";
 import { elementsToBlocks } from "../model/convert";
 import { blankDraft, draftOf, duplicateDraft, toInput } from "../model/drafts";
@@ -152,7 +152,7 @@ export const selectSamplePart =
   (partCode: string): Thunk<Promise<void>> =>
   async ({ dispatch, select }) => {
     dispatch({ type: "SET_SAMPLE_PART", partCode });
-    const render = await renderStlToPng(partCode);
+    const render = await renderPartPreview(partCode);
     if (select.getSample().partCode === partCode) {
       dispatch({ type: "SET_SAMPLE_RENDER", render });
     }

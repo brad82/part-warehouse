@@ -6,7 +6,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Grid3x3, Monitor, Moon, Sun } from "lucide-react";
-import type { PreviewColour } from "@snowcat/shared";
+import type { PreviewColour } from "@parts-warehouse/shared";
 import type { ModelColour, ModelColourChoice } from "../../model/useModelColour";
 import type { ViewerAppearance, ViewerBackground } from "../../model/useViewerAppearance";
 

@@ -9,7 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import type { PreviewColour, PreviewColourCreate } from "@snowcat/shared";
+import type { PreviewColour, PreviewColourCreate } from "@parts-warehouse/shared";
 
 type Props = {
   colour: PreviewColour | null;

@@ -1,10 +1,10 @@
-import { tidyBarcode, type LabelElement } from "@snowcat/shared";
+import { tidyBarcode, type LabelElement } from "@parts-warehouse/shared";
 
 /** Block names, one per label element type. */
 export const LABEL_BLOCK = {
-  barcode: "snowcat/label-barcode",
-  text: "snowcat/label-text",
-  image: "snowcat/label-render",
+  barcode: "parts-warehouse/label-barcode",
+  text: "parts-warehouse/label-text",
+  image: "parts-warehouse/label-render",
 } as const;
 
 export type LabelBlockName = (typeof LABEL_BLOCK)[LabelElement["type"]];

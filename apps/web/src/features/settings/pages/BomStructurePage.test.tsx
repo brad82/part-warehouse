@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Grouping, Part } from "@snowcat/shared";
+import type { Grouping, Part } from "@parts-warehouse/shared";
 import { groupingRows } from "../model/groupingRows";
 import { BomStructurePage } from "./BomStructurePage";
 

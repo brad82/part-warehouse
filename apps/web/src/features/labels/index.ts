@@ -1,6 +1,6 @@
 export { PrintLabelButton } from "./components/PrintLabelButton";
 export { Svg } from "./components/Templates/Svg";
-export { renderStlToPng } from "./model/renderStlToPng";
+export { renderPartPreview } from "./model/renderPartPreview";
 export {
   useCreateLabelTemplateMutation,
   useDeleteLabelTemplateMutation,

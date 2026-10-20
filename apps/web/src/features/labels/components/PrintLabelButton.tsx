@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@mui/material";
 import { Printer } from "lucide-react";
-import type { Part } from "@snowcat/shared";
+import type { Part } from "@parts-warehouse/shared";
 import { LabelDialog } from "./LabelDialog";
 
 export function PrintLabelButton({ part }: { part: Part }) {

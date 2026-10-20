@@ -10,10 +10,12 @@ RUN apt-get update \
 COPY package.json package-lock.json ./
 COPY apps/api/package.json apps/api/
 COPY apps/cli/package.json apps/cli/
+COPY apps/image-scraper/package.json apps/image-scraper/
 COPY apps/web/package.json apps/web/
 COPY packages/db/package.json packages/db/
+COPY packages/image-scraper-proto/package.json packages/image-scraper-proto/
 COPY packages/shared/package.json packages/shared/
-RUN npm ci --workspace @snowcat/api
+RUN npm ci --workspace @parts-warehouse/api
 
 FROM node:24-bookworm-slim
 WORKDIR /app
@@ -21,11 +23,15 @@ ENV NODE_ENV=production \
   HOST=0.0.0.0 \
   PORT=4000 \
   DB_PATH=/data/parts.db \
-  MODEL_FILES_DIR=/models
+  MODEL_FILES_DIR=/models \
+  PART_IMAGES_DIR=/data/part-images
+# IMAGE_SCRAPER_URL (host:port of the optional image-scraper app) is set
+# at run time; unset, supplier-link scraping is off.
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY packages/shared ./packages/shared
 COPY packages/db ./packages/db
+COPY packages/image-scraper-proto ./packages/image-scraper-proto
 COPY apps/api ./apps/api
 RUN mkdir -p /data && chown node:node /data
 USER node

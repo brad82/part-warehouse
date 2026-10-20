@@ -1,11 +1,10 @@
 import { Alert, Box, CircularProgress, Grid, Link, Typography } from "@mui/material";
 import { Boxes } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
-import { ATTR, attrText } from "@snowcat/shared";
 import { useSelectedPart } from "../../PartsProvider";
 import { PartFields } from "./PartFields";
 import { PartHeader } from "./PartHeader";
-import { StlViewer } from "./StlViewer";
+import { PartPreview } from "./PartPreview";
 import { StockStrip } from "./StockStrip";
 
 const viewStyles = {
@@ -24,7 +23,7 @@ const viewStyles = {
 
 /** Dispatches between empty / loading / error / the part itself. */
 export function PartView() {
-  const { part, code, loading, error, previewColours } = useSelectedPart();
+  const { part, code, loading, error } = useSelectedPart();
 
   if (!code) {
     return (
@@ -48,8 +47,6 @@ export function PartView() {
     );
   }
 
-  // Only parts with a model file (printed ones) get the viewer.
-  const hasModel = attrText(part, ATTR.filePath) != null;
   return (
     <Box sx={viewStyles.root}>
       <PartHeader />
@@ -58,17 +55,11 @@ export function PartView() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <PartFields />
         </Grid>
-        {hasModel ? (
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <Box sx={viewStyles.viewer}>
-              <StlViewer
-                code={part.code}
-                colour={attrText(part, ATTR.colour) ?? ""}
-                colours={previewColours}
-              />
-            </Box>
-          </Grid>
-        ) : null}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Box sx={viewStyles.viewer}>
+            <PartPreview key={part.code} />
+          </Box>
+        </Grid>
       </Grid>
     </Box>
   );

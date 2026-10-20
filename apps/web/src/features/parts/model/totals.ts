@@ -1,4 +1,4 @@
-import { ATTR, attrNumber, type Part } from "@snowcat/shared";
+import { ATTR, attrNumber, type Part } from "@parts-warehouse/shared";
 
 /** Per-build totals derived from one-print values. Pure; no formatting. */
 export function partTotals(part: Pick<Part, "qtyPerBuild" | "onHand" | "attributes">) {

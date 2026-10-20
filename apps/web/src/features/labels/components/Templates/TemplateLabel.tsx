@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { renderLabelSvg, type LabelLayout, type Part } from "@snowcat/shared";
+import { renderLabelSvg, type LabelLayout, type Part } from "@parts-warehouse/shared";
 import { Svg } from "./Svg";
 
 type Props = { template: LabelLayout; part: Part; render: string | null };

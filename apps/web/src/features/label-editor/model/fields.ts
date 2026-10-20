@@ -1,4 +1,4 @@
-import type { AttributeDef, Part } from "@snowcat/shared";
+import type { AttributeDef, Part } from "@parts-warehouse/shared";
 import type { FieldOption } from "./CanvasContext";
 
 /** Part fields a label can print, in menu order. */

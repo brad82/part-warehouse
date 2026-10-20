@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Minus, Plus } from "lucide-react";
-import type { PartStatus } from "@snowcat/shared";
+import type { PartStatus } from "@parts-warehouse/shared";
 import { usePartStockStrip } from "../../PartsProvider";
 
 const stripStyles = {

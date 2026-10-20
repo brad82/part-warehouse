@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ChevronRight, Pencil, Plus, Search, Trash2 } from "lucide-react";
-import type { Grouping, Taxonomy } from "@snowcat/shared";
+import type { Grouping, Taxonomy } from "@parts-warehouse/shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { GroupingDialog } from "../components/GroupingDialog";
 import type { GroupingRow } from "../model/groupingRows";

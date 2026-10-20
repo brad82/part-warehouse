@@ -8,7 +8,8 @@
   },
   "references": [
     { "path": "../../packages/shared" },
-    { "path": "../../packages/db" }
+    { "path": "../../packages/db" },
+    { "path": "../../packages/image-scraper-proto" }
   ],
   "include": ["src"]
 }

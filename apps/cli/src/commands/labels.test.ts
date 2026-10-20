@@ -3,8 +3,8 @@ import {
   labelTemplatesRepository,
   loadLabelTemplateFiles,
   openDb,
-} from "@snowcat/db";
-import { AVERY_5160 } from "@snowcat/shared";
+} from "@parts-warehouse/db";
+import { AVERY_5160 } from "@parts-warehouse/shared";
 import { config } from "../config.js";
 import { importParts } from "./import.js";
 import {

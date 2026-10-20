@@ -1,6 +1,6 @@
 import { IconButton, InputAdornment, MenuItem, TextField } from "@mui/material";
 import { ExternalLink } from "lucide-react";
-import { isNumericAttribute, parseAttributeValue, type AttributeDef } from "@snowcat/shared";
+import { isNumericAttribute, parseAttributeValue, type AttributeDef } from "@parts-warehouse/shared";
 import { attributeLabel } from "../../model/attributeFields";
 
 type Props = {

@@ -134,3 +134,15 @@ CREATE TABLE IF NOT EXISTS label_templates (
   builtin     INTEGER NOT NULL DEFAULT 0,
   updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
+
+-- One preview image per part (uploaded, or scraped from its supplier link).
+-- The file lives in the API's PART_IMAGES_DIR; `candidates` is the JSON list
+-- of image URLs found by the last scrape, so another can be picked.
+CREATE TABLE IF NOT EXISTS part_images (
+  part_code  TEXT PRIMARY KEY REFERENCES parts (code) ON DELETE CASCADE,
+  file       TEXT NOT NULL,
+  source     TEXT NOT NULL CHECK (source IN ('upload', 'scrape')),
+  source_url TEXT,
+  candidates TEXT,
+  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);

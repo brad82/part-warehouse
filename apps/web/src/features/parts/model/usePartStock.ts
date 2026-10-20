@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { partUpdateSchema, type Part, type PartStatus, type PartUpdate } from "@snowcat/shared";
+import { partUpdateSchema, type Part, type PartStatus, type PartUpdate } from "@parts-warehouse/shared";
 import { stockCoverage } from "./stockCoverage";
 
 /**

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@snowcat/db";
+import { openDb, partsRepository } from "@parts-warehouse/db";
 import { buildServer } from "../app.js";
 
 let app: Awaited<ReturnType<typeof buildServer>>;

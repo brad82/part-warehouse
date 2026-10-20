@@ -2,8 +2,8 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   labelTemplateIdParamsSchema,
   labelTemplateInputSchema,
-} from "@snowcat/shared";
-import type { LabelTemplatesRepository } from "@snowcat/db";
+} from "@parts-warehouse/shared";
+import type { LabelTemplatesRepository } from "@parts-warehouse/db";
 
 /** Label templates: made in the label editor, printed by web and CLI. */
 export const labelTemplatesRoutes: FastifyPluginAsyncZod<{
