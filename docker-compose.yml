@@ -33,6 +33,22 @@ services:
     ports:
       - "${WEB_PORT:-3000}:80"
 
+  # Green-screen telnet terminal (MC9090 / any VT220): telnet <host> 23
+  terminal:
+    build: apps/terminal
+    init: true
+    restart: unless-stopped
+    environment:
+      # Shown top right of every screen, to tell environments apart.
+      SYSTEM_NAME: ${SYSTEM_NAME:-SCPROD}
+      # Screen size when the client doesn't report one (MC9090 fits 28x16).
+      TERM_COLS: ${TERM_COLS:-28}
+      TERM_ROWS: ${TERM_ROWS:-16}
+    volumes:
+      - parts-data:/data
+    ports:
+      - "${TERMINAL_PORT:-23}:2323"
+
   # One-off commands: `docker compose run --rm cli import`.
   cli:
     profiles: [tools]

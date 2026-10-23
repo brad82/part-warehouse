@@ -12,7 +12,7 @@ npm test && npm run typecheck && npm run lint
 ```
 
 - Layout: `apps/api` (Fastify), `apps/web` (React), `apps/cli` (import and
-  other one-off commands), `apps/image-scraper` (optional, gRPC),
+  other one-off commands), `apps/image-scraper` (optional, gRPC), `apps/terminal` (green-screen telnet terminal, Rust),
   `packages/db` (SQLite schema + repositories), `packages/shared` (zod
   schemas, used everywhere), `packages/image-scraper-proto` (the scraper's
   gRPC contract and client).
@@ -70,6 +70,22 @@ npm test && npm run typecheck && npm run lint
   AirDrop `$(mkcert -CAROOT)/rootCA.pem` to the iPad, install the profile, and
   enable it under Settings → General → About → Certificate Trust Settings.
   Restart `npm run dev`; the URL becomes `https://`. Re-add the home screen icon.
+- Green screen (`apps/terminal`, a Rust crate; needs `cargo`): an
+  AS/400-style telnet terminal for handhelds like the MC9090. `npm run
+  dev:terminal` (also part of `npm run dev`) listens on port 2323; try it with
+  `telnet localhost 2323` (`brew install telnet`). Unit tests: `npm run
+  test:terminal`. Menu: 1 Work with parts (search, page, 2=Adjust,
+  5=Display), 2 Display part, 3 Adjust stock (R=Receive, I=Issue, C=Count).
+  Scan a label on any screen with a scan field. Commands work too:
+  `WRKPRT tracks`, `DSPPRT A01-001-001`, `ADJSTK`, `SIGNOFF`. Keys: F3=Exit,
+  F2=Cancel (F12 and Esc too), F5=Refresh, F7/F8 or PgUp/PgDn=page, Tab=next field.
+  Screen size comes from the client, else `TERM_COLS`×`TERM_ROWS` (28×16);
+  `TERM_IGNORE_NAWS=1` forces those. `SYSTEM_NAME` (top right of every
+  screen) defaults to `SCDEV` locally and `SCPROD` in Docker. No sign-on, so anyone on the LAN can
+  connect and change stock.
+- Wavelink TE on the MC9090: new Telnet VT session, emulation VT220, host =
+  the Mac's LAN IP, port 2323 (23 with Docker). Set the scanner to send
+  Enter after each barcode.
 
 ## Docker
 

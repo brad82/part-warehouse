@@ -1,0 +1,14 @@
+[package]
+name = "parts-terminal"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "AS/400-style green-screen telnet terminal for the parts warehouse"
+
+[dependencies]
+rusqlite = { version = "0.37", features = ["bundled"] }
+thiserror = "2"
+unicode-normalization = "0.1"
+
+[profile.release]
+strip = true

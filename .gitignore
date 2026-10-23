@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+target/
 *.tsbuildinfo
 .vite/
 
@@ -17,6 +18,7 @@ data/*.db-*
 data/part-images/
 # Cookies of the supplier-page browser (BROWSER_PROFILE_DIR)
 data/browser-profile/
+data
 
 # Local HTTPS certs for the Vite dev server
 certs/
