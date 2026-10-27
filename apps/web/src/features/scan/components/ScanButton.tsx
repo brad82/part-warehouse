@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { alpha, type Theme } from "@mui/material/styles";
 import { ScanLine } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useLazyGetPartQuery } from "@features/parts";
+import { useLazyGetPartQuery } from "@shared/api/catalogApi";
 import { ScanDialog } from "./ScanDialog";
 
 const scanStyles = {

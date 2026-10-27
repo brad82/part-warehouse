@@ -16,7 +16,7 @@ import type {
 } from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
 
-// Lists come from partsApi (listPartTypes, listAttributeDefs). Changing a
+// Lists come from catalogApi (listPartTypes, listAttributeDefs). Changing a
 // definition can change parts (deleted values), so parts refetch too.
 export const settingsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({

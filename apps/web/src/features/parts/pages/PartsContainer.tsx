@@ -10,7 +10,7 @@ import {
   useListPartsQuery,
   useListPreviewColoursQuery,
   useUpdatePartMutation,
-} from "../api/partsApi";
+} from "@shared/api/catalogApi";
 import { usePartImageActions } from "../api/usePartImageActions";
 import { useDebouncedValue } from "../model/useDebouncedValue";
 import { PartsProvider } from "../PartsProvider";

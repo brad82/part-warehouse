@@ -9,7 +9,7 @@ import {
   useListLabelTemplatesQuery,
   useUpdateLabelTemplateMutation,
 } from "@features/labels";
-import { useListAttributeDefsQuery, useListPartsQuery } from "@features/parts";
+import { useListAttributeDefsQuery, useListPartsQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   LabelEditorDataProvider,

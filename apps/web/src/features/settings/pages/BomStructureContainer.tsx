@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useListGroupingsQuery, useListPartsQuery } from "@features/parts";
+import { useListGroupingsQuery, useListPartsQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreateGroupingMutation,

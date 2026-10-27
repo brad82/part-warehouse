@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { partUpdateSchema, type Part, type PartStatus, type PartUpdate } from "@parts-warehouse/shared";
-import { stockCoverage } from "./stockCoverage";
+import { stockCoverage } from "@shared/lib/stockCoverage";
 
 /**
  * On hand and status for the stock strip. Each change saves at once (like

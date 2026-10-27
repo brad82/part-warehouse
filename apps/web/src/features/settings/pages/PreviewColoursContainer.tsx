@@ -1,4 +1,4 @@
-import { useListPreviewColoursQuery } from "@features/parts";
+import { useListPreviewColoursQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreatePreviewColourMutation,

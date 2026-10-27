@@ -1,7 +1,9 @@
 import { ATTR, attrNumber, type Part } from "@parts-warehouse/shared";
 
 /** Per-build totals derived from one-print values. Pure; no formatting. */
-export function partTotals(part: Pick<Part, "qtyPerBuild" | "onHand" | "attributes">) {
+export function partTotals(
+  part: Pick<Part, "qtyPerBuild" | "onHand" | "attributes">,
+) {
   const printTimeMin = attrNumber(part, ATTR.printTimeMin);
   const filamentG = attrNumber(part, ATTR.filamentG);
   return {

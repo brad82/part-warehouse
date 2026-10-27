@@ -1,4 +1,4 @@
-import { useListAttributeDefsQuery, useListPartTypesQuery } from "@features/parts";
+import { useListAttributeDefsQuery, useListPartTypesQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreateAttributeDefMutation,

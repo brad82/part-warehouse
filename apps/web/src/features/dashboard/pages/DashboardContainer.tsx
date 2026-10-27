@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { errorMessage } from "@shared/api/errors";
-import { useListPartsQuery } from "@features/parts";
+import { useListPartsQuery } from "@shared/api/catalogApi";
 import { inventoryMetrics } from "../model/metrics";
 import { DashboardPage } from "./DashboardPage";
 
