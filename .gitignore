@@ -41,3 +41,5 @@ Thumbs.db
 
 # Per-installation compose overrides (host paths)
 docker-compose.override.yml
+# Label PDFs written by the CLI
+data/labels/
