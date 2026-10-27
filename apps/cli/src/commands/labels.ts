@@ -5,26 +5,20 @@
  */
 import { writeFileSync } from "node:fs";
 import type Database from "better-sqlite3";
-import PDFDocument from "pdfkit";
-import SVGtoPDF from "svg-to-pdfkit";
 import {
   labelTemplatesRepository,
   loadLabelTemplateFiles,
   openDb,
   partsRepository,
 } from "@parts-warehouse/db";
+import { renderLabelsPdf } from "@parts-warehouse/label-pdf";
 import {
   AVERY_5160,
-  renderLabelSvg,
   sheetCapacity,
-  slotPosition,
   type LabelSheet,
-  type LabelLayout,
   type LabelTemplate,
   type Part,
 } from "@parts-warehouse/shared";
-
-const MM_TO_PT = 72 / 25.4;
 
 /** Parts named by `codes` plus any matching `query`, sorted by code. */
 export function selectParts(
@@ -46,12 +40,6 @@ export function selectParts(
   if (query)
     for (const part of repo.listParts(query)) byCode.set(part.code, part);
   return [...byCode.values()].sort((a, b) => a.code.localeCompare(b.code));
-}
-
-// The SVG's fonts, as standard PDF fonts (same metrics the template wraps with).
-function pdfFont(family: string, bold: boolean): string {
-  if (/courier|mono/i.test(family)) return bold ? "Courier-Bold" : "Courier";
-  return bold ? "Helvetica-Bold" : "Helvetica";
 }
 
 /** The stored template `id`; throws listing the ids there are. */
@@ -78,49 +66,6 @@ export function assertFitsSheet(template: LabelTemplate, sheet: LabelSheet) {
         `${sheet.id} slots are ${sheet.columnPitchMm}×${sheet.rowPitchMm}mm`,
     );
   }
-}
-
-/** One label per part from slot `start` on; returns the PDF and page count. */
-export function renderLabelsPdf(
-  parts: Part[],
-  {
-    template,
-    start = 1,
-    sheet = AVERY_5160,
-  }: { template: LabelLayout; start?: number; sheet?: LabelSheet },
-): Promise<{ pdf: Buffer; pages: number }> {
-  const doc = new PDFDocument({
-    size: [sheet.pageWidthMm * MM_TO_PT, sheet.pageHeightMm * MM_TO_PT],
-    margin: 0,
-    info: { Title: "Parts Warehouse labels" },
-  });
-  const chunks: Buffer[] = [];
-  doc.on("data", (chunk: Buffer) => chunks.push(chunk));
-  const done = new Promise<Buffer>((resolve) =>
-    doc.on("end", () => resolve(Buffer.concat(chunks))),
-  );
-
-  let pages = 1;
-  parts.forEach((part, i) => {
-    const { page, xMm, yMm } = slotPosition(sheet, start + i);
-    while (pages <= page) {
-      doc.addPage();
-      pages++;
-    }
-    SVGtoPDF(
-      doc,
-      renderLabelSvg(template, part),
-      xMm * MM_TO_PT,
-      yMm * MM_TO_PT,
-      {
-        width: template.widthMm * MM_TO_PT,
-        height: template.heightMm * MM_TO_PT,
-        fontCallback: pdfFont,
-      },
-    );
-  });
-  doc.end();
-  return done.then((pdf) => ({ pdf, pages }));
 }
 
 export async function runLabels({
@@ -159,7 +104,11 @@ export async function runLabels({
     db.close();
   }
   if (!parts.length) throw new Error(`No parts match "${query}"`);
-  const { pdf, pages } = await renderLabelsPdf(parts, { template, start });
+  const { pdf, pages } = await renderLabelsPdf(parts, {
+    template,
+    sheet: AVERY_5160,
+    start,
+  });
   writeFileSync(outPath, pdf);
   console.log(
     `Wrote ${parts.length} labels (${pages} sheet${pages === 1 ? "" : "s"}) to ${outPath}`,

@@ -15,6 +15,7 @@
     "@fastify/sensible": "^6.0.3",
     "@parts-warehouse/db": "file:../../packages/db",
     "@parts-warehouse/image-scraper-proto": "file:../../packages/image-scraper-proto",
+    "@parts-warehouse/label-pdf": "file:../../packages/label-pdf",
     "@parts-warehouse/shared": "file:../../packages/shared",
     "better-sqlite3": "^12.2.0",
     "fastify": "^5.3.2",

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import type { LabelTemplate, Part } from "@parts-warehouse/shared";
+import { useGetCapabilitiesQuery } from "@shared/api/capabilitiesApi";
+import { errorMessage } from "@shared/api/errors";
+import { fetchLabelPdf, usePrintLabelMutation } from "../api/labelsApi";
+import { openPdf } from "./openPdf";
 import { renderPartPreview } from "./renderPartPreview";
 
 /** Whether `template` prints the part's render or image anywhere. */
@@ -7,10 +11,10 @@ export const usesRender = (template: LabelTemplate) =>
   template.elements.some((el) => el.type === "image");
 
 /**
- * Owns the label dialog's choices (template, copies, 3D render) and the
- * print lifecycle: mount labels into the print root, wait a frame for
- * images, call window.print(), unmount after `afterprint`. `templates`
- * come from the API; until they load there is no template.
+ * Owns the label dialog's choices (template, copies, 3D render) and
+ * printing. The API renders the PDF; with a server printer it prints it
+ * too, otherwise it opens in a new tab to print from the browser.
+ * `templates` come from the API; until they load there is no template.
  */
 export function useLabelPrint(
   part: Part,
@@ -23,6 +27,10 @@ export function useLabelPrint(
   const [render, setRender] = useState<string | null>(null);
   const [rendering, setRendering] = useState(false);
   const [printing, setPrinting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState<string | null>(null);
+  const [printLabel] = usePrintLabelMutation();
+  const printer = useGetCapabilitiesQuery().data?.labelPrinter ?? null;
 
   const template =
     templates.find((t) => t.id === templateId) ?? templates[0] ?? null;
@@ -42,18 +50,34 @@ export function useLabelPrint(
     };
   }, [open, wantsRender, part.code]);
 
-  useEffect(() => {
-    if (!printing) return;
-    const done = () => setPrinting(false);
-    window.addEventListener("afterprint", done);
-    const id = requestAnimationFrame(() =>
-      requestAnimationFrame(() => window.print()),
-    );
-    return () => {
-      cancelAnimationFrame(id);
-      window.removeEventListener("afterprint", done);
+  const print = async () => {
+    if (!template) return;
+    const request = {
+      code: part.code,
+      templateId: template.id,
+      copies,
+      render: wantsRender ? render : null,
     };
-  }, [printing]);
+    setPrinting(true);
+    setError(null);
+    setSent(null);
+    try {
+      if (printer) {
+        await printLabel(request).unwrap();
+        setSent(`Sent ${copies} label${copies === 1 ? "" : "s"} to ${printer}.`);
+      } else {
+        await openPdf(fetchLabelPdf(request));
+      }
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : errorMessage(e as Parameters<typeof errorMessage>[0], "Couldn't print the label."),
+      );
+    } finally {
+      setPrinting(false);
+    }
+  };
 
   return {
     template,
@@ -64,8 +88,12 @@ export function useLabelPrint(
     setIncludeRender,
     render: wantsRender ? render : null,
     rendering: wantsRender && rendering,
+    /** The server printer's name; null when the browser prints. */
+    printer,
     printing,
-    print: () => setPrinting(true),
+    error,
+    sent,
+    print,
   };
 }
 

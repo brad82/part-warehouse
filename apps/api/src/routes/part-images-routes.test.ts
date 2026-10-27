@@ -158,7 +158,7 @@ describe("part image routes", () => {
     await app.close();
     const db = openDb(":memory:");
     app = await buildServer({ db, partImagesDir: imagesDir, logger: false });
-    expect((await app.inject("/capabilities")).json()).toEqual({ imageScraper: false });
+    expect((await app.inject("/capabilities")).json()).toEqual({ imageScraper: false, labelPrinter: null });
     const res = await app.inject({ method: "POST", url: `/parts/${CODE}/image/scrape` });
     expect(res.statusCode).toBe(501);
   });
@@ -172,7 +172,7 @@ describe("part image routes", () => {
       fetchImage: async () => Promise.reject(down),
     };
     app = await buildServer({ db, partImagesDir: imagesDir, scraper, logger: false });
-    expect((await app.inject("/capabilities")).json()).toEqual({ imageScraper: true });
+    expect((await app.inject("/capabilities")).json()).toEqual({ imageScraper: true, labelPrinter: null });
     const res = await app.inject({ method: "POST", url: `/parts/${CODE}/image/scrape` });
     expect(res.statusCode).toBe(503);
     expect(res.json().message).toBe("The image scraper isn't running.");

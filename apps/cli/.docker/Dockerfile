@@ -13,6 +13,7 @@ COPY apps/cli/package.json apps/cli/
 COPY apps/image-scraper/package.json apps/image-scraper/
 COPY apps/web/package.json apps/web/
 COPY packages/db/package.json packages/db/
+COPY packages/label-pdf/package.json packages/label-pdf/
 COPY packages/image-scraper-proto/package.json packages/image-scraper-proto/
 COPY packages/shared/package.json packages/shared/
 RUN npm ci --workspace @parts-warehouse/cli
@@ -26,6 +27,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY packages/shared ./packages/shared
 COPY packages/db ./packages/db
+COPY packages/label-pdf ./packages/label-pdf
 COPY apps/cli ./apps/cli
 RUN mkdir -p /data && chown node:node /data
 USER node

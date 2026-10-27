@@ -128,7 +128,11 @@ export const partImageSchema = z.object({
 });
 
 /** Optional modules the API has (GET /capabilities). */
-export const capabilitiesSchema = z.object({ imageScraper: z.boolean() });
+export const capabilitiesSchema = z.object({
+  imageScraper: z.boolean(),
+  /** CUPS queue labels print to from the API; null: the browser prints. */
+  labelPrinter: z.string().nullable(),
+});
 
 export const partImageSelectSchema = z.object({ url: z.string().url() });
 
@@ -199,6 +203,23 @@ export type GroupingCreate = z.infer<typeof groupingCreateSchema>;
 export type Part = z.infer<typeof partSchema>;
 export type PartImage = z.infer<typeof partImageSchema>;
 export type Capabilities = z.infer<typeof capabilitiesSchema>;
+
+/** A printer the API's machine can print to (a CUPS queue). */
+export const printerSchema = z.object({
+  name: z.string(),
+  /** False when CUPS has the queue paused or disabled. */
+  enabled: z.boolean(),
+  /** CUPS's status line, e.g. "idle" or "Out of labels." */
+  status: z.string(),
+});
+
+export const labelPrinterSettingSchema = z.object({
+  /** CUPS queue name; null: the browser prints labels. */
+  printer: z.string().min(1).nullable(),
+});
+
+export type Printer = z.infer<typeof printerSchema>;
+export type LabelPrinterSetting = z.infer<typeof labelPrinterSettingSchema>;
 export type PartUpdate = z.infer<typeof partUpdateSchema>;
 export type PartCreate = z.infer<typeof partCreateSchema>;
 export type PartType = z.infer<typeof partTypeSchema>;

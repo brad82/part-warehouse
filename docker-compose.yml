@@ -8,6 +8,9 @@ services:
     environment:
       # Set to image-scraper:50051 when running the scraper profile.
       IMAGE_SCRAPER_URL: ${IMAGE_SCRAPER_URL:-}
+      # Printers for labels (Settings → Printers & devices) come from this CUPS
+      # server, e.g. host.docker.internal (the host must share its printers).
+      CUPS_SERVER: ${CUPS_SERVER:-}
     volumes:
       - parts-data:/data
 

@@ -13,6 +13,28 @@ export const AVERY_5160: LabelSheet = {
   rowPitchMm: 25.4,
 };
 
+/**
+ * A page the size of `label` holding just that label: for label printers
+ * (Dymo, Brother) that feed one label per page.
+ */
+export function labelPageSheet(label: {
+  widthMm: number;
+  heightMm: number;
+}): LabelSheet {
+  const { widthMm, heightMm } = label;
+  return {
+    id: "label-page",
+    pageWidthMm: widthMm,
+    pageHeightMm: heightMm,
+    columns: 1,
+    rows: 1,
+    leftMm: 0,
+    topMm: 0,
+    columnPitchMm: widthMm,
+    rowPitchMm: heightMm,
+  };
+}
+
 /** Slots per sheet. */
 export function sheetCapacity(sheet: LabelSheet): number {
   return sheet.columns * sheet.rows;

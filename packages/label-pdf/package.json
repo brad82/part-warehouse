@@ -1,0 +1,22 @@
+{
+  "name": "@parts-warehouse/label-pdf",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@parts-warehouse/shared": "file:../shared",
+    "pdfkit": "^0.17.2",
+    "svg-to-pdfkit": "^0.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "@types/pdfkit": "^0.17.6",
+    "vitest": "^3.1.3"
+  }
+}
