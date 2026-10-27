@@ -56,8 +56,8 @@ npm test && npm run typecheck && npm run lint
   code uses the same `A00-000-000` scheme; the next free number is suggested.
 - Frontend follows the ExpressPass web architecture (feature folders,
   Container/Provider/Page, `model/` hooks, RTK Query, MUI).
-- Labels: print dialog → Brother QL-800 driver, paper "62mm x 100mm". Sizes in
-  `apps/web/src/features/labels/model/templates.ts`.
+- Labels: print dialog → DYMO LabelWriter 450 driver, paper "30857 Badge Label"
+  (2¼×4in), portrait, scale 100%. Sizes in `apps/api/templates/*.json`.
 - Barcodes (Code128 + QR) encode the part code only, e.g. `A01-001-001`.
 - Camera scanning needs `localhost` or HTTPS (browser rule). Handheld USB
   scanners work anywhere via the dialog's text field.
