@@ -68,7 +68,7 @@ describe("selectTemplate", () => {
     ).not.toThrow();
     expect(() =>
       assertFitsSheet(selectTemplate(db(), "bag"), AVERY_5160),
-    ).toThrow("57.15×101.6mm");
+    ).toThrow("58.76×101.6mm");
   });
 });
 

@@ -1,17 +1,17 @@
 {
   "name": "Bag label",
-  "description": "Dymo LabelWriter 450 · 2¼×4in name badge (30857) · 57.15×101.6mm",
-  "widthMm": 57.15,
+  "description": "Dymo LabelWriter 450 · 2¼×4in name badge (30857) · 58.76×101.6mm (driver page)",
+  "widthMm": 58.76,
   "heightMm": 101.6,
   "elements": [
-    { "type": "text", "text": "{name}", "x": 3, "y": 6.7, "width": 51, "font": "sans-bold", "fontSizePt": 13, "lineHeight": 5, "maxLines": 2 },
-    { "type": "text", "text": "{code}", "x": 20, "y": 18.5, "width": 34, "font": "mono-bold", "fontSizePt": 11, "lineHeight": 4.3, "maxLines": 1 },
-    { "type": "text", "text": "{detail}", "x": 20, "y": 23.6, "width": 34, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
-    { "type": "text", "text": "Rev {revision}", "x": 42.1, "y": 82.5, "width": 11, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
-    { "type": "text", "text": "Qty: {qtyPerBuild}", "x": 2.6, "y": 84.4, "width": 51, "font": "sans-bold", "fontSizePt": 16, "lineHeight": 6, "maxLines": 1 },
-    { "type": "image", "source": "render", "x": 3, "y": 32, "width": 51, "height": 46, "outlineWidth": 0.3 },
-    { "type": "barcode", "symbology": "code128", "field": "code", "x": 2.9, "y": 88.8, "width": 51.4, "height": 9.9 },
-    { "type": "barcode", "symbology": "qrcode", "field": "code", "x": 3.1, "y": 15.1, "width": 14, "height": 14 },
-    { "type": "text", "text": "{supplier}", "x": 19.6, "y": 27.8, "width": 34.5, "font": "sans", "fontSizePt": 8, "lineHeight": 3.4, "maxLines": 1 }
+    { "type": "text", "text": "{name}", "x": 3.8, "y": 9.9, "width": 51, "font": "sans-bold", "fontSizePt": 13, "lineHeight": 5, "maxLines": 2 },
+    { "type": "text", "text": "{code}", "x": 20.8, "y": 21.7, "width": 34, "font": "mono-bold", "fontSizePt": 11, "lineHeight": 4.3, "maxLines": 1 },
+    { "type": "text", "text": "{detail}", "x": 20.8, "y": 26.8, "width": 34, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
+    { "type": "text", "text": "Rev {revision}", "x": 42.9, "y": 82.5, "width": 11, "font": "sans", "fontSizePt": 9, "lineHeight": 3.8, "maxLines": 1 },
+    { "type": "text", "text": "Qty: {qtyPerBuild}", "x": 3.4, "y": 84.4, "width": 51, "font": "sans-bold", "fontSizePt": 16, "lineHeight": 6, "maxLines": 1 },
+    { "type": "image", "source": "render", "x": 3.8, "y": 35.2, "width": 51, "height": 42.8, "outlineWidth": 0.3 },
+    { "type": "barcode", "symbology": "code128", "field": "code", "x": 3.7, "y": 88.8, "width": 51.4, "height": 9.9 },
+    { "type": "barcode", "symbology": "qrcode", "field": "code", "x": 3.9, "y": 18.3, "width": 14, "height": 14 },
+    { "type": "text", "text": "{supplier}", "x": 20.4, "y": 31, "width": 34.5, "font": "sans", "fontSizePt": 8, "lineHeight": 3.4, "maxLines": 1 }
   ]
 }
