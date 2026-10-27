@@ -11,6 +11,7 @@ COPY apps/cli/package.json apps/cli/
 COPY apps/image-scraper/package.json apps/image-scraper/
 COPY apps/web/package.json apps/web/
 COPY packages/db/package.json packages/db/
+COPY packages/label-pdf/package.json packages/label-pdf/
 COPY packages/image-scraper-proto/package.json packages/image-scraper-proto/
 COPY packages/shared/package.json packages/shared/
 RUN npm ci --workspace @parts-warehouse/image-scraper

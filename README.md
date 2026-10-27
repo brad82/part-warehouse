@@ -29,9 +29,9 @@ npm test && npm run typecheck && npm run lint
 - CLI: `npm run cli -- --help`. Other CSV or db:
   `npm run cli -- import --csv <path> --db <path>`.
 - Label sheets: `npm run cli -- labels [codes…] --query <text> --start <1-30>`
-  writes `labels.pdf` (Avery 5160). Label layouts are data in
-  `packages/shared/src/labels` (rendered to SVG), shared with the web app's
-  print dialog, so edit them there once.
+  writes `labels.pdf` (Avery 5160). Templates are stored in the db (built-ins
+  from `apps/api/templates/*.json`), rendered to SVG by `packages/shared` and
+  to PDF by `packages/label-pdf`, so the CLI and the web app's labels match.
 - One `import` command takes any parts CSV (e.g. `Parts Index.csv`,
   `Purchased Parts (proposed).csv`). Required columns: Code, Module, Module
   name, Sub-assembly, Sub-assembly name, Group, Group name, Part, Revision,
@@ -56,8 +56,13 @@ npm test && npm run typecheck && npm run lint
   code uses the same `A00-000-000` scheme; the next free number is suggested.
 - Frontend follows the ExpressPass web architecture (feature folders,
   Container/Provider/Page, `model/` hooks, RTK Query, MUI).
-- Labels: print dialog → DYMO LabelWriter 450 driver, paper "30857 Badge Label"
-  (2¼×4in), portrait, scale 100%. Sizes in `apps/api/templates/*.json`.
+- Labels: the API renders each label as a PDF the size of its template (bag:
+  58.76×101.6mm, the DYMO LabelWriter 450's 30857 badge page). Pick the
+  printer in Settings → Printers & devices (the API machine's CUPS printers)
+  and Print sends labels straight to it, picking the driver's matching paper
+  size. With none picked, Print opens the PDF in a new tab to print with ⌘P.
+  In Docker, set `CUPS_SERVER=host.docker.internal` and share the printer on
+  the host.
 - Barcodes (Code128 + QR) encode the part code only, e.g. `A01-001-001`.
 - Camera scanning needs `localhost` or HTTPS (browser rule). Handheld USB
   scanners work anywhere via the dialog's text field.

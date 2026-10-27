@@ -5,12 +5,14 @@ import type {
   Grouping,
   GroupingCreate,
   GroupingUpdate,
+  LabelPrinterSetting,
   PartType,
   PartTypeCreate,
   PartTypeUpdate,
   PreviewColour,
   PreviewColourCreate,
   PreviewColourUpdate,
+  Printer,
 } from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
 
@@ -66,6 +68,20 @@ export const settingsApi = baseApi.injectEndpoints({
       query: (id) => ({ url: `/groupings/${id}`, method: "DELETE" }),
       invalidatesTags: ["Grouping"],
     }),
+    /** The API machine's printers; refetched each visit (status changes). */
+    listPrinters: build.query<Printer[], void>({
+      query: () => "/printers",
+      keepUnusedDataFor: 0,
+    }),
+    getLabelPrinter: build.query<LabelPrinterSetting, void>({
+      query: () => "/settings/label-printer",
+      providesTags: ["LabelPrinter"],
+    }),
+    setLabelPrinter: build.mutation<LabelPrinterSetting, LabelPrinterSetting>({
+      query: (body) => ({ url: "/settings/label-printer", method: "PUT", body }),
+      // The label dialog reads the printer from /capabilities.
+      invalidatesTags: ["LabelPrinter", "Capabilities"],
+    }),
   }),
 });
 
@@ -82,4 +98,7 @@ export const {
   useCreateGroupingMutation,
   useUpdateGroupingMutation,
   useDeleteGroupingMutation,
+  useListPrintersQuery,
+  useGetLabelPrinterQuery,
+  useSetLabelPrinterMutation,
 } = settingsApi;

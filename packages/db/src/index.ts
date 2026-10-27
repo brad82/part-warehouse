@@ -6,3 +6,4 @@ export * from "./repositories/partImagesRepository.js";
 export * from "./repositories/previewColoursRepository.js";
 export * from "./labelTemplateFiles.js";
 export * from "./repositories/labelTemplatesRepository.js";
+export * from "./repositories/settingsRepository.js";

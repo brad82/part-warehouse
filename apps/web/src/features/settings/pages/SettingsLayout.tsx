@@ -6,7 +6,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Box as BoxIcon, Network, Palette, Tag } from "lucide-react";
+import { Box as BoxIcon, Network, Palette, Printer, Tag } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const SECTIONS = [
@@ -21,6 +21,11 @@ const SECTIONS = [
     to: "/settings/label-templates",
     label: "Label templates",
     icon: <Tag size={18} />,
+  },
+  {
+    to: "/settings/devices",
+    label: "Printers & devices",
+    icon: <Printer size={18} />,
   },
 ];
 

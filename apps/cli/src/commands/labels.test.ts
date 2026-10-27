@@ -9,7 +9,6 @@ import { config } from "../config.js";
 import { importParts } from "./import.js";
 import {
   assertFitsSheet,
-  renderLabelsPdf,
   selectParts,
   selectTemplate,
 } from "./labels.js";
@@ -29,9 +28,6 @@ function db() {
   );
   return d;
 }
-
-const pageCount = (pdf: Buffer) =>
-  pdf.toString("latin1").match(/\/Type \/Page\b/g)?.length;
 
 describe("selectParts", () => {
   it("combines codes and query, without duplicates, sorted by code", () => {
@@ -68,21 +64,6 @@ describe("selectTemplate", () => {
     ).not.toThrow();
     expect(() =>
       assertFitsSheet(selectTemplate(db(), "bag"), AVERY_5160),
-    ).toThrow("57.15×101.6mm");
-  });
-});
-
-describe("renderLabelsPdf", () => {
-  it("writes a PDF, overflowing onto a second sheet", async () => {
-    const d = db();
-    const parts = selectParts(d, { codes: [], query: "A0" });
-    const template = selectTemplate(d, "small");
-    const one = await renderLabelsPdf(parts, { template, start: 1 });
-    expect(one.pdf.subarray(0, 4).toString()).toBe("%PDF");
-    expect(one.pages).toBe(1);
-
-    const two = await renderLabelsPdf(parts, { template, start: 29 });
-    expect(two.pages).toBe(2);
-    expect(pageCount(two.pdf)).toBe(2);
+    ).toThrow("58.76×101.6mm");
   });
 });

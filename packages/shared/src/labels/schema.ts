@@ -71,3 +71,19 @@ export const labelTemplateSchema = labelTemplateInputSchema.extend({
 }) satisfies z.ZodType<LabelTemplate, z.ZodTypeDef, unknown>;
 
 export const labelTemplateIdParamsSchema = z.object({ id: z.string().min(1) });
+
+/**
+ * A part's label to render as a PDF or send to the label printer. `render`
+ * is the part's picture as a data URL (the web app renders STLs).
+ */
+export const labelPrintRequestSchema = z.object({
+  code: z.string().min(1),
+  templateId: z.string().min(1),
+  copies: z.number().int().min(1).max(50).default(1),
+  render: z
+    .string()
+    .regex(/^data:image\/(png|jpeg);base64,/)
+    .nullish(),
+});
+
+export type LabelPrintRequest = z.input<typeof labelPrintRequestSchema>;

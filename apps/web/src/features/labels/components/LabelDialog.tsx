@@ -19,7 +19,6 @@ import type { Part } from "@parts-warehouse/shared";
 import { errorMessage } from "@shared/api/errors";
 import { useListLabelTemplatesQuery } from "../api/labelTemplatesApi";
 import { useLabelPrint, usesRender } from "../model/useLabelPrint";
-import { PrintPortal } from "./PrintPortal";
 import { TemplateLabel } from "./Templates/TemplateLabel";
 
 type Props = { part: Part; open: boolean; onClose: () => void };
@@ -52,6 +51,16 @@ export function LabelDialog({ part, open, onClose }: Props) {
       <DialogTitle>Print label · {part.code}</DialogTitle>
       <DialogContent>
         {error ? <Alert severity="error">{error}</Alert> : null}
+        {label.error ? (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {label.error}
+          </Alert>
+        ) : null}
+        {label.sent ? (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {label.sent}
+          </Alert>
+        ) : null}
         {templates.isLoading ? <LinearProgress /> : null}
         {templates.isSuccess && !template ? (
           <Alert severity="info">
@@ -126,19 +135,11 @@ export function LabelDialog({ part, open, onClose }: Props) {
         <Button
           startIcon={<Printer size={16} />}
           onClick={label.print}
-          disabled={!template || label.rendering}
+          disabled={!template || label.rendering || label.printing}
         >
-          Print
+          {label.printer ? `Print to ${label.printer}` : "Open PDF to print"}
         </Button>
       </DialogActions>
-      {label.printing && template ? (
-        <PrintPortal
-          part={part}
-          template={template}
-          render={label.render}
-          copies={label.copies}
-        />
-      ) : null}
     </Dialog>
   );
 }
