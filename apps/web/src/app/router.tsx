@@ -7,12 +7,11 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import { BomContainer } from "@features/bom";
+import { BomContainer, BomStructureContainer } from "@features/bom";
 import { DashboardContainer } from "@features/dashboard";
 import { LabelEditorContainer } from "@features/label-editor";
 import { PartsContainer } from "@features/parts";
 import {
-  BomStructureContainer,
   PreviewColoursContainer,
   PrintersContainer,
   SettingsContainer,

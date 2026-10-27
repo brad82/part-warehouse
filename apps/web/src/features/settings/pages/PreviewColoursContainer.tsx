@@ -5,7 +5,7 @@ import {
   useDeletePreviewColourMutation,
   useUpdatePreviewColourMutation,
 } from "../api/settingsApi";
-import { unwrap } from "../model/unwrap";
+import { unwrap } from "@shared/api/unwrap";
 import { PreviewColoursPage } from "./PreviewColoursPage";
 
 const EMPTY: never[] = [];

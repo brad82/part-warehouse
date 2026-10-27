@@ -4,7 +4,7 @@ import {
   useListPrintersQuery,
   useSetLabelPrinterMutation,
 } from "../api/settingsApi";
-import { unwrap } from "../model/unwrap";
+import { unwrap } from "@shared/api/unwrap";
 import { PrintersPage } from "./PrintersPage";
 
 const EMPTY: never[] = [];
