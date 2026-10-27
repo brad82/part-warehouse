@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@parts-warehouse/db";
+import { groupingsRepository, openDb, partsRepository } from "@parts-warehouse/db";
 import { buildServer } from "../app.js";
 
 let app: Awaited<ReturnType<typeof buildServer>>;
@@ -7,21 +7,22 @@ let app: Awaited<ReturnType<typeof buildServer>>;
 beforeEach(async () => {
   const db = openDb(":memory:");
   const repo = partsRepository(db);
-  repo.upsertGrouping({
+  const groupings = groupingsRepository(db);
+  groupings.upsertGrouping({
     id: "A",
     taxonomy: "module",
     name: "Chassis",
     revision: 0,
     parentId: null,
   });
-  repo.upsertGrouping({
+  groupings.upsertGrouping({
     id: "A01",
     taxonomy: "subassembly",
     name: "Tracks",
     revision: 0,
     parentId: "A",
   });
-  repo.upsertGrouping({
+  groupings.upsertGrouping({
     id: "A01-001",
     taxonomy: "group",
     name: "Grousers",

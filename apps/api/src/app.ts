@@ -2,6 +2,7 @@ import cors from "@fastify/cors";
 import sensible from "@fastify/sensible";
 import {
   attributesRepository,
+  groupingsRepository,
   labelTemplatesRepository,
   loadLabelTemplateFiles,
   partImagesRepository,
@@ -85,7 +86,7 @@ export async function buildServer({
     scraper,
   });
   await app.register(attributesRoutes, { attributes });
-  await app.register(groupingsRoutes, { repo });
+  await app.register(groupingsRoutes, { groupings: groupingsRepository(db) });
   await app.register(previewColoursRoutes, {
     colours: previewColoursRepository(db),
   });

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@parts-warehouse/db";
+import { groupingsRepository, openDb, partsRepository } from "@parts-warehouse/db";
 import { buildServer } from "../app.js";
 import type { PrintSystem } from "../lib/printers.js";
 
@@ -10,9 +10,10 @@ type Job = Parameters<PrintSystem["print"]>[2] & { printer: string; pdf: Buffer 
 async function start(withPrinter: boolean) {
   const db = openDb(":memory:");
   const repo = partsRepository(db);
-  repo.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
-  repo.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
-  repo.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
+  const groupings = groupingsRepository(db);
+  groupings.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
+  groupings.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
+  groupings.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
   repo.upsertCatalogPart({
     code: "A01-001-001", groupId: "A01-001", part: "01", revision: 0, name: "Grouser",
     qtyPerBuild: 12, notes: null, source: "csv", attributes: {},

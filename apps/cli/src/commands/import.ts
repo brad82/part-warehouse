@@ -14,7 +14,7 @@
  */
 import { readFileSync } from "node:fs";
 import type Database from "better-sqlite3";
-import { attributesRepository, openDb, partsRepository } from "@parts-warehouse/db";
+import { attributesRepository, groupingsRepository, openDb, partsRepository } from "@parts-warehouse/db";
 import { ATTR } from "@parts-warehouse/shared";
 import { splitColourMaterial } from "../lib/colourMaterial.js";
 import { parseCsv } from "../lib/csv.js";
@@ -46,6 +46,7 @@ const COLOUR_MATERIAL = "colour / material";
 
 export function importParts(db: Database.Database, csv: string): ImportResult {
   const repo = partsRepository(db);
+  const groupings = groupingsRepository(db);
   const attrs = attributesRepository(db);
   const [header, ...rows] = parseCsv(csv);
   const lower = header.map((h) => h.trim().toLowerCase());
@@ -99,7 +100,7 @@ export function importParts(db: Database.Database, csv: string): ImportResult {
       for (const level of levels) {
         if (seen.has(level.id)) continue;
         seen.add(level.id);
-        repo.upsertGrouping({ ...level, revision: 0 });
+        groupings.upsertGrouping({ ...level, revision: 0 });
         result[level.taxonomy]++;
       }
 
