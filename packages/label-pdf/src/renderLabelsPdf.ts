@@ -1,8 +1,7 @@
 import PDFDocument from "pdfkit";
 import SVGtoPDF from "svg-to-pdfkit";
+import { renderLabelSvg, slotPosition } from "@parts-warehouse/labels";
 import {
-  renderLabelSvg,
-  slotPosition,
   type LabelAssets,
   type LabelLayout,
   type LabelSheet,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SYMBOLOGIES } from "./barcodes.js";
+import { SYMBOLOGIES } from "./symbologies.js";
 import type {
   LabelBarcodeElement,
   LabelElement,

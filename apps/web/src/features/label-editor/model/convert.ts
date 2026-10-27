@@ -1,4 +1,5 @@
-import { tidyBarcode, type LabelElement } from "@parts-warehouse/shared";
+import { tidyBarcode } from "@parts-warehouse/labels";
+import { type LabelElement } from "@parts-warehouse/shared";
 
 /** Block names, one per label element type. */
 export const LABEL_BLOCK = {

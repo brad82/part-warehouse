@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/shared" },
+    { "path": "packages/labels" },
     { "path": "packages/db" },
     { "path": "packages/label-pdf" },
     { "path": "packages/image-scraper-proto" },

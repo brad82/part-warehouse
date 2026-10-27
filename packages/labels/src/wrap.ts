@@ -1,5 +1,5 @@
 import { measureText } from "./metrics.js";
-import type { LabelFont } from "./types.js";
+import type { LabelFont } from "@parts-warehouse/shared";
 
 /**
  * Breaks `text` into at most `maxLines` lines no wider than `widthMm`, at

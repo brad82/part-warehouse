@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@parts-warehouse/labels": "file:../labels",
     "@parts-warehouse/shared": "file:../shared",
     "pdfkit": "^0.17.2",
     "svg-to-pdfkit": "^0.1.8"

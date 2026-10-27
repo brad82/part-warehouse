@@ -6,7 +6,7 @@ import {
   ToggleControl,
 } from "@wordpress/components";
 import { useDispatch, useSelect } from "@wordpress/data";
-import { renderLabelSvg } from "@parts-warehouse/shared";
+import { renderLabelSvg } from "@parts-warehouse/labels";
 import { Svg } from "@features/labels";
 import { useLabelEditorData, useSamplePart } from "../LabelEditorDataProvider";
 import { MmControl } from "../blocks/controls/MmControl";

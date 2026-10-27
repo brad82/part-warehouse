@@ -12,13 +12,8 @@ import {
   partsRepository,
 } from "@parts-warehouse/db";
 import { renderLabelsPdf } from "@parts-warehouse/label-pdf";
-import {
-  AVERY_5160,
-  sheetCapacity,
-  type LabelSheet,
-  type LabelTemplate,
-  type Part,
-} from "@parts-warehouse/shared";
+import { AVERY_5160, sheetCapacity } from "@parts-warehouse/labels";
+import { type LabelSheet, type LabelTemplate, type Part } from "@parts-warehouse/shared";
 
 /** Parts named by `codes` plus any matching `query`, sorted by code. */
 export function selectParts(

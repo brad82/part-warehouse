@@ -1,14 +1,17 @@
-import { ATTR, attrText, colourMaterial } from "../attributes.js";
-import type { Part } from "../schemas.js";
-import { barcodeSvg, SYMBOLOGIES } from "./barcodes.js";
-import type {
-  LabelBarcodeElement,
-  LabelAssets,
-  LabelElement,
-  LabelFont,
-  LabelImageElement,
-  LabelLayout,
-} from "./types.js";
+import {
+  ATTR,
+  attrText,
+  colourMaterial,
+  SYMBOLOGIES,
+  type LabelAssets,
+  type LabelBarcodeElement,
+  type LabelElement,
+  type LabelFont,
+  type LabelImageElement,
+  type LabelLayout,
+  type Part,
+} from "@parts-warehouse/shared";
+import { barcodeSvg } from "./barcodes.js";
 import { measureText } from "./metrics.js";
 import { wrapText } from "./wrap.js";
 

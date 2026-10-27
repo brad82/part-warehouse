@@ -8,6 +8,6 @@
     "rootDir": "src",
     "types": ["node"]
   },
-  "references": [{ "path": "../shared" }],
+  "references": [{ "path": "../shared" }, { "path": "../labels" }],
   "include": ["src"]
 }

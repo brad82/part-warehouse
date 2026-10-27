@@ -1,4 +1,4 @@
-import { renderLabelSvg } from "@parts-warehouse/shared";
+import { renderLabelSvg } from "@parts-warehouse/labels";
 import { SMALL_LABEL } from "../testing/smallLabel";
 import { FIELD_NAMES_PART } from "./fields";
 

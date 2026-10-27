@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  AVERY_5160,
-  labelPageSheet,
-  type LabelLayout,
-  type Part,
-} from "@parts-warehouse/shared";
+import { AVERY_5160, labelPageSheet } from "@parts-warehouse/labels";
+import { type LabelLayout, type Part } from "@parts-warehouse/shared";
 import { renderLabelsPdf } from "./renderLabelsPdf.js";
 
 const part: Part = {
