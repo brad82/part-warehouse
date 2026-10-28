@@ -4,9 +4,10 @@ import type { IScannerControls } from "@zxing/browser";
 export type CameraState = "idle" | "starting" | "scanning" | "unavailable";
 
 /**
- * Owns the camera stream and Code128/QR decoding into a <video>. Calls
- * `onText` once per distinct read. Knows nothing about part codes or
- * navigation. ZXing loads lazily so it stays out of the main bundle.
+ * Owns the camera stream and Code128/QR/DataMatrix decoding into a
+ * <video>. Calls `onText` once per distinct read. Knows nothing about
+ * part codes or navigation. ZXing loads lazily so it stays out of the
+ * main bundle.
  */
 export function useCameraScanner(
   enabled: boolean,
@@ -35,7 +36,11 @@ export function useCameraScanner(
         const hints = new Map([
           [
             DecodeHintType.POSSIBLE_FORMATS,
-            [BarcodeFormat.CODE_128, BarcodeFormat.QR_CODE],
+            [
+              BarcodeFormat.CODE_128,
+              BarcodeFormat.QR_CODE,
+              BarcodeFormat.DATA_MATRIX,
+            ],
           ],
         ]);
         const reader = new BrowserMultiFormatReader(hints);
