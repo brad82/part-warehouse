@@ -12,7 +12,7 @@ import { Pencil, Table2 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { ATTR, attrText } from "@parts-warehouse/shared";
 import { PrintLabelButton } from "@features/labels";
-import { ancestorIds } from "../../model/buildTree";
+import { ancestorIds } from "@shared/lib/groupings";
 import { useRenamePart, useSelectedPart } from "../../PartsProvider";
 import { OpenInSlicerButton } from "./OpenInSlicerButton";
 import { RenamePartDialog } from "./RenamePartDialog";

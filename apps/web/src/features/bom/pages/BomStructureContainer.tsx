@@ -1,13 +1,13 @@
 import { useMemo } from "react";
-import { useListGroupingsQuery, useListPartsQuery } from "@features/parts";
+import { useListGroupingsQuery, useListPartsQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreateGroupingMutation,
   useDeleteGroupingMutation,
   useUpdateGroupingMutation,
-} from "../api/settingsApi";
+} from "../api/bomStructureApi";
 import { groupingRows } from "../model/groupingRows";
-import { unwrap } from "../model/unwrap";
+import { unwrap } from "@shared/api/unwrap";
 import { BomStructurePage } from "./BomStructurePage";
 
 const EMPTY: never[] = [];

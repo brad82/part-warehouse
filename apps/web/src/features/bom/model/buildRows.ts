@@ -1,5 +1,6 @@
 import type { Grouping, Part, PartType } from "@parts-warehouse/shared";
-import { ancestorIds, partTotals } from "@features/parts";
+import { ancestorIds } from "@shared/lib/groupings";
+import { partTotals } from "@shared/lib/totals";
 
 export type BomRow = Part & {
   partType: string;

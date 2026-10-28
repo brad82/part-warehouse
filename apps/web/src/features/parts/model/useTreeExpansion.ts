@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Grouping, Part } from "@parts-warehouse/shared";
-import { ancestorIds, groupingIds, type TreeNode } from "./buildTree";
+import { ancestorIds } from "@shared/lib/groupings";
+import { groupingIds, type TreeNode } from "./buildTree";
 
 /**
  * Owns which tree branches are open. While searching, every branch of the

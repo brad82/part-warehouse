@@ -1,4 +1,4 @@
-import type { LabelSheet } from "./types.js";
+import type { LabelSheet } from "@parts-warehouse/shared";
 
 /** Avery 5160 (and 8160, 5260…): US Letter, 3×10 of 2⅝×1in. */
 export const AVERY_5160: LabelSheet = {

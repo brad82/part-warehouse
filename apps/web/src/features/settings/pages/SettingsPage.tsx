@@ -16,7 +16,7 @@ import { DataGrid, GridActionsCellItem, type GridColDef } from "@mui/x-data-grid
 import { Lock, Pencil, Plus, Trash2 } from "lucide-react";
 import type { AttributeDef, AttributeDefCreate, PartType } from "@parts-warehouse/shared";
 import { AttributeDialog } from "../components/AttributeDialog";
-import { ConfirmDialog } from "../components/ConfirmDialog";
+import { ConfirmDialog } from "@shared/components/ConfirmDialog";
 import { PartTypeDialog } from "../components/PartTypeDialog";
 import { DATA_TYPE_LABELS } from "../model/dataTypes";
 

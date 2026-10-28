@@ -14,8 +14,9 @@ npm test && npm run typecheck && npm run lint
 - Layout: `apps/api` (Fastify), `apps/web` (React), `apps/cli` (import and
   other one-off commands), `apps/image-scraper` (optional, gRPC),
   `packages/db` (SQLite schema + repositories), `packages/shared` (zod
-  schemas, used everywhere), `packages/image-scraper-proto` (the scraper's
-  gRPC contract and client).
+  schemas, used everywhere), `packages/labels` (label SVG renderer and
+  barcodes), `packages/label-pdf` (labels to PDF),
+  `packages/image-scraper-proto` (the scraper's gRPC contract and client).
 - Part images: any part can have one (Image tab, or the only preview for
   parts without an STL). Upload, drop, paste or take a photo; images are
   centre-cropped to a 1024 px square in `data/part-images/`. Without an STL,
@@ -30,7 +31,7 @@ npm test && npm run typecheck && npm run lint
   `npm run cli -- import --csv <path> --db <path>`.
 - Label sheets: `npm run cli -- labels [codes…] --query <text> --start <1-30>`
   writes `labels.pdf` (Avery 5160). Templates are stored in the db (built-ins
-  from `apps/api/templates/*.json`), rendered to SVG by `packages/shared` and
+  from `apps/api/templates/*.json`), rendered to SVG by `packages/labels` and
   to PDF by `packages/label-pdf`, so the CLI and the web app's labels match.
 - One `import` command takes any parts CSV (e.g. `Parts Index.csv`,
   `Purchased Parts (proposed).csv`). Required columns: Code, Module, Module

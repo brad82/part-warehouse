@@ -7,7 +7,7 @@ import type {
   PartUpdate,
   PreviewColour,
 } from "@parts-warehouse/shared";
-import { defsForType } from "./model/attributeFields";
+import { defsForType } from "@shared/lib/attributeFields";
 import type { PartImageActions } from "./model/partImageActions";
 import { buildTree } from "./model/buildTree";
 import { usePartDraft, type PartDraft } from "./model/usePartDraft";

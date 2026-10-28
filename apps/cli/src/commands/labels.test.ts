@@ -4,7 +4,7 @@ import {
   loadLabelTemplateFiles,
   openDb,
 } from "@parts-warehouse/db";
-import { AVERY_5160 } from "@parts-warehouse/shared";
+import { AVERY_5160 } from "@parts-warehouse/labels";
 import { config } from "../config.js";
 import { importParts } from "./import.js";
 import {

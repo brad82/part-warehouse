@@ -4,12 +4,11 @@ import { Plus } from "lucide-react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { errorMessage } from "@shared/api/errors";
 import {
-  useCreatePartMutation,
-  useLazyNextPartNumberQuery,
   useListGroupingsQuery,
   useListPartTypesQuery,
   useListPartsQuery,
-} from "../../api/partsApi";
+} from "@shared/api/catalogApi";
+import { useCreatePartMutation, useLazyNextPartNumberQuery } from "../../api/partsApi";
 import { NewPartDialog } from "./NewPartDialog";
 
 const EMPTY: never[] = [];

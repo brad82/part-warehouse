@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@parts-warehouse/db": "file:../../packages/db",
+    "@parts-warehouse/labels": "file:../../packages/labels",
     "@parts-warehouse/label-pdf": "file:../../packages/label-pdf",
     "@parts-warehouse/shared": "file:../../packages/shared"
   },

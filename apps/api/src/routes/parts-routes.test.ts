@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@parts-warehouse/db";
+import { groupingsRepository, openDb, partsRepository } from "@parts-warehouse/db";
 import { buildServer } from "../app.js";
 
 let app: Awaited<ReturnType<typeof buildServer>>;
@@ -21,9 +21,10 @@ beforeEach(async () => {
   writeFileSync(path.join(modelFilesDir, "grouser.stl"), "solid test");
   const db = openDb(":memory:");
   repo = partsRepository(db);
-  repo.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
-  repo.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
-  repo.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
+  const groupings = groupingsRepository(db);
+  groupings.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
+  groupings.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
+  groupings.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
   repo.upsertCatalogPart({ ...base, code: "A01-001-001", name: "Grouser", attributes: printed("grouser.stl") });
   repo.upsertCatalogPart({ ...base, code: "A01-001-002", part: "02", name: "Escapee", attributes: printed("../../etc/passwd") });
   opened = [];

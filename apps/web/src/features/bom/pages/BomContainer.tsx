@@ -7,7 +7,7 @@ import {
   useListPartTypesQuery,
   useListPartsQuery,
   useUpdatePartMutation,
-} from "@features/parts";
+} from "@shared/api/catalogApi";
 import { buildRows, rowsInGrouping } from "../model/buildRows";
 import { BomPage } from "./BomPage";
 

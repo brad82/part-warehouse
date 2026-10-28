@@ -1,4 +1,4 @@
-import { useListAttributeDefsQuery, useListPartTypesQuery } from "@features/parts";
+import { useListAttributeDefsQuery, useListPartTypesQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreateAttributeDefMutation,
@@ -9,7 +9,7 @@ import {
   useUpdatePartTypeMutation,
 } from "../api/settingsApi";
 import { slug } from "../model/slug";
-import { unwrap } from "../model/unwrap";
+import { unwrap } from "@shared/api/unwrap";
 import { SettingsPage } from "./SettingsPage";
 
 const EMPTY: never[] = [];

@@ -1,4 +1,4 @@
-import type { LabelFont } from "./types.js";
+import type { LabelFont } from "@parts-warehouse/shared";
 
 // Advance widths (1/1000 em) of ASCII 32–126, from the standard Helvetica
 // AFM files. PDFs use these fonts exactly; Arial shares the metrics.

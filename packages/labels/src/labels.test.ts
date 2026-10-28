@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import type { Part } from "../schemas.js";
+import {
+  labelTemplateInputSchema,
+  type LabelBarcodeElement,
+  type LabelLayout,
+  type Part,
+} from "@parts-warehouse/shared";
 import { tidyBarcode } from "./barcodes.js";
 import { measureText } from "./metrics.js";
-import { labelTemplateInputSchema } from "./schema.js";
 import {
   barcodeIssue,
   elementBox,
@@ -10,7 +14,6 @@ import {
   renderLabelSvg,
 } from "./renderLabelSvg.js";
 import { AVERY_5160, slotPosition } from "./sheets.js";
-import type { LabelBarcodeElement, LabelLayout } from "./types.js";
 import { wrapText } from "./wrap.js";
 
 /** The shipped Small label (apps/api/templates/small.json), as a fixture. */

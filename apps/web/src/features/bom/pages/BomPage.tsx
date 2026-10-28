@@ -8,7 +8,9 @@ import {
   type AttributeDef,
   type PartUpdate,
 } from "@parts-warehouse/shared";
-import { attributeLabel, formatMinutes, stockCoverage } from "@features/parts";
+import { attributeLabel } from "@shared/lib/attributeFields";
+import { stockCoverage } from "@shared/lib/stockCoverage";
+import { formatMinutes } from "@shared/lib/totals";
 import type { BomRow } from "../model/buildRows";
 import { rowUpdate } from "../model/rowUpdate";
 

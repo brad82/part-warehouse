@@ -5,8 +5,8 @@ import {
   SelectControl,
   ToggleControl,
 } from "@wordpress/components";
+import { barcodeIssue } from "@parts-warehouse/labels";
 import {
-  barcodeIssue,
   SYMBOLOGIES,
   type LabelBarcodeElement,
   type QrErrorCorrection,

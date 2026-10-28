@@ -9,12 +9,13 @@
     "noEmit": true,
     "types": ["vite/client", "vitest/globals"],
     "paths": {
+      "@parts-warehouse/labels": ["packages/labels/src/index.ts"],
       "@parts-warehouse/shared": ["packages/shared/src/index.ts"],
       "@app/*": ["apps/web/src/app/*"],
       "@features/*": ["apps/web/src/features/*"],
       "@shared/*": ["apps/web/src/shared/*"]
     }
   },
-  "references": [{ "path": "../../packages/shared" }],
+  "references": [{ "path": "../../packages/shared" }, { "path": "../../packages/labels" }],
   "include": ["src", "aliases.ts", "vite.config.ts", "vitest.config.ts"]
 }

@@ -9,6 +9,7 @@
   "references": [
     { "path": "../../packages/shared" },
     { "path": "../../packages/db" },
+    { "path": "../../packages/labels" },
     { "path": "../../packages/label-pdf" }
   ],
   "include": ["src"]

@@ -2,9 +2,6 @@ import type {
   AttributeDef,
   AttributeDefCreate,
   AttributeDefUpdate,
-  Grouping,
-  GroupingCreate,
-  GroupingUpdate,
   LabelPrinterSetting,
   PartType,
   PartTypeCreate,
@@ -16,7 +13,7 @@ import type {
 } from "@parts-warehouse/shared";
 import { baseApi } from "@shared/api/baseApi";
 
-// Lists come from partsApi (listPartTypes, listAttributeDefs). Changing a
+// Lists come from catalogApi (listPartTypes, listAttributeDefs). Changing a
 // definition can change parts (deleted values), so parts refetch too.
 export const settingsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -56,18 +53,6 @@ export const settingsApi = baseApi.injectEndpoints({
       query: (id) => ({ url: `/preview-colours/${id}`, method: "DELETE" }),
       invalidatesTags: ["PreviewColour"],
     }),
-    createGrouping: build.mutation<Grouping, GroupingCreate>({
-      query: (body) => ({ url: "/groupings", method: "POST", body }),
-      invalidatesTags: ["Grouping"],
-    }),
-    updateGrouping: build.mutation<Grouping, { id: string; update: GroupingUpdate }>({
-      query: ({ id, update }) => ({ url: `/groupings/${id}`, method: "PATCH", body: update }),
-      invalidatesTags: ["Grouping"],
-    }),
-    deleteGrouping: build.mutation<void, string>({
-      query: (id) => ({ url: `/groupings/${id}`, method: "DELETE" }),
-      invalidatesTags: ["Grouping"],
-    }),
     /** The API machine's printers; refetched each visit (status changes). */
     listPrinters: build.query<Printer[], void>({
       query: () => "/printers",
@@ -95,9 +80,6 @@ export const {
   useCreatePreviewColourMutation,
   useUpdatePreviewColourMutation,
   useDeletePreviewColourMutation,
-  useCreateGroupingMutation,
-  useUpdateGroupingMutation,
-  useDeleteGroupingMutation,
   useListPrintersQuery,
   useGetLabelPrinterQuery,
   useSetLabelPrinterMutation,

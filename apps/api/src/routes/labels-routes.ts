@@ -1,9 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import type { z } from "zod";
-import {
-  labelPageSheet,
-  labelPrintRequestSchema,
-} from "@parts-warehouse/shared";
+import { labelPageSheet } from "@parts-warehouse/labels";
+import { labelPrintRequestSchema } from "@parts-warehouse/shared";
 import type {
   LabelTemplatesRepository,
   PartsRepository,

@@ -4,11 +4,8 @@ import {
   useBlockProps,
 } from "@wordpress/block-editor";
 import { useDispatch, useSelect } from "@wordpress/data";
-import {
-  elementBox,
-  renderElementSvg,
-  type LabelElement,
-} from "@parts-warehouse/shared";
+import { elementBox, renderElementSvg } from "@parts-warehouse/labels";
+import { type LabelElement } from "@parts-warehouse/shared";
 import { useCanvasEnv } from "../model/CanvasContext";
 import { applyGesture, resizeHandles } from "../model/geometry";
 import { usePointerGesture } from "./utils/usePointerGesture";

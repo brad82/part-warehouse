@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { openDb, partsRepository } from "@parts-warehouse/db";
+import { groupingsRepository, openDb, partsRepository } from "@parts-warehouse/db";
 import { ImageScraperError, type ImageScraper } from "@parts-warehouse/image-scraper-proto";
 import { buildServer } from "../app.js";
 
@@ -38,9 +38,10 @@ const fakeScraper: ImageScraper = {
 function seededDb() {
   const db = openDb(":memory:");
   const repo = partsRepository(db);
-  repo.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
-  repo.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
-  repo.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
+  const groupings = groupingsRepository(db);
+  groupings.upsertGrouping({ id: "A", taxonomy: "module", name: "Chassis", revision: 0, parentId: null });
+  groupings.upsertGrouping({ id: "A01", taxonomy: "subassembly", name: "Tracks", revision: 0, parentId: "A" });
+  groupings.upsertGrouping({ id: "A01-001", taxonomy: "group", name: "Grousers", revision: 0, parentId: "A01" });
   repo.upsertCatalogPart({
     code: CODE, groupId: "A01-001", part: "01", revision: 0, qtyPerBuild: 1,
     notes: null, source: "csv", name: "Bolt", partTypeId: "purchased",

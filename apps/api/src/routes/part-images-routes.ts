@@ -8,10 +8,21 @@ import {
   partCodeParamsSchema,
   partImageSelectSchema,
 } from "@parts-warehouse/shared";
-import type { PartImagesRepository, PartsRepository } from "@parts-warehouse/db";
-import { ImageScraperError, type ImageScraper } from "@parts-warehouse/image-scraper-proto";
+import type {
+  PartImagesRepository,
+  PartsRepository,
+} from "@parts-warehouse/db";
+import {
+  ImageScraperError,
+  type ImageScraper,
+} from "@parts-warehouse/image-scraper-proto";
 import { config } from "../config.js";
-import { MAX_UPLOAD_BYTES, normaliseImage, partImageStore } from "../lib/partImage.js";
+import {
+  MAX_UPLOAD_BYTES,
+  NoUsableImageError,
+  partImageService,
+  UnreadableImageError,
+} from "../lib/partImage.js";
 
 type Options = {
   repo: PartsRepository;
@@ -28,15 +39,12 @@ type Options = {
  */
 export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
   app,
-  {
-    repo,
-    images,
-    partImagesDir = config.partImagesDir,
-    scraper = null,
-  },
+  { repo, images, partImagesDir = config.partImagesDir, scraper = null },
 ) => {
-  await app.register(multipart, { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } });
-  const store = partImageStore(partImagesDir);
+  await app.register(multipart, {
+    limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+  });
+  const service = partImageService(images, partImagesDir);
   const { httpErrors } = app;
 
   const partOr404 = (code: string) => {
@@ -46,76 +54,59 @@ export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
   };
 
   const requireScraper = () => {
-    if (!scraper) throw httpErrors.notImplemented("Image scraping isn't installed");
+    if (!scraper)
+      throw httpErrors.notImplemented("Image scraping isn't installed");
     return scraper;
   };
 
-  /** The site's refusal is a 422 the user can read; a missing scraper a 503. */
-  const scraperHttpError = (err: ImageScraperError) =>
-    err.code === "unavailable"
-      ? httpErrors.serviceUnavailable(err.message)
-      : err.code === "internal"
-        ? httpErrors.badGateway(err.message)
-        : httpErrors.unprocessableEntity(err.message);
+  /**
+   * The service's errors as HTTP: a bad image is a 400, the site's refusal a
+   * 422 the user can read, a missing scraper a 503.
+   */
+  const toHttpError = (err: unknown) => {
+    if (err instanceof UnreadableImageError)
+      return httpErrors.badRequest(err.message);
+    if (err instanceof NoUsableImageError)
+      return httpErrors.unprocessableEntity(err.message);
+    if (err instanceof ImageScraperError) {
+      if (err.code === "unavailable")
+        return httpErrors.serviceUnavailable(err.message);
+      if (err.code === "internal") return httpErrors.badGateway(err.message);
+      return httpErrors.unprocessableEntity(err.message);
+    }
+    return err;
+  };
 
-  /** Normalises and stores `data` as the part's image, replacing any old one. */
-  async function save(
-    code: string,
-    data: Buffer,
-    meta: { source: "upload" | "scrape"; sourceUrl: string | null; candidates: string[] },
-  ) {
-    let jpeg: Buffer;
+  /** Runs a service call and answers with the updated part. */
+  const thenPart = async (code: string, work: Promise<unknown>) => {
     try {
-      jpeg = await normaliseImage(data);
-    } catch {
-      throw httpErrors.badRequest("That file isn't an image we can read");
+      await work;
+    } catch (err) {
+      throw toHttpError(err);
     }
-    const previous = images.get(code);
-    images.set(code, { ...meta, file: store.write(code, jpeg) });
-    if (previous) store.remove(previous.file);
     return repo.getPart(code)!;
-  }
-
-  /** The first candidate that downloads and decodes. */
-  async function saveFirstWorking(
-    scraper: ImageScraper,
-    code: string,
-    urls: string[],
-    candidates: string[],
-  ) {
-    let lastError =
-      "No images found on the supplier page (some sites block automated requests). Upload one instead.";
-    for (const url of urls) {
-      try {
-        const { data } = await scraper.fetchImage(url);
-        return await save(code, data, { source: "scrape", sourceUrl: url, candidates });
-      } catch (err) {
-        // The scraper itself is down: no point trying the rest.
-        if (err instanceof ImageScraperError && err.code === "unavailable") {
-          throw scraperHttpError(err);
-        }
-        // Unreachable or unreadable: try the next one.
-        const skippable =
-          err instanceof ImageScraperError || (err instanceof Error && "statusCode" in err);
-        if (!skippable) throw err;
-        lastError = err.message;
-      }
-    }
-    throw httpErrors.unprocessableEntity(lastError);
-  }
+  };
 
   app.get(
     "/parts/:code/image",
-    { schema: { params: partCodeParamsSchema, querystring: z.object({ v: z.string().optional() }) } },
+    {
+      schema: {
+        params: partCodeParamsSchema,
+        querystring: z.object({ v: z.string().optional() }),
+      },
+    },
     async (request, reply) => {
-      const image = images.get(request.params.code);
-      const file = image && store.path(image.file);
-      if (!file || !existsSync(file)) throw httpErrors.notFound("Part has no image");
+      const file = service.file(request.params.code);
+      if (!file || !existsSync(file))
+        throw httpErrors.notFound("Part has no image");
       // The web app adds ?v=<updatedAt>, so that URL's bytes never change.
       const versioned = request.query.v !== undefined;
       reply
         .header("content-type", "image/jpeg")
-        .header("cache-control", versioned ? "public, max-age=31536000, immutable" : "no-cache");
+        .header(
+          "cache-control",
+          versioned ? "public, max-age=31536000, immutable" : "no-cache",
+        );
       return reply.send(createReadStream(file));
     },
   );
@@ -128,8 +119,7 @@ export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
       partOr404(code);
       const upload = await request.file();
       if (!upload) throw httpErrors.badRequest("No file uploaded");
-      const data = await upload.toBuffer();
-      return save(code, data, { source: "upload", sourceUrl: null, candidates: [] });
+      return thenPart(code, service.upload(code, await upload.toBuffer()));
     },
   );
 
@@ -140,15 +130,16 @@ export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
       const { code } = request.params;
       const scraper = requireScraper();
       const pageUrl = attrText(partOr404(code), ATTR.supplierUrl);
-      if (!pageUrl) throw httpErrors.unprocessableEntity("Part has no supplier link");
-      let candidates: string[];
-      try {
-        candidates = await scraper.findImages(pageUrl);
-      } catch (err) {
-        if (err instanceof ImageScraperError) throw scraperHttpError(err);
-        throw err;
-      }
-      return saveFirstWorking(scraper, code, candidates, candidates);
+      if (!pageUrl)
+        throw httpErrors.unprocessableEntity("Part has no supplier link");
+      return thenPart(
+        code,
+        scraper
+          .findImages(pageUrl)
+          .then((candidates) =>
+            service.saveFirstScraped(scraper, code, candidates, candidates),
+          ),
+      );
     },
   );
 
@@ -159,12 +150,15 @@ export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
       const { code } = request.params;
       const scraper = requireScraper();
       partOr404(code);
-      const candidates = images.get(code)?.candidates ?? [];
+      const candidates = service.candidates(code);
       // Only URLs a scrape found, so this can't be used to fetch anything else.
       if (!candidates.includes(request.body.url)) {
         throw httpErrors.badRequest("Not one of the scraped images");
       }
-      return saveFirstWorking(scraper, code, [request.body.url], candidates);
+      return thenPart(
+        code,
+        service.saveFirstScraped(scraper, code, [request.body.url], candidates),
+      );
     },
   );
 
@@ -174,11 +168,7 @@ export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
     async (request) => {
       const { code } = request.params;
       partOr404(code);
-      const image = images.get(code);
-      if (image) {
-        images.delete(code);
-        store.remove(image.file);
-      }
+      service.remove(code);
       return repo.getPart(code)!;
     },
   );

@@ -1,11 +1,11 @@
-import { useListPreviewColoursQuery } from "@features/parts";
+import { useListPreviewColoursQuery } from "@shared/api/catalogApi";
 import { errorMessage } from "@shared/api/errors";
 import {
   useCreatePreviewColourMutation,
   useDeletePreviewColourMutation,
   useUpdatePreviewColourMutation,
 } from "../api/settingsApi";
-import { unwrap } from "../model/unwrap";
+import { unwrap } from "@shared/api/unwrap";
 import { PreviewColoursPage } from "./PreviewColoursPage";
 
 const EMPTY: never[] = [];
