@@ -1,20 +1,23 @@
 import { useState } from "react";
+import { useActiveProject } from "@shared/hooks/useActiveProject";
 import type { GroupingRow } from "./groupingRows";
 
-const STORAGE_KEY = "parts-warehouse.bomStructure.expanded";
+// Grouping ids are per project, so each project has its own key.
+const storageKey = (project: string) =>
+  `parts-warehouse.bomStructure.expanded.${project}`;
 
-function load(): Set<string> | null {
+function load(key: string): Set<string> | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     return raw ? new Set(JSON.parse(raw) as string[]) : null;
   } catch {
     return null;
   }
 }
 
-function save(ids: Set<string>) {
+function save(key: string, ids: Set<string>) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...ids]));
+    localStorage.setItem(key, JSON.stringify([...ids]));
   } catch {
     // Private mode or blocked storage: expansion just isn't remembered.
   }
@@ -25,13 +28,14 @@ function save(ids: Set<string>) {
  * user changes anything, only the first module is open.
  */
 export function useBomExpansion(rows: GroupingRow[]) {
-  const [stored, setStored] = useState(load);
+  const key = storageKey(useActiveProject());
+  const [stored, setStored] = useState(() => load(key));
   const firstModule = rows[0]?.grouping.id;
   const expanded = stored ?? new Set(firstModule ? [firstModule] : []);
 
   const update = (next: Set<string>) => {
     setStored(next);
-    save(next);
+    save(key, next);
   };
 
   return {

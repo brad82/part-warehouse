@@ -28,9 +28,9 @@ RUN apt-get update \
 ENV NODE_ENV=production \
   HOST=0.0.0.0 \
   PORT=4000 \
-  DB_PATH=/data/parts.db \
-  MODEL_FILES_DIR=/models \
-  PART_IMAGES_DIR=/data/part-images
+  DATA_DIR=/data
+# /data holds app.json and one folder per project: parts.db, part-images/
+# and models/ (its STL files).
 # IMAGE_SCRAPER_URL (host:port of the optional image-scraper app) is set
 # at run time; unset, supplier-link scraping is off.
 # CUPS_SERVER (e.g. host.docker.internal) lists the printers offered in

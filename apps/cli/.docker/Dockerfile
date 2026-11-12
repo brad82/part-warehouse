@@ -22,7 +22,7 @@ RUN npm ci --workspace @parts-warehouse/cli
 FROM node:24-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production \
-  DB_PATH=/data/parts.db \
+  DATA_DIR=/data \
   PARTS_INDEX_CSV=/import/parts-index.csv
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./

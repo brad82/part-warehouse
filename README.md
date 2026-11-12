@@ -5,7 +5,7 @@ and print data, preview STLs, scan labels, and print bag labels.
 
 ```sh
 npm install
-npm run import   # Parts Index.csv → data/parts.db (re-runnable; keeps stock/print data)
+npm run import   # Parts Index.csv → the active project's db (re-runnable; keeps stock/print data)
 npm run dev      # API on :4000, web on http://localhost:3000, image scraper on :50051
 npm run dev:core # the same without the image scraper
 npm test && npm run typecheck && npm run lint
@@ -17,9 +17,14 @@ npm test && npm run typecheck && npm run lint
   schemas, used everywhere), `packages/labels` (label SVG renderer and
   barcodes), `packages/label-pdf` (labels to PDF),
   `packages/image-scraper-proto` (the scraper's gRPC contract and client).
+- Projects: the app-bar picker switches between projects or makes a new
+  one. Each is a folder in `data/` with its own `parts.db`, `part-images/`
+  and `models/` (its STL files; parts' file paths are relative to it).
+  `data/app.json` remembers the active project and the label printer, which
+  stay put across projects.
 - Part images: any part can have one (Image tab, or the only preview for
   parts without an STL). Upload, drop, paste or take a photo; images are
-  centre-cropped to a 1024 px square in `data/part-images/`. Without an STL,
+  centre-cropped to a 1024 px square in the project's `part-images/`. Without an STL,
   labels print the image instead of the 3D render.
 - Image scraper (optional): with `IMAGE_SCRAPER_URL` set, the API asks
   `apps/image-scraper` to find the image on a part's Supplier link. It
@@ -27,8 +32,9 @@ npm test && npm run typecheck && npm run lint
   apps/image-scraper` once). It never solves robot checks; to solve one
   yourself, run with `PAGE_BROWSER_HEADED=1` and a Chromium window opens
   for it. Its cookies stay in `data/browser-profile/`.
-- CLI: `npm run cli -- --help`. Other CSV or db:
-  `npm run cli -- import --csv <path> --db <path>`.
+- CLI: `npm run cli -- --help`. Commands use the project active in the
+  app; pick another with `--project <slug>`, or any db with `--db <path>`:
+  `npm run cli -- import --csv <path> --project <slug>`.
 - Label sheets: `npm run cli -- labels [codes…] --query <text> --start <1-30>`
   writes `labels.pdf` (Avery 5160). Templates are stored in the db (built-ins
   from `apps/api/templates/*.json`), rendered to SVG by `packages/labels` and
@@ -42,7 +48,7 @@ npm test && npm run typecheck && npm run lint
   matched to an attribute by key or label, ignoring case; unmatched columns
   are skipped with a warning. An empty cell clears that attribute.
 
-- SQLite (`data/parts.db`) is the source of truth after import. Schema:
+- SQLite (`data/<project>/parts.db`) is the source of truth after import. Schema:
   `packages/db/migrations/001_initial.sql` (edit it, delete the db, re-import).
 - Parts have a type (Printed, Purchased, …) and typed attributes (colour,
   material, print time, SKU, supplier, price in CAD, …). Edit both on the
@@ -81,16 +87,16 @@ npm test && npm run typecheck && npm run lint
 
 ```sh
 cp docker-compose.override.example.yml docker-compose.override.yml   # then edit paths
-docker compose run --rm cli import   # first run: CSV → volume
+docker compose up -d --build   # http://localhost:3000 (WEB_PORT=8080 to change)
+docker compose run --rm cli import   # first run: CSV → the active project
 docker compose run --rm -v "$PWD/../Purchased Parts (proposed).csv:/import/purchased.csv:ro" \
   cli import --csv /import/purchased.csv   # any other CSV
-docker compose up -d --build   # http://localhost:3000 (WEB_PORT=8080 to change)
 ```
 
-- The database lives in the `parts-data` volume, not `data/`. To bring over
-  a local db, stop `npm run dev` first (flushes `parts.db-wal`), then:
-  `docker compose stop api && docker compose run --rm -v "$PWD/data:/src:ro" api cp /src/parts.db /data/parts.db && docker compose start api`.
-- Host paths (e.g. model files for `api`) go in the
+- Projects live in the `parts-data` volume, not `data/`. To bring over a
+  local one, stop `npm run dev` first (flushes `parts.db-wal`), then:
+  `docker compose stop api && docker compose run --rm -v "$PWD/data:/src:ro" api cp -r /src/snowcat /data/ && docker compose start api`.
+- Host paths (e.g. a project's model files for `api`) go in the
   gitignored `docker-compose.override.yml`, which compose loads automatically.
   The `cli` service is in the `tools` profile, so `up` doesn't start it.
 - Image scraper: off unless you start its profile and point the API at it:

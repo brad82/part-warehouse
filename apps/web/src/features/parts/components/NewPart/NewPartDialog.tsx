@@ -114,6 +114,12 @@ export function NewPartDialog({
               {createError}
             </Alert>
           ) : null}
+          {form.groups.length === 0 ? (
+            <Alert severity="info" sx={{ mb: 2 }}>
+              No parts groups yet. Add one under a sub-assembly in Settings →
+              BOM structure.
+            </Alert>
+          ) : null}
           <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
             <Grid size={12}>
               {field("groupId", "Parts group", {

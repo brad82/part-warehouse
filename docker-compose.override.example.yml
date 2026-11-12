@@ -3,4 +3,5 @@
 services:
   api:
     volumes:
-      - "../Model Files:/models:ro"
+      # A project's STL files, if they're kept outside the volume.
+      - "../Model Files:/data/snowcat/models:ro"

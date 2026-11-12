@@ -2,7 +2,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { runImport } from "./commands/import.js";
 import { runLabels } from "./commands/labels.js";
-import { config } from "./config.js";
+import { config, resolveDbPath } from "./config.js";
 
 const usage = `Usage: parts-warehouse <command> [options]
 
@@ -10,7 +10,9 @@ Commands:
   import    Import a parts CSV into the database (re-runnable). Extra columns
             are matched to attributes by key or label; "Part type" sets the type.
             --csv <path>  CSV file (default: ${config.partsIndexCsv})
-            --db <path>   SQLite file (default: ${config.dbPath})
+            --project <slug>  Project in ${config.dataDir} (default: the
+                          one active in the app)
+            --db <path>   SQLite file; overrides --project
 
   labels [codes…]
             PDF of labels on an Avery 5160 sheet (3×10, US Letter), one per
@@ -19,13 +21,14 @@ Commands:
             --query <text>  Same search as the app (code, name, group, …)
             --start <n>     First free slot, 1–30, left→right (default: 1)
             --out <path>    PDF file (default: labels.pdf)
-            --db <path>     SQLite file (default: ${config.dbPath})`;
+            --project <slug> / --db <path>  As for import`;
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
   options: {
     csv: { type: "string", default: config.partsIndexCsv },
-    db: { type: "string", default: config.dbPath },
+    db: { type: "string" },
+    project: { type: "string" },
     query: { type: "string" },
     template: { type: "string", default: "small" },
     start: { type: "string", default: "1" },
@@ -35,13 +38,20 @@ const { positionals, values } = parseArgs({
 });
 
 const [command, ...args] = positionals;
+let dbPath = "";
+try {
+  dbPath = resolveDbPath(values);
+} catch (err) {
+  console.error((err as Error).message);
+  process.exit(1);
+}
 if (values.help) {
   console.log(usage);
 } else if (command === "import") {
-  runImport({ csvPath: values.csv, dbPath: values.db });
+  runImport({ csvPath: values.csv, dbPath });
 } else if (command === "labels") {
   await runLabels({
-    dbPath: values.db,
+    dbPath,
     templatesDir: config.labelTemplatesDir,
     templateId: values.template,
     codes: args,

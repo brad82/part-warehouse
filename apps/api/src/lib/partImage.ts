@@ -72,8 +72,12 @@ type ImageMeta = {
  * Stores, replaces and removes part images: the file in the folder and its
  * row in the db, kept in step. Knows nothing about HTTP.
  */
-export function partImageService(images: PartImagesRepository, dir: string) {
-  const store = partImageStore(dir);
+export function partImageService(
+  images: PartImagesRepository,
+  dir: () => string,
+) {
+  // Looked up per call, so it follows the active project.
+  const store = () => partImageStore(dir());
 
   /** Normalises and stores `data` as the part's image, replacing any old one. */
   async function save(code: string, data: Buffer, meta: ImageMeta) {
@@ -84,15 +88,15 @@ export function partImageService(images: PartImagesRepository, dir: string) {
       throw new UnreadableImageError();
     }
     const previous = images.get(code);
-    images.set(code, { ...meta, file: store.write(code, jpeg) });
-    if (previous) store.remove(previous.file);
+    images.set(code, { ...meta, file: store().write(code, jpeg) });
+    if (previous) store().remove(previous.file);
   }
 
   return {
     /** Absolute path of the part's image file, or null without one. */
     file(code: string): string | null {
       const image = images.get(code);
-      return image ? store.path(image.file) : null;
+      return image ? store().path(image.file) : null;
     },
 
     upload: (code: string, data: Buffer) =>
@@ -139,7 +143,7 @@ export function partImageService(images: PartImagesRepository, dir: string) {
       const image = images.get(code);
       if (!image) return;
       images.delete(code);
-      store.remove(image.file);
+      store().remove(image.file);
     },
   };
 }
