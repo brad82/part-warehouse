@@ -18,7 +18,8 @@ import { slicerLauncher, type OpenInSlicer } from "../lib/slicer.js";
 type Options = {
   repo: PartsRepository;
   attributes: AttributesRepository;
-  modelFilesDir?: string;
+  /** The active project's model files folder. */
+  modelFilesDir: () => string;
   openInSlicer?: OpenInSlicer;
 };
 
@@ -38,7 +39,7 @@ export const partsRoutes: FastifyPluginAsyncZod<Options> = async (
   {
     repo,
     attributes,
-    modelFilesDir = config.modelFilesDir,
+    modelFilesDir,
     openInSlicer = slicerLauncher(config.slicerApp),
   },
 ) => {
@@ -49,7 +50,7 @@ export const partsRoutes: FastifyPluginAsyncZod<Options> = async (
     if (!part) throw httpErrors.notFound("Part not found");
     const filePath = attrText(part, ATTR.filePath);
     if (!filePath) throw httpErrors.notFound("Part has no STL file");
-    const file = resolveModelFile(modelFilesDir, filePath);
+    const file = resolveModelFile(modelFilesDir(), filePath);
     if (!file) throw httpErrors.badRequest("Invalid file path");
     if (!existsSync(file)) throw httpErrors.notFound("STL file not found");
     return file;

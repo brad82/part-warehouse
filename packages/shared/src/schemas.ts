@@ -230,3 +230,25 @@ export type AttributeDef = z.infer<typeof attributeDefSchema>;
 export type AttributeDefCreate = z.infer<typeof attributeDefCreateSchema>;
 export type AttributeDefUpdate = z.infer<typeof attributeDefUpdateSchema>;
 export type AttributeValue = z.infer<typeof attributeValueSchema>;
+
+/** A project: its own db, part images and model files under data/<slug>/. */
+export const projectSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+});
+
+export const projectListSchema = z.object({
+  /** Slug of the project the API is serving. */
+  active: z.string(),
+  projects: z.array(projectSchema),
+});
+
+export const projectCreateSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+});
+
+export const projectActivateSchema = z.object({ slug: z.string().min(1) });
+
+export type Project = z.infer<typeof projectSchema>;
+export type ProjectList = z.infer<typeof projectListSchema>;
+export type ProjectCreate = z.infer<typeof projectCreateSchema>;

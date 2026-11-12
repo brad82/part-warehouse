@@ -49,4 +49,24 @@ describe("NewPartDialog", () => {
     });
     expect(props.onCreated).toHaveBeenCalledWith("A01-001-003");
   });
+
+  it("says where to add a group when there are none", async () => {
+    render(
+      <NewPartDialog
+        open
+        onClose={vi.fn()}
+        groupings={groupings.filter((g) => g.taxonomy !== "group")}
+        partTypes={partTypes}
+        defaultGroupId={undefined}
+        nextPartNumber={vi.fn(async () => null)}
+        onCreate={vi.fn(async () => "")}
+        creating={false}
+        createError={null}
+        onCreated={vi.fn()}
+      />,
+    );
+
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByText(/No parts groups yet/)).toBeInTheDocument();
+  });
 });

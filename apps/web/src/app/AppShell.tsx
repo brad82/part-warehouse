@@ -11,7 +11,9 @@ import type { ReactNode } from "react";
 import { Boxes, LayoutDashboard, Moon, Settings, Sun, Table2 } from "lucide-react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { NewPartButton } from "@features/parts";
+import { ProjectSwitcher, useListProjectsQuery } from "@features/projects";
 import { ScanButton } from "@features/scan";
+import { ActiveProjectContext } from "@shared/hooks/useActiveProject";
 import type { ThemeMode } from "@shared/hooks/useThemeMode";
 import { AppRoutes } from "./router";
 
@@ -109,6 +111,10 @@ function NavButton({ to, label, icon, isActive }: NavItem) {
 
 export function AppShell({ mode, onToggleMode }: Props) {
   const inSettings = useLocation().pathname.startsWith("/settings");
+  // Pages wait for the project, and remount when it changes so no state
+  // from the old one survives. An API without projects serves "default".
+  const projects = useListProjectsQuery();
+  const activeProject = projects.data?.active ?? (projects.isError ? "default" : null);
   return (
     <Box sx={shellStyles.root}>
       <AppBar position="static" elevation={0} sx={shellStyles.bar}>
@@ -119,6 +125,7 @@ export function AppShell({ mode, onToggleMode }: Props) {
             ))}
           </Box>
           <Box sx={shellStyles.spacer} />
+          <ProjectSwitcher />
           <NewPartButton />
           <ScanButton />
           <Box aria-hidden sx={shellStyles.divider} />
@@ -142,7 +149,11 @@ export function AppShell({ mode, onToggleMode }: Props) {
         </Toolbar>
       </AppBar>
       <Box component="main" sx={shellStyles.main}>
-        <AppRoutes />
+        {activeProject && (
+          <ActiveProjectContext.Provider value={activeProject}>
+            <AppRoutes key={activeProject} />
+          </ActiveProjectContext.Provider>
+        )}
       </Box>
     </Box>
   );

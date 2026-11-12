@@ -14,6 +14,7 @@ export const baseApi = createApi({
     "LabelTemplate",
     "Capabilities",
     "LabelPrinter",
+    "Project",
   ],
   endpoints: () => ({}),
 });

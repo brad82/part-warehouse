@@ -16,7 +16,6 @@ import {
   ImageScraperError,
   type ImageScraper,
 } from "@parts-warehouse/image-scraper-proto";
-import { config } from "../config.js";
 import {
   MAX_UPLOAD_BYTES,
   NoUsableImageError,
@@ -27,7 +26,8 @@ import {
 type Options = {
   repo: PartsRepository;
   images: PartImagesRepository;
-  partImagesDir?: string;
+  /** The active project's part images folder. */
+  partImagesDir: () => string;
   /** The optional image-scraper app; without it only uploads work. */
   scraper?: ImageScraper | null;
 };
@@ -39,7 +39,7 @@ type Options = {
  */
 export const partImagesRoutes: FastifyPluginAsyncZod<Options> = async (
   app,
-  { repo, images, partImagesDir = config.partImagesDir, scraper = null },
+  { repo, images, partImagesDir, scraper = null },
 ) => {
   await app.register(multipart, {
     limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
